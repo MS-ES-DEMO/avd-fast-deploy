@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location":{"value": "westeurope"},
+        "environment": {"value": "PreProd"},
+        "monitoringResourceGroupName":{"value": "rg-monitoring"},
+        "deployLogWorkspace":{"value": true},
+        "existingWorkspaceName":{"value": ""},
+        "networkingResourceGroupName":{"value": "rg-networking"},
+        "vNetsInfo":{"value": [{"name": "vnet-hub", "range": "10.0.0.0/24"}, {"name": "vnet-addsanddns", "range": "10.0.1.0/24"}, {"name": "vnet-wvd", "range": "10.0.2.0/24"}]}
+    }
+}
