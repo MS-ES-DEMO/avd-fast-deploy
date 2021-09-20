@@ -165,6 +165,11 @@ param networkRulesInfo object = {
     }
   ]
 }
+@description('Name for Azure Firewall')
+param firewallName string = 'azfw-${toLower(environment)}'
+@description('Name for Azure Firewall public ip')
+param fwPublicIpName string = 'pip-${toLower(environment)}-fw'
+
 
 var tags = {
   ProjectName: 'WVD' // defined at resource level
@@ -219,11 +224,14 @@ module networkingResources 'networking/networkingResources.bicep' = {
     vwanName: vwanName
     hubInfo: hubInfo
     monitoringResourceGroupName: monitoringResourceGroupName
+    logWorkspaceName: monitoringResources.outputs.logWorkspaceName
     fwPolicyInfo: fwPolicyInfo
     appRuleCollectionGroupName: appRuleCollectionGroupName
     appRulesInfo: appRulesInfo
     networkRuleCollectionGroupName: networkRuleCollectionGroupName
     networkRulesInfo: networkRulesInfo
+    firewallName: firewallName
+    fwPublicIpName: fwPublicIpName
   }
 }
 

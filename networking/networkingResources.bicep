@@ -9,11 +9,14 @@ param vnetsInfo array
 param vwanName string = 'vwan-${toLower(environment)}-001}'
 param hubInfo object 
 param monitoringResourceGroupName string
+param logWorkspaceName string
 param fwPolicyInfo object 
 param appRuleCollectionGroupName string = 'fwapprulegroup-${toLower(environment)}'
 param appRulesInfo object 
 param networkRuleCollectionGroupName string = 'fwnetrulegroup-${toLower(environment)}'
 param networkRulesInfo object 
+param firewallName string
+param fwPublicIpName string
 
 
 
@@ -55,6 +58,7 @@ module fwPolicyResources '../modules/Microsoft.Network/fwPolicy.bicep' = {
     environment: environment
     tags: tags
     monitoringResourceGroupName: monitoringResourceGroupName
+    logWorkspaceName: logWorkspaceName
     fwPolicyInfo: fwPolicyInfo
   }
 }
@@ -83,6 +87,37 @@ module fwNetworkRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
     fwPolicyName: fwPolicyInfo.name
     ruleCollectionGroupName: networkRuleCollectionGroupName
     rulesInfo: networkRulesInfo
+  }
+}
+
+module fwPublicIpResources '../modules/Microsoft.Network/publicIp.bicep' = {
+  name: 'fwPublicIpResources_Deploy'
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    name: fwPublicIpName
+  }
+
+}
+
+module firewallResources '../modules/Microsoft.Network/firewall.bicep' = {
+  name: 'firewallResources_Deploy'
+  dependsOn: [
+    fwPublicIpResources
+    fwPolicyResources
+    fwAppRulesResources
+    fwNetworkRulesResources
+  ]
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    name: firewallName
+    monitoringResourceGroupName: monitoringResourceGroupName
+    fwPolicyInfo: fwPolicyInfo
+    hubName: hubInfo.name
+    fwPublicIpName: fwPublicIpName
   }
 }
 

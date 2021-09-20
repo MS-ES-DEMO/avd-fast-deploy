@@ -14,7 +14,7 @@ resource logWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
 
 resource fwPolicy 'Microsoft.Network/firewallPolicies@2020-11-01' = {
   name: fwPolicyInfo.name
-  location: resourceGroup().location
+  location: location
   properties: {
     sku: {
       tier: 'Premium'
