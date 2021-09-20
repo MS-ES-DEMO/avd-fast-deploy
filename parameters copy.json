@@ -8,6 +8,6 @@
         "deployLogWorkspace":{"value": true},
         "existingLogWorkspaceName":{"value": ""},
         "networkingResourceGroupName":{"value": "rg-networking"},
-        "vnetsInfo":{"value": [{"name": "vnet-preprod-hub", "range": "10.0.0.0/24"}, {"name": "vnet-preprod-adds", "range": "10.0.1.0/24"}, {"name": "vnet-preprod-awvd", "range": "10.0.2.0/24"}]}
+        "vNetsInfo":{"value": [{"name": "adds", "range": "10.0.1.0/24"}, {"name": "wvd", "range": "10.0.2.0/24"}]}
     }
 }

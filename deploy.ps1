@@ -1,6 +1,6 @@
 # Warning: Running this script multiple times will cause the admin
 
-$deploymentName="WVD-Deployment-$(New-Guid)"
+$deploymentName="AWVD-Deployment-$(New-Guid)"
 
 
 # The deployment is applied at the subscription scope
