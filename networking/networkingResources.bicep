@@ -6,14 +6,14 @@ param location string = resourceGroup().location
 param environment string
 param tags object
 param vnetsInfo array 
-param vwanName string = 'vwan-${toLower(environment)}-001}'
+param vwanName string 
 param hubInfo object 
 param monitoringResourceGroupName string
 param logWorkspaceName string
 param fwPolicyInfo object 
-param appRuleCollectionGroupName string = 'fwapprulegroup-${toLower(environment)}'
+param appRuleCollectionGroupName string
 param appRulesInfo object 
-param networkRuleCollectionGroupName string = 'fwnetrulegroup-${toLower(environment)}'
+param networkRuleCollectionGroupName string
 param networkRulesInfo object 
 param fwPublicIpName string
 param firewallName string
@@ -44,6 +44,9 @@ module vwanResources '../modules/Microsoft.Network/vwan.bicep' = {
 
 module hubResources '../modules/Microsoft.Network/hub.bicep' = {
   name: 'hubResources_Deploy'
+  dependsOn: [
+    vwanResources
+  ]
   params: {
     location: location
     environment: environment
@@ -110,6 +113,7 @@ module firewallResources '../modules/Microsoft.Network/firewall.bicep' = {
     fwPolicyResources
     fwAppRulesResources
     fwNetworkRulesResources
+    hubResources
   ]
   params: {
     location: location

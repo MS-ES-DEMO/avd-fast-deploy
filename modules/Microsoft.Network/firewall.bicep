@@ -41,7 +41,7 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
       name: 'AZFW_Hub'
       tier: 'Premium'
     }
-    threatIntelMode: 'Alert'
+    //threatIntelMode: 'Alert'
     additionalProperties: {}
     hubIPAddresses: {
       publicIPs: {

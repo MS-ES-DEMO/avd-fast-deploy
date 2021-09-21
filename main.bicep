@@ -48,7 +48,11 @@ param vnetsInfo array = [
   }
 ]
 @description('Name for VWAN')
-param vwanName string = 'vwan-${toLower(environment)}-001}'
+param vwanName string = 'vwan-${toLower(environment)}-primary'
+/*
+vwanName --> {"code":"DeploymentFailed","message":"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/DeployOperations for usage details.","details":[{"code":"InvalidResourceName","message":"Resource name vwan-preprod-001} is invalid. The name can be up to 80 characters long. It must begin with a word character, and it must end with a word character or with '_'. The name may contain word characters or '.', '-', '_'."}]}
+*/
+
 @description('Name and range for Hub')
 param hubInfo object = {
     name: 'hub-${toLower(environment)}-001'
