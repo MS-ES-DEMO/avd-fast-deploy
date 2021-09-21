@@ -7,7 +7,7 @@ param vnetInfo object = {
     range: '10.0.1.0/24'
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2020-05-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   name: vnetInfo.name
   location: location
   tags: tags

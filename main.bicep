@@ -185,7 +185,41 @@ param hubVnetConnectionsInfo array = [
     remoteVnetName: 'vnet-${toLower(environment)}-awvd'
   }
 ]
-
+@description('ADDS subnet information')
+param addsSnetInfo object = {
+  name: 'snet-${toLower(environment)}-adds'
+  range: '10.0.1.0/26'
+  vnetName: 'vnet-${toLower(environment)}-adds'
+  nsgName: 'nsg-${toLower(environment)}-snet-adds'
+  nsgInboundRules: [
+    {
+      name: 'rule1'
+      rule: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '10.0.1.0/24'
+        destinationAddressPrefix: '10.0.1.0/26'
+        access: 'Allow'
+        priority: 300
+        direction: 'Inbound'
+      }
+    }
+    {
+      name: 'rule2'
+      rule: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '10.0.1.0/24'
+        destinationAddressPrefix: '10.0.1.0/24'
+        access: 'Allow'
+        priority: 301
+        direction: 'Inbound'
+      }
+    }
+  ]
+}
 
 
 var tags = {
@@ -254,6 +288,7 @@ module networkingResources 'networking/networkingResources.bicep' = {
     firewallName: firewallName
     destinationAddresses: destinationAddresses
     hubVnetConnectionsInfo: hubVnetConnectionsInfo
+    addsSnetInfo: addsSnetInfo
   }
 }
 

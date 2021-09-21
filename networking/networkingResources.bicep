@@ -19,6 +19,7 @@ param fwPublicIpName string
 param firewallName string
 param destinationAddresses array
 param hubVnetConnectionsInfo array
+param addsSnetInfo object
 
 
 
@@ -87,7 +88,6 @@ module fwNetworkRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
   name: 'fwNetworkRulesResources_Deploy'
   dependsOn: [
     fwPolicyResources
-
     fwAppRulesResources
   ]
   params: {
@@ -164,20 +164,44 @@ module hubVirtualConnectionResources '../modules/Microsoft.Network/hubVnetConnec
   }
 }]
 
-/*
+module nsgAddsSubnetResources '../modules/Microsoft.Network/nsg.bicep' = {
+  name: 'nsgAddsSubnetResources_Deploy'
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    snetInfo: addsSnetInfo
+  }
+}
 
-module subnetAddsResources '../modules/Microsoft.Network/subnetAdds.bicep'
-  name: 'hubVirtualConnectionResources_Deploy${i}'
+module nsgAddsSubnetInboundRulesResources '../modules/Microsoft.Network/nsgRule.bicep' = [ for (ruleInfo, i) in addsSnetInfo.nsgInboundRules: {
+  name: 'nsgAddsSubnetInboundRulesResources_Deploy${i}'
   dependsOn: [
-    vnetResources
+    nsgAddsSubnetResources 
   ]
   params: {
     location: location
     environment: environment
     tags: tags
-    hubInfo: hubInfo
-    connectInfo: connectInfo
+    name: ruleInfo.name
+    rule: ruleInfo.rule
+    nsgName: addsSnetInfo.nsgName
+  }
+}]
+
+module subnetAddsResources '../modules/Microsoft.Network/subnet.bicep' = {
+  name: 'subnetAddsResources'
+  dependsOn: [
+    vnetResources
+    nsgAddsSubnetResources
+    nsgAddsSubnetInboundRulesResources
+  ]
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    snetInfo: addsSnetInfo
   }
 }
 
-*/
+

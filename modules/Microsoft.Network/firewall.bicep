@@ -19,7 +19,7 @@ resource fwPolicy 'Microsoft.Network/firewallPolicies@2020-11-01' existing = {
   name: fwPolicyInfo.name
 }
 
-resource hub 'Microsoft.Network/virtualHubs@2021-02-01' existing = {
+resource hub 'Microsoft.Network/virtualHubs@2020-06-01' existing = {
   name: hubName
 }
 
@@ -66,6 +66,9 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
 
 resource firewallDiagnostics 'Microsoft.Insights/diagnosticsettings@2017-05-01-preview' = {
   name: '${name}-${toLower(environment)}-diagsetting'
+  dependsOn: [
+    firewall
+  ]
   scope: firewall
   properties: {
     storageAccountId: null
