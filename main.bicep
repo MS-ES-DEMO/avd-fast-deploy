@@ -165,10 +165,23 @@ param networkRulesInfo object = {
     }
   ]
 }
-@description('Name for Azure Firewall')
-param firewallName string = 'azfw-${toLower(environment)}'
+
 @description('Name for Azure Firewall public ip')
 param fwPublicIpName string = 'pip-${toLower(environment)}-fw'
+@description('Name for Azure Firewall')
+param firewallName string = 'azfw-${toLower(environment)}'
+@description('Name for hub virtual connections')
+param hubVnetConnectionsInfo array = [
+  {
+    name: 'hub-to-adds'
+    remoteVnetName: 'vnet-${toLower(environment)}-adds'
+  }
+  {
+    name: 'hub-to-awvd'
+    remoteVnetName: 'vnet-${toLower(environment)}-awvd'
+  }
+]
+
 
 
 var tags = {
@@ -176,6 +189,8 @@ var tags = {
   EnvironmentType: environment // <Dev><Test><Uat><Prod><ProdDr>
   Location: 'AzureWestEurope' // <CSP><AzureRegion>
 }
+
+var destinationAddresses = [ for address in vnetsInfo: '${address.range}' ]
 
 //---------------------------------------------------------------------
 // -----------------  monitoringResourceGroup  ------------------------
@@ -215,6 +230,7 @@ module networkingResources 'networking/networkingResources.bicep' = {
   name: 'networkingResources_Deploy'
   dependsOn: [
     networkingResourceGroup
+    monitoringResources
   ]
   params: {
     location: location
@@ -230,8 +246,10 @@ module networkingResources 'networking/networkingResources.bicep' = {
     appRulesInfo: appRulesInfo
     networkRuleCollectionGroupName: networkRuleCollectionGroupName
     networkRulesInfo: networkRulesInfo
-    firewallName: firewallName
     fwPublicIpName: fwPublicIpName
+    firewallName: firewallName
+    destinationAddresses: destinationAddresses
+    hubVnetConnectionsInfo: hubVnetConnectionsInfo
   }
 }
 

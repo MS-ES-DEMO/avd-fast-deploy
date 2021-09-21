@@ -15,8 +15,10 @@ param appRuleCollectionGroupName string = 'fwapprulegroup-${toLower(environment)
 param appRulesInfo object 
 param networkRuleCollectionGroupName string = 'fwnetrulegroup-${toLower(environment)}'
 param networkRulesInfo object 
-param firewallName string
 param fwPublicIpName string
+param firewallName string
+param destinationAddresses array
+param hubVnetConnectionsInfo array
 
 
 
@@ -120,4 +122,37 @@ module firewallResources '../modules/Microsoft.Network/firewall.bicep' = {
     fwPublicIpName: fwPublicIpName
   }
 }
+
+module hubRouteTableResources '../modules/Microsoft.Network/hubRouteTable.bicep' = {
+  name: 'hubRouteTableResources_Deploy'
+  dependsOn: [
+    hubResources
+    firewallResources
+  ]
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    hubInfo: hubInfo
+    firewallName: firewallName
+    destinations: destinationAddresses
+  }
+}
+
+module hubVirtualConnectionResources '../modules/Microsoft.Network/hubVnetConnection.bicep' = [ for (connectInfo, i) in hubVnetConnectionsInfo: {
+  name: 'hubVirtualConnectionResources_Deploy${i}'
+  dependsOn: [
+    vnetResources
+    hubResources
+    hubRouteTableResources
+  ]
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    hubInfo: hubInfo
+    connectInfo: connectInfo
+  }
+}]
+
 
