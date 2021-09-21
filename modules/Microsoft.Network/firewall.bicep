@@ -41,7 +41,6 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
       name: 'AZFW_Hub'
       tier: 'Premium'
     }
-    //threatIntelMode: 'Alert'
     additionalProperties: {}
     hubIPAddresses: {
       publicIPs: {
@@ -69,7 +68,6 @@ resource firewallDiagnostics 'Microsoft.Insights/diagnosticsettings@2017-05-01-p
   name: '${name}-${toLower(environment)}-diagsetting'
   scope: firewall
   properties: {
-    name: '${name}-${toLower(environment)}-diagsetting'
     storageAccountId: null
     eventHubAuthorizationRuleId: null
     eventHubName: null

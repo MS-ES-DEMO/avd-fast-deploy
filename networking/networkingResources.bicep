@@ -70,6 +70,9 @@ module fwPolicyResources '../modules/Microsoft.Network/fwPolicy.bicep' = {
 
 module fwAppRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
   name: 'fwAppRulesResources_Deploy'
+  dependsOn: [
+    fwPolicyResources
+  ]
   params: {
     location: location
     environment: environment
@@ -83,6 +86,8 @@ module fwAppRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
 module fwNetworkRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
   name: 'fwNetworkRulesResources_Deploy'
   dependsOn: [
+    fwPolicyResources
+
     fwAppRulesResources
   ]
   params: {
@@ -159,4 +164,20 @@ module hubVirtualConnectionResources '../modules/Microsoft.Network/hubVnetConnec
   }
 }]
 
+/*
 
+module subnetAddsResources '../modules/Microsoft.Network/subnetAdds.bicep'
+  name: 'hubVirtualConnectionResources_Deploy${i}'
+  dependsOn: [
+    vnetResources
+  ]
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    hubInfo: hubInfo
+    connectInfo: connectInfo
+  }
+}
+
+*/
