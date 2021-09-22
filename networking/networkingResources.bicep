@@ -20,6 +20,7 @@ param firewallName string
 param destinationAddresses array
 param hubVnetConnectionsInfo array
 param addsSnetInfo object
+param jumpSnetInfo object
 
 
 
@@ -129,6 +130,7 @@ module firewallResources '../modules/Microsoft.Network/firewall.bicep' = {
     fwPolicyInfo: fwPolicyInfo
     hubName: hubInfo.name
     fwPublicIpName: fwPublicIpName
+    logWorkspaceName: logWorkspaceName
   }
 }
 
@@ -201,6 +203,31 @@ module subnetAddsResources '../modules/Microsoft.Network/subnet.bicep' = {
     environment: environment
     tags: tags
     snetInfo: addsSnetInfo
+  }
+}
+
+
+module nsgJumpSubnetResources '../modules/Microsoft.Network/nsg.bicep' = {
+  name: 'nsgJumpSubnetResources_Deploy'
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    snetInfo: jumpSnetInfo
+  }
+}
+
+module subnetJumpResources '../modules/Microsoft.Network/subnet.bicep' = {
+  name: 'subnetJumpResources'
+  dependsOn: [
+    vnetResources
+    nsgJumpSubnetResources
+  ]
+  params: {
+    location: location
+    environment: environment
+    tags: tags
+    snetInfo: jumpSnetInfo
   }
 }
 

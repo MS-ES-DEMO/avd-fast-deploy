@@ -7,7 +7,7 @@
         "monitoringResourceGroupName":{"value": "rg-monitoring"},
         "deployLogWorkspace":{"value": true},
         "existingLogWorkspaceName":{"value": ""},
-        "networkingResourceGroupName":{"value": "rg-networking"},
+        "networkingResourceGroupName":{"value": "rg-networking1"},
         "vnetsInfo":{"value": [{"name": "vnet-preprod-hub", "range": "10.0.0.0/24"}, {"name": "vnet-preprod-adds", "range": "10.0.1.0/24"}, {"name": "vnet-preprod-awvd", "range": "10.0.2.0/24"}]}
     }
 }

@@ -2,7 +2,7 @@
 param location string = resourceGroup().location
 param tags object
 param environment string
-param logWorkspaceName string = 'wvd-${toLower(environment)}-workspace'
+param logWorkspaceName string 
 param monitoringResourceGroupName string
 param fwPolicyInfo object 
 param name string
@@ -15,11 +15,11 @@ resource logWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
   scope: resourceGroup(monitoringResourceGroupName)
 }
 
-resource fwPolicy 'Microsoft.Network/firewallPolicies@2020-11-01' existing = {
+resource fwPolicy 'Microsoft.Network/firewallPolicies@2021-02-01' existing = {
   name: fwPolicyInfo.name
 }
 
-resource hub 'Microsoft.Network/virtualHubs@2020-06-01' existing = {
+resource hub 'Microsoft.Network/virtualHubs@2021-02-01' existing = {
   name: hubName
 }
 
@@ -27,7 +27,7 @@ resource fwPublicIp 'Microsoft.Network/publicIPAddresses@2020-11-01' existing = 
   name: fwPublicIpName
 }
 
-resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
+resource firewall 'Microsoft.Network/azureFirewalls@2020-06-01' = {
   name: name
   location: location
   tags: tags
@@ -44,11 +44,14 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
     additionalProperties: {}
     hubIPAddresses: {
       publicIPs: {
+        /*
         addresses: [
           {
             address: fwPublicIp.properties.ipAddress
           }
         ]
+        */
+        //TODO: Not supported in the last API version
         count: 1
       }
     }
@@ -66,9 +69,6 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
 
 resource firewallDiagnostics 'Microsoft.Insights/diagnosticsettings@2017-05-01-preview' = {
   name: '${name}-${toLower(environment)}-diagsetting'
-  dependsOn: [
-    firewall
-  ]
   scope: firewall
   properties: {
     storageAccountId: null

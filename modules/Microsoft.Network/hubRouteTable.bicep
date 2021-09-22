@@ -6,7 +6,7 @@ param hubInfo object
 param firewallName string
 param destinations array
 
-resource hub 'Microsoft.Network/virtualHubs@2020-06-01' existing = {
+resource hub 'Microsoft.Network/virtualHubs@2021-02-01' existing = {
   name: hubInfo.name
 }
 
@@ -14,7 +14,7 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-06-01' existing = {
   name: firewallName
 }
 
-resource hubNoneRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2020-06-01' = {
+resource hubNoneRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2021-02-01' = {
   name: 'noneRouteTable'
   parent: hub
   properties: {
@@ -25,7 +25,7 @@ resource hubNoneRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2020-06
   }
 }
 
-resource hubDefaultRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2020-06-01' = {
+resource hubDefaultRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2021-02-01' = {
   name: 'defaultRouteTable'
   parent: hub
   properties: {
@@ -36,7 +36,7 @@ resource hubDefaultRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2020
       {
         destinations: destinations
         destinationType: 'CIDR'
-        name: 'east-west/north-south traffic'
+        name: 'all_traffic'
         nextHop: firewall.id
         nextHopType: 'ResourceId'
       }

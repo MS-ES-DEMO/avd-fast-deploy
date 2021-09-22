@@ -220,6 +220,13 @@ param addsSnetInfo object = {
     }
   ]
 }
+@description('Jump subnet information')
+param jumpSnetInfo object = {
+  name: 'snet-${toLower(environment)}-jump'
+  range: '10.0.1.64/26'
+  vnetName: 'vnet-${toLower(environment)}-adds'
+  nsgName: 'nsg-${toLower(environment)}-snet-jump'
+}
 
 
 var tags = {
@@ -228,7 +235,13 @@ var tags = {
   Location: 'AzureWestEurope' // <CSP><AzureRegion>
 }
 
-var destinationAddresses = [ for address in vnetsInfo: '${address.range}' ]
+var privateTrafficPrefix = [
+    '0.0.0.0/0'
+    '172.16.0.0/12' 
+    '192.168.0.0/16'
+]
+var vnetsAddresses = [ for address in vnetsInfo: '${address.range}' ]
+var destinationAddresses = concat(privateTrafficPrefix, vnetsAddresses)
 
 //---------------------------------------------------------------------
 // -----------------  monitoringResourceGroup  ------------------------
@@ -289,6 +302,7 @@ module networkingResources 'networking/networkingResources.bicep' = {
     destinationAddresses: destinationAddresses
     hubVnetConnectionsInfo: hubVnetConnectionsInfo
     addsSnetInfo: addsSnetInfo
+    jumpSnetInfo: jumpSnetInfo
   }
 }
 
