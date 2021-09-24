@@ -18,10 +18,10 @@ param location string
   'Prod'
   'ProdDr'
 ])
-param environment string
+param env string
 
 // monitoringResources
-@description('Name for Monitoring RG')
+@description('Name for monitoring RG')
 param monitoringResourceGroupName string
 @description('Deploy Log Analytics Workspace?')
 param deployLogWorkspace bool
@@ -29,39 +29,44 @@ param deployLogWorkspace bool
 param existingLogWorkspaceName string = ''
 
 
+// securityResources
+@description('Name for security RG')
+param securityResourceGroupName string
+
+
 // networkingResources
-@description('Name for Networking RG')
+@description('Name for networking RG')
 param networkingResourceGroupName string
 @description('Name and range for vNets')
 param vnetsInfo array = [
   {
-    name: 'vnet-${toLower(environment)}-hub'
+    name: 'vnet-${toLower(env)}-hub'
     range: '10.0.0.0/24'
   }
   {
-    name: 'vnet-${toLower(environment)}-adds'
+    name: 'vnet-${toLower(env)}-dns'
     range: '10.0.1.0/24'
   }
   {
-    name: 'vnet-${toLower(environment)}-awvd'
+    name: 'vnet-${toLower(env)}-awvd'
     range: '10.0.2.0/24'
   }
 ]
 @description('Name for VWAN')
-param vwanName string = 'vwan-${toLower(environment)}-primary'
+param vwanName string = 'vwan-${toLower(env)}-primary'
 /*
 vwanName --> {"code":"DeploymentFailed","message":"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/DeployOperations for usage details.","details":[{"code":"InvalidResourceName","message":"Resource name vwan-preprod-001} is invalid. The name can be up to 80 characters long. It must begin with a word character, and it must end with a word character or with '_'. The name may contain word characters or '.', '-', '_'."}]}
 */
 
 @description('Name and range for Hub')
 param hubInfo object = {
-    name: 'hub-${toLower(environment)}-001'
+    name: 'hub-${toLower(env)}-001'
     range: '10.0.0.0/24'
 }
 
 @description('Name and snat ranges for fw policy')
 param fwPolicyInfo object = {
-  name: 'fwpolicy-${toLower(environment)}-001'
+  name: 'fwpolicy-${toLower(env)}-001'
   snatRanges: [
     '129.35.65.13'
     '82.132.128.0/17'
@@ -91,7 +96,7 @@ param fwPolicyInfo object = {
 }
 
 @description('Name for application rule collection group')
-param appRuleCollectionGroupName string = 'fwapprulegroup-${toLower(environment)}'
+param appRuleCollectionGroupName string = 'fwapprulegroup-${toLower(env)}'
 @description('Rule Collection Info')
 param appRulesInfo object = {
   priority: 300
@@ -131,7 +136,7 @@ param appRulesInfo object = {
   ]
 }
 @description('Name for application rule collection group')
-param networkRuleCollectionGroupName string = 'fwnetrulegroup-${toLower(environment)}'
+param networkRuleCollectionGroupName string = 'fwnetrulegroup-${toLower(env)}'
 @description('Rule Collection Info')
 param networkRulesInfo object = {
   priority: 200
@@ -171,26 +176,26 @@ param networkRulesInfo object = {
 }
 
 @description('Name for Azure Firewall public ip')
-param fwPublicIpName string = 'pip-${toLower(environment)}-fw'
+param fwPublicIpName string = 'pip-${toLower(env)}-fw'
 @description('Name for Azure Firewall')
-param firewallName string = 'azfw-${toLower(environment)}'
+param firewallName string = 'azfw-${toLower(env)}'
 @description('Name for hub virtual connections')
 param hubVnetConnectionsInfo array = [
   {
-    name: 'hub-to-adds'
-    remoteVnetName: 'vnet-${toLower(environment)}-adds'
+    name: 'hub-to-dns'
+    remoteVnetName: 'vnet-${toLower(env)}-dns'
   }
   {
     name: 'hub-to-awvd'
-    remoteVnetName: 'vnet-${toLower(environment)}-awvd'
+    remoteVnetName: 'vnet-${toLower(env)}-awvd'
   }
 ]
 @description('ADDS subnet information')
-param addsSnetInfo object = {
-  name: 'snet-${toLower(environment)}-adds'
+param dnsSnetInfo object = {
+  name: 'snet-${toLower(env)}-dns'
   range: '10.0.1.0/26'
-  vnetName: 'vnet-${toLower(environment)}-adds'
-  nsgName: 'nsg-${toLower(environment)}-snet-adds'
+  vnetName: 'vnet-${toLower(env)}-dns'
+  nsgName: 'nsg-${toLower(env)}-snet-dns'
   nsgInboundRules: [
     {
       name: 'rule1'
@@ -222,16 +227,45 @@ param addsSnetInfo object = {
 }
 @description('Jump subnet information')
 param jumpSnetInfo object = {
-  name: 'snet-${toLower(environment)}-jump'
+  name: 'snet-${toLower(env)}-jump'
   range: '10.0.1.64/26'
-  vnetName: 'vnet-${toLower(environment)}-adds'
-  nsgName: 'nsg-${toLower(environment)}-snet-jump'
+  vnetName: 'vnet-${toLower(env)}-dns'
+  nsgName: 'nsg-${toLower(env)}-snet-jump'
 }
+@description('Name for ADDS and Jump RG')
+param dnsAndJumpResourceGroupName string = 'rd-dns-jump'
+param deployPublicIpJump bool = true
+param nicJumpName string = '${vmJumpName}-nic-${toLower(env)}-001'
+param nsgJumpNicName string = 'nsg-${toLower(env)}-nic-jump'
+param vmJumpName string = 'vm-${toLower(env)}-jump'
+param vmJumpSize string = 'Standard_DS3_V2'
+@secure()
+param vmJumpAdminUsername string
+@secure()
+param vmJumpAdminPassword string
+param deployPublicIpDns bool = false
+param nicDnsName string = '${vmDnsName}-nic-${toLower(env)}-001'
+param nsgDnsNicName string = 'nsg-${toLower(env)}-nic-dns'
+param vmDnsName string = 'vm-${toLower(env)}-dns'
+param vmDnsSize string = 'Standard_DS3_V2'
+@secure()
+param vmDnsAdminUsername string
+@secure()
+param vmDnsAdminPassword string
+
+var privateDnsZonesInfo = [
+  {
+    name: format('privatelink.blob.{0}', environment().suffixes.storage)
+    vnetLinkName: 'vnet-link-blob'
+    vnetName: 'vnet-${toLower(env)}-dns'
+  }
+]
+
 
 
 var tags = {
   ProjectName: 'WVD' // defined at resource level
-  EnvironmentType: environment // <Dev><Test><Uat><Prod><ProdDr>
+  EnvironmentType: env // <Dev><Test><Uat><Prod><ProdDr>
   Location: 'AzureWestEurope' // <CSP><AzureRegion>
 }
 
@@ -260,12 +294,22 @@ module monitoringResources 'monitoring/monitoringResources.bicep' = {
   ]
   params: {
     location:location
-    environment: environment
+    env: env
     tags: tags
     deployLogWorkspace: deployLogWorkspace
     existingLogWorkspaceName: existingLogWorkspaceName
   }
 }
+
+//---------------------------------------------------------------------
+// -----------------  securityResourceGroup  ------------------------
+//---------------------------------------------------------------------
+
+resource securityResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: securityResourceGroupName
+  location: location
+}
+
 
 //---------------------------------------------------------------------
 // -----------------  networkingResourceGroup  ------------------------
@@ -280,13 +324,15 @@ module networkingResources 'networking/networkingResources.bicep' = {
   scope: networkingResourceGroup
   name: 'networkingResources_Deploy'
   dependsOn: [
+    securityResourceGroup
     networkingResourceGroup
     monitoringResources
   ]
   params: {
     location: location
-    environment: environment
+    env: env
     tags: tags
+    securityResourceGroupName: securityResourceGroupName
     vnetsInfo: vnetsInfo
     vwanName: vwanName
     hubInfo: hubInfo
@@ -301,8 +347,50 @@ module networkingResources 'networking/networkingResources.bicep' = {
     firewallName: firewallName
     destinationAddresses: destinationAddresses
     hubVnetConnectionsInfo: hubVnetConnectionsInfo
-    addsSnetInfo: addsSnetInfo
+    dnsSnetInfo: dnsSnetInfo
     jumpSnetInfo: jumpSnetInfo
+    privateDnsZonesInfo: privateDnsZonesInfo
+  }
+}
+
+
+//---------------------------------------------------------------------
+// -----------------  dnsAndJumpResourceGroup  -----------------------
+//---------------------------------------------------------------------
+
+resource dnsAndJumpResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: dnsAndJumpResourceGroupName
+  location: location
+}
+
+module dnsAndJumpResources 'dnsAndJump/dnsAndJumpResources.bicep' = {
+  scope: dnsAndJumpResourceGroup
+  name: 'dnsAndJumpResources_Deploy'
+  dependsOn: [
+    networkingResources
+    monitoringResources
+  ]
+  params: {
+    location: location
+    env: env
+    tags: tags
+    networkingResourceGroupName: networkingResourceGroupName
+    deployPublicIpJump: deployPublicIpJump
+    nicJumpName: nicJumpName
+    subnetJumpName: jumpSnetInfo.name
+    nsgJumpNicName: nsgJumpNicName
+    vmJumpName: vmJumpName
+    vmJumpSize: vmJumpSize
+    vmJumpAdminUsername: vmJumpAdminUsername
+    vmJumpAdminPassword: vmJumpAdminPassword
+    deployPublicIpDns: deployPublicIpDns
+    nicDnsName: nicDnsName
+    subnetDnsName: dnsSnetInfo.name
+    nsgDnsNicName:nsgDnsNicName
+    vmDnsName: vmDnsName
+    vmDnsSize: vmDnsSize
+    vmDnsAdminUsername: vmDnsAdminUsername
+    vmDnsAdminPassword: vmDnsAdminPassword
   }
 }
 

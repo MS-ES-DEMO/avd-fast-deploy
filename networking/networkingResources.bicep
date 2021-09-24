@@ -3,8 +3,8 @@
 
 // Global Parameters
 param location string = resourceGroup().location
-param environment string
 param tags object
+param securityResourceGroupName string
 param vnetsInfo array 
 param vwanName string 
 param hubInfo object 
@@ -19,8 +19,9 @@ param fwPublicIpName string
 param firewallName string
 param destinationAddresses array
 param hubVnetConnectionsInfo array
-param addsSnetInfo object
+param dnsSnetInfo object
 param jumpSnetInfo object
+param privateDnsZonesInfo array
 
 
 
@@ -28,7 +29,6 @@ module vnetResources '../modules/Microsoft.Network/vnet.bicep' = [ for (vnetInfo
   name: 'vnetResources_Deploy${i}'
   params: {
     location: location
-    environment: environment
     tags: tags
     vnetInfo: vnetInfo
   }
@@ -38,7 +38,6 @@ module vwanResources '../modules/Microsoft.Network/vwan.bicep' = {
   name: 'vwanResources_Deploy'
   params: {
     location: location
-    environment: environment
     tags: tags 
     name: vwanName
   }
@@ -51,7 +50,6 @@ module hubResources '../modules/Microsoft.Network/hub.bicep' = {
   ]
   params: {
     location: location
-    environment: environment
     tags: tags
     hubInfo: hubInfo
     vwanId: vwanResources.outputs.id
@@ -60,9 +58,9 @@ module hubResources '../modules/Microsoft.Network/hub.bicep' = {
 
 module fwPolicyResources '../modules/Microsoft.Network/fwPolicy.bicep' = {
   name: 'fwPolicyResources_Deploy'
+  scope: resourceGroup(securityResourceGroupName)
   params: {
     location: location
-    environment: environment
     tags: tags
     monitoringResourceGroupName: monitoringResourceGroupName
     logWorkspaceName: logWorkspaceName
@@ -72,13 +70,11 @@ module fwPolicyResources '../modules/Microsoft.Network/fwPolicy.bicep' = {
 
 module fwAppRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
   name: 'fwAppRulesResources_Deploy'
+  scope: resourceGroup(securityResourceGroupName)
   dependsOn: [
     fwPolicyResources
   ]
   params: {
-    location: location
-    environment: environment
-    tags: tags
     fwPolicyName: fwPolicyInfo.name
     ruleCollectionGroupName: appRuleCollectionGroupName
     rulesInfo: appRulesInfo
@@ -87,14 +83,12 @@ module fwAppRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
 
 module fwNetworkRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
   name: 'fwNetworkRulesResources_Deploy'
+  scope: resourceGroup(securityResourceGroupName)
   dependsOn: [
     fwPolicyResources
     fwAppRulesResources
   ]
   params: {
-    location: location
-    environment: environment
-    tags: tags
     fwPolicyName: fwPolicyInfo.name
     ruleCollectionGroupName: networkRuleCollectionGroupName
     rulesInfo: networkRulesInfo
@@ -103,9 +97,9 @@ module fwNetworkRulesResources '../modules/Microsoft.Network/fwRules.bicep' = {
 
 module fwPublicIpResources '../modules/Microsoft.Network/publicIp.bicep' = {
   name: 'fwPublicIpResources_Deploy'
+  scope: resourceGroup(securityResourceGroupName)
   params: {
     location: location
-    environment: environment
     tags: tags
     name: fwPublicIpName
   }
@@ -114,6 +108,7 @@ module fwPublicIpResources '../modules/Microsoft.Network/publicIp.bicep' = {
 
 module firewallResources '../modules/Microsoft.Network/firewall.bicep' = {
   name: 'firewallResources_Deploy'
+  scope: resourceGroup(securityResourceGroupName)
   dependsOn: [
     fwPublicIpResources
     fwPolicyResources
@@ -123,7 +118,6 @@ module firewallResources '../modules/Microsoft.Network/firewall.bicep' = {
   ]
   params: {
     location: location
-    environment: environment
     tags: tags
     name: firewallName
     monitoringResourceGroupName: monitoringResourceGroupName
@@ -141,9 +135,6 @@ module hubRouteTableResources '../modules/Microsoft.Network/hubRouteTable.bicep'
     firewallResources
   ]
   params: {
-    location: location
-    environment: environment
-    tags: tags
     hubInfo: hubInfo
     firewallName: firewallName
     destinations: destinationAddresses
@@ -158,9 +149,6 @@ module hubVirtualConnectionResources '../modules/Microsoft.Network/hubVnetConnec
     hubRouteTableResources
   ]
   params: {
-    location: location
-    environment: environment
-    tags: tags
     hubInfo: hubInfo
     connectInfo: connectInfo
   }
@@ -170,24 +158,21 @@ module nsgAddsSubnetResources '../modules/Microsoft.Network/nsg.bicep' = {
   name: 'nsgAddsSubnetResources_Deploy'
   params: {
     location: location
-    environment: environment
     tags: tags
-    snetInfo: addsSnetInfo
+    name: ''
+    snetInfo: dnsSnetInfo
   }
 }
 
-module nsgAddsSubnetInboundRulesResources '../modules/Microsoft.Network/nsgRule.bicep' = [ for (ruleInfo, i) in addsSnetInfo.nsgInboundRules: {
+module nsgAddsSubnetInboundRulesResources '../modules/Microsoft.Network/nsgRule.bicep' = [ for (ruleInfo, i) in dnsSnetInfo.nsgInboundRules: {
   name: 'nsgAddsSubnetInboundRulesResources_Deploy${i}'
   dependsOn: [
     nsgAddsSubnetResources 
   ]
   params: {
-    location: location
-    environment: environment
-    tags: tags
     name: ruleInfo.name
     rule: ruleInfo.rule
-    nsgName: addsSnetInfo.nsgName
+    nsgName: dnsSnetInfo.nsgName
   }
 }]
 
@@ -199,10 +184,7 @@ module subnetAddsResources '../modules/Microsoft.Network/subnet.bicep' = {
     nsgAddsSubnetInboundRulesResources
   ]
   params: {
-    location: location
-    environment: environment
-    tags: tags
-    snetInfo: addsSnetInfo
+    snetInfo: dnsSnetInfo
   }
 }
 
@@ -211,24 +193,45 @@ module nsgJumpSubnetResources '../modules/Microsoft.Network/nsg.bicep' = {
   name: 'nsgJumpSubnetResources_Deploy'
   params: {
     location: location
-    environment: environment
     tags: tags
+    name: ''
     snetInfo: jumpSnetInfo
   }
 }
 
 module subnetJumpResources '../modules/Microsoft.Network/subnet.bicep' = {
-  name: 'subnetJumpResources'
+  name: 'subnetJumpResources_Deploy'
   dependsOn: [
     vnetResources
     nsgJumpSubnetResources
   ]
   params: {
-    location: location
-    environment: environment
-    tags: tags
     snetInfo: jumpSnetInfo
   }
 }
+
+module privateDnsZones '../modules/Microsoft.Network/privateDnsZone.bicep' = [ for (privateDnsZoneInfo, i) in privateDnsZonesInfo : {
+  name: 'privateDnsZonesResources_Deploy${i}'
+  dependsOn: [
+    vnetResources
+  ]
+  params: {
+    location: 'global'
+    tags: tags
+    name: privateDnsZoneInfo.name
+  }
+}]
+
+module vnetLinks '../modules/Microsoft.Network/vnetLink.bicep' = [ for (privateDnsZoneInfo, i) in privateDnsZonesInfo : {
+  name: 'vnetLinksResources_Deploy${i}'
+  dependsOn: [
+    vnetResources
+  ]
+  params: {
+    tags: tags
+    name: privateDnsZoneInfo.vnetLinkName
+    vnetName: privateDnsZoneInfo.vnetName
+  }
+}]
 
 

@@ -1,8 +1,7 @@
 
 param location string = resourceGroup().location
 param tags object
-param environment string
-param logWorkspaceName string = 'wvd-${toLower(environment)}-workspace'
+param logWorkspaceName string 
 param monitoringResourceGroupName string
 param fwPolicyInfo object 
 
@@ -15,6 +14,7 @@ resource logWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
 resource fwPolicy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
   name: fwPolicyInfo.name
   location: location
+  tags: tags
   properties: {
     sku: {
       tier: 'Premium'

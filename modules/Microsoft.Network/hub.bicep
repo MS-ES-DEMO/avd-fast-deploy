@@ -1,7 +1,6 @@
 
 param location string = resourceGroup().location
 param tags object
-param environment string
 param hubInfo object 
 param vwanId string
 

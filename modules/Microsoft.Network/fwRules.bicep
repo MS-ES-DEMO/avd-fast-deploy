@@ -1,9 +1,7 @@
 
-param location string = resourceGroup().location
-param tags object
-param environment string
-param fwPolicyName string = 'fwpolicy-${toLower(environment)}-001'
-param ruleCollectionGroupName string = 'fwapprulegroup-${toLower(environment)}'
+
+param fwPolicyName string
+param ruleCollectionGroupName string 
 param rulesInfo object
 
 resource fwPolicy 'Microsoft.Network/firewallPolicies@2021-02-01' existing = {

@@ -1,7 +1,6 @@
 
 param location string = resourceGroup().location
 param tags object
-param environment string
 param logWorkspaceName string 
 param monitoringResourceGroupName string
 param fwPolicyInfo object 
@@ -68,7 +67,7 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-06-01' = {
 }
 
 resource firewallDiagnostics 'Microsoft.Insights/diagnosticsettings@2017-05-01-preview' = {
-  name: '${name}-${toLower(environment)}-diagsetting'
+  name: '${name}-diagsetting'
   scope: firewall
   properties: {
     storageAccountId: null

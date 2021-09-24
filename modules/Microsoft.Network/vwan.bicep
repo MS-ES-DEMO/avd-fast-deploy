@@ -1,8 +1,7 @@
 
 param location string = resourceGroup().location
 param tags object
-param environment string
-param name string = 'vwan-${toLower(environment)}-primary}' 
+param name string 
 
 /*
 
