@@ -10,7 +10,7 @@ param snetInfo object = {}
 param privateDnsZonesInfo array
 param nicName string
 param deployCustomDns bool = false
-param commonResourceGroupName string
+param sharedResourceGroupName string
 param vmName string
 param vmSize string
 @secure()
@@ -28,7 +28,7 @@ module vnetResources '../../modules/Microsoft.Network/vnet.bicep' = {
     vnetInfo: vnetInfo
     deployCustomDns: deployCustomDns
     dnsNicName: nicName
-    commonResourceGroupName: commonResourceGroupName
+    sharedResourceGroupName: sharedResourceGroupName
   }
 }
 
@@ -63,7 +63,7 @@ module subnetResources '../../modules/Microsoft.Network/subnet.bicep' = {
   ]
   params: {
     snetInfo: snetInfo
-    nsgName: nsgInfo.name
+    nsgName: ''
     vnetInfo: vnetInfo
   }
 }
@@ -90,11 +90,15 @@ module vnetLinks '../../modules/Microsoft.Network/vnetLink.bicep' = [ for (priva
     tags: tags
     name: privateDnsZoneInfo.vnetLinkName
     vnetName: vnetInfo.name
+    privateDnsZoneName: privateDnsZoneInfo.name
   }
 }]
 
 module nicResources '../../modules/Microsoft.Network/nic.bicep' = {
   name: 'nicResources_Deploy'
+  dependsOn: [
+    subnetResources
+  ]
   params: {
     tags: tags
     name: nicName
@@ -105,6 +109,9 @@ module nicResources '../../modules/Microsoft.Network/nic.bicep' = {
 
 module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
   name: 'vmResources_Deploy'
+  dependsOn: [
+    nicResources
+  ]
   params: {
     tags: tags
     name: vmName

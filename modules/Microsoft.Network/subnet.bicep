@@ -8,7 +8,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: '${vnetInfo.name}'
 }
 
-resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = {
+resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = if (!empty(nsgName)) {
   name: nsgName
 }
 
@@ -18,7 +18,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' = {
   properties: {
     addressPrefix: '${snetInfo.range}'
     networkSecurityGroup: {
-      id: (!empty(snetInfo)) ? nsg.id : json('null')
+      id: (!empty(nsgName)) ? nsg.id : json('null')
     }
   }
 }

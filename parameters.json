@@ -3,11 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location":{"value": "westeurope"},
-        "environment": {"value": "PreProd"},
+        "env": {"value": "PreProd"},
         "monitoringResourceGroupName":{"value": "rg-monitoring"},
+        "hubResourceGroupName":{"value": "rg-hub"},
+        "dnsResourceGroupName":{"value": "rg-dns"},
+        "sharedResourceGroupName":{"value": "rg-shared"},
+        "securityResourceGroupName":{"value": "rg-security"},
         "deployLogWorkspace":{"value": true},
-        "existingLogWorkspaceName":{"value": ""},
-        "networkingResourceGroupName":{"value": "rg-networking1"},
-        "vnetsInfo":{"value": [{"name": "vnet-preprod-hub", "range": "10.0.0.0/24"}, {"name": "vnet-preprod-adds", "range": "10.0.1.0/24"}, {"name": "vnet-preprod-awvd", "range": "10.0.2.0/24"}]}
+        "existingLogWorkspaceName":{"value": ""}
     }
 }

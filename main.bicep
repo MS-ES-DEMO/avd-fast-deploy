@@ -19,10 +19,20 @@ param location string
   'ProdDr'
 ])
 param env string
-
-// monitoringResources
+// resourceGroupNames
 @description('Name for monitoring RG')
 param monitoringResourceGroupName string
+@description('Name for hub RG')
+param hubResourceGroupName string
+@description('Name for DNS RG')
+param dnsResourceGroupName string
+@description('Name for shared services RG')
+param sharedResourceGroupName string
+@description('Name for security RG')
+param securityResourceGroupName string
+
+
+// monitoringResources
 @description('Deploy Log Analytics Workspace?')
 param deployLogWorkspace bool
 @description('Name for existing Log Analytics Workspace')
@@ -30,40 +40,133 @@ param existingLogWorkspaceName string = ''
 
 
 // securityResources
-@description('Name for security RG')
-param securityResourceGroupName string
 
 
-// networkingResources
-@description('Name for networking RG')
-param networkingResourceGroupName string
-@description('Name and range for vNets')
-param vnetsInfo array = [
-  {
-    name: 'vnet-${toLower(env)}-hub'
-    range: '10.0.0.0/24'
-  }
-  {
+// dnsResources
+
+@description('Name and range for DNS vNet')
+param dnsVnetInfo object = {
     name: 'vnet-${toLower(env)}-dns'
     range: '10.0.1.0/24'
-  }
-  {
-    name: 'vnet-${toLower(env)}-awvd'
-    range: '10.0.2.0/24'
-  }
-]
-@description('Name for VWAN')
-param vwanName string = 'vwan-${toLower(env)}-primary'
-/*
-vwanName --> {"code":"DeploymentFailed","message":"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/DeployOperations for usage details.","details":[{"code":"InvalidResourceName","message":"Resource name vwan-preprod-001} is invalid. The name can be up to 80 characters long. It must begin with a word character, and it must end with a word character or with '_'. The name may contain word characters or '.', '-', '_'."}]}
-*/
+}
+@description('Name and range for DNS subnet')
+param dnsSnetInfo object = {
+  name: 'snet-${toLower(env)}-dns'
+  range: '10.0.1.0/26'
+}
+param dnsNicNsgInfo object = {
+  name: 'nsg-${toLower(env)}-nic-dns'
+  inboundRules: [
+    {
+      name: 'rule1'
+      rule: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '10.0.1.0/24'
+        destinationAddressPrefix: '10.0.1.0/26'
+        access: 'Allow'
+        priority: 300
+        direction: 'Inbound'
+      }
+    }
+    {
+      name: 'rule2'
+      rule: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '10.0.1.0/24'
+        destinationAddressPrefix: '10.0.1.0/24'
+        access: 'Allow'
+        priority: 301
+        direction: 'Inbound'
+      }
+    }
+  ]
+}
+@description('Name for DNS vm')
+param vmDnsName string = 'vm-${toLower(env)}-dns'
+@description('Size for DNS vm')
+param vmDnsSize string = 'Standard_DS3_V2'
+@description('Admin username for DNS vm')
+@secure()
+param vmDnsAdminUsername string
+@description('Admin password for DNS vm')
+@secure()
+param vmDnsAdminPassword string
 
+
+// sharedResources
+
+@description('Name and range for shared services vNet')
+param sharedVnetInfo object = {
+    name: 'vnet-${toLower(env)}-shared'
+    range: '10.0.2.0/24'
+}
+@description('Name and range for Jump subnet')
+param jumpSnetInfo object = {
+  name: 'snet-${toLower(env)}-jump'
+  range: '10.0.2.0/26'
+}
+@description('Nsg info for Jump Nic')
+param jumpNicNsgInfo object = {
+  name: 'nsg-${toLower(env)}-nic-jump'
+  inboundRules: [
+    {
+      name: 'rule1'
+      rule: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '10.0.1.0/24'
+        destinationAddressPrefix: '10.0.1.0/26'
+        access: 'Allow'
+        priority: 300
+        direction: 'Inbound'
+      }
+    }
+    {
+      name: 'rule2'
+      rule: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '10.0.1.0/24'
+        destinationAddressPrefix: '10.0.1.0/24'
+        access: 'Allow'
+        priority: 301
+        direction: 'Inbound'
+      }
+    }
+  ]
+}
+@description('Name for Jump Nic')
+param jumpNicName string = 'nic-${toLower(env)}-jump'
+@description('Deploy Custom DNS on Shared Services vnet?')
+param deployCustomDnsOnSharedVnet bool = true
+@description('Name for Jump vm')
+param vmJumpName string = 'vm-${toLower(env)}-jump'
+@description('Size for Jump vm')
+param vmJumpSize string = 'Standard_DS3_V2'
+@description('Admin username for Jump vm')
+@secure()
+param vmJumpAdminUsername string
+@description('Admin password for Jump vm')
+@secure()
+param vmJumpAdminPassword string
+
+
+// hubResources
+
+
+@description('Name for VWAN')
+param vwanName string = 'vwan-${toLower(env)}-001'
 @description('Name and range for Hub')
 param hubInfo object = {
     name: 'hub-${toLower(env)}-001'
     range: '10.0.0.0/24'
 }
-
 @description('Name and snat ranges for fw policy')
 param fwPolicyInfo object = {
   name: 'fwpolicy-${toLower(env)}-001'
@@ -94,7 +197,6 @@ param fwPolicyInfo object = {
     '100.64.0.0/10'
   ]
 }
-
 @description('Name for application rule collection group')
 param appRuleCollectionGroupName string = 'fwapprulegroup-${toLower(env)}'
 @description('Rule Collection Info')
@@ -186,72 +288,21 @@ param hubVnetConnectionsInfo array = [
     remoteVnetName: 'vnet-${toLower(env)}-dns'
   }
   {
+    name: 'hub-to-jump'
+    remoteVnetName: 'vnet-${toLower(env)}-jump'
+  }
+/*
+  {
     name: 'hub-to-awvd'
     remoteVnetName: 'vnet-${toLower(env)}-awvd'
   }
+*/
 ]
-@description('ADDS subnet information')
-param dnsSnetInfo object = {
-  name: 'snet-${toLower(env)}-dns'
-  range: '10.0.1.0/26'
-  vnetName: 'vnet-${toLower(env)}-dns'
-  nsgName: 'nsg-${toLower(env)}-snet-dns'
-  nsgInboundRules: [
-    {
-      name: 'rule1'
-      rule: {
-        protocol: 'Tcp'
-        sourcePortRange: '*'
-        destinationPortRange: '*'
-        sourceAddressPrefix: '10.0.1.0/24'
-        destinationAddressPrefix: '10.0.1.0/26'
-        access: 'Allow'
-        priority: 300
-        direction: 'Inbound'
-      }
-    }
-    {
-      name: 'rule2'
-      rule: {
-        protocol: 'Tcp'
-        sourcePortRange: '*'
-        destinationPortRange: '*'
-        sourceAddressPrefix: '10.0.1.0/24'
-        destinationAddressPrefix: '10.0.1.0/24'
-        access: 'Allow'
-        priority: 301
-        direction: 'Inbound'
-      }
-    }
-  ]
-}
-@description('Jump subnet information')
-param jumpSnetInfo object = {
-  name: 'snet-${toLower(env)}-jump'
-  range: '10.0.1.64/26'
-  vnetName: 'vnet-${toLower(env)}-dns'
-  nsgName: 'nsg-${toLower(env)}-snet-jump'
-}
-@description('Name for ADDS and Jump RG')
-param dnsAndJumpResourceGroupName string = 'rd-dns-jump'
-param deployPublicIpJump bool = true
-param nicJumpName string = '${vmJumpName}-nic-${toLower(env)}-001'
-param nsgJumpNicName string = 'nsg-${toLower(env)}-nic-jump'
-param vmJumpName string = 'vm-${toLower(env)}-jump'
-param vmJumpSize string = 'Standard_DS3_V2'
-@secure()
-param vmJumpAdminUsername string
-@secure()
-param vmJumpAdminPassword string
-param deployPublicIpDns bool = false
-param nicDnsName string = '${vmDnsName}-nic-${toLower(env)}-001'
-param nsgDnsNicName string = 'nsg-${toLower(env)}-nic-dns'
-param vmDnsName string = 'vm-${toLower(env)}-dns'
-param vmDnsSize string = 'Standard_DS3_V2'
-@secure()
-param vmDnsAdminUsername string
-@secure()
-param vmDnsAdminPassword string
+
+
+
+
+
 
 var privateDnsZonesInfo = [
   {
@@ -260,8 +311,6 @@ var privateDnsZonesInfo = [
     vnetName: 'vnet-${toLower(env)}-dns'
   }
 ]
-
-
 
 var tags = {
   ProjectName: 'WVD' // defined at resource level
@@ -273,20 +322,33 @@ var privateTrafficPrefix = [
     '0.0.0.0/0'
     '172.16.0.0/12' 
     '192.168.0.0/16'
+    '${sharedVnetInfo.range}'
+    '${dnsVnetInfo.range}'
 ]
-var vnetsAddresses = [ for address in vnetsInfo: '${address.range}' ]
-var destinationAddresses = concat(privateTrafficPrefix, vnetsAddresses)
 
-//---------------------------------------------------------------------
-// -----------------  monitoringResourceGroup  ------------------------
-//---------------------------------------------------------------------
 
 resource monitoringResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: monitoringResourceGroupName
   location: location
 }
 
-module monitoringResources 'monitoring/monitoringResources.bicep' = {
+resource dnsResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: dnsResourceGroupName
+  location: location
+}
+
+resource sharedResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: sharedResourceGroupName
+  location: location
+}
+
+resource hubResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: hubResourceGroupName
+  location: location
+}
+
+
+module monitoringResources 'layers/monitoring/monitoringResources.bicep' = {
   scope: monitoringResourceGroup
   name: 'monitoringResources_Deploy'
   dependsOn: [
@@ -301,39 +363,66 @@ module monitoringResources 'monitoring/monitoringResources.bicep' = {
   }
 }
 
-//---------------------------------------------------------------------
-// -----------------  securityResourceGroup  ------------------------
-//---------------------------------------------------------------------
-
-resource securityResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
-  name: securityResourceGroupName
-  location: location
-}
-
-
-//---------------------------------------------------------------------
-// -----------------  networkingResourceGroup  ------------------------
-//---------------------------------------------------------------------
-
-resource networkingResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
-  name: networkingResourceGroupName
-  location: location
-}
-
-module networkingResources 'networking/networkingResources.bicep' = {
-  scope: networkingResourceGroup
-  name: 'networkingResources_Deploy'
+module dnsResources 'layers/dns/dnsResources.bicep' = {
+  scope: dnsResourceGroup
+  name: 'dnsResources_Deploy'
   dependsOn: [
-    securityResourceGroup
-    networkingResourceGroup
+    dnsResourceGroup
     monitoringResources
   ]
   params: {
-    location: location
-    env: env
+    location:location
+    tags: tags
+    vnetInfo: dnsVnetInfo 
+    nsgInfo: dnsNicNsgInfo
+    snetInfo: dnsSnetInfo
+    privateDnsZonesInfo: privateDnsZonesInfo    
+    nicName: dnsNicNsgInfo.name
+    deployCustomDns: false
+    sharedResourceGroupName: sharedResourceGroupName
+    vmName: vmDnsName
+    vmSize: vmDnsSize
+    vmAdminUsername: vmDnsAdminUsername
+    vmAdminPassword: vmDnsAdminPassword
+  }
+}
+
+module sharedResources 'layers/shared/sharedResources.bicep' = {
+  scope: sharedResourceGroup
+  name: 'sharedResources_Deploy'
+  dependsOn: [
+    sharedResourceGroup
+    dnsResources
+  ]
+  params: {
+    location:location
+    tags: tags
+    vnetInfo: sharedVnetInfo 
+    nsgInfo: jumpNicNsgInfo
+    snetInfo: jumpSnetInfo
+    privateDnsZonesInfo: privateDnsZonesInfo 
+    nicName: jumpNicName
+    deployCustomDns: deployCustomDnsOnSharedVnet
+    sharedResourceGroupName: sharedResourceGroupName
+    vmName: vmJumpName
+    vmSize: vmJumpSize
+    vmAdminUsername: vmJumpAdminUsername
+    vmAdminPassword: vmJumpAdminPassword
+  }
+}
+
+module hubResources 'layers/hub/hubResources.bicep' = {
+  scope: hubResourceGroup
+  name: 'hubResources_Deploy'
+  dependsOn: [
+    hubResourceGroup
+    dnsResources
+    sharedResources
+  ]
+  params: {
+    location:location
     tags: tags
     securityResourceGroupName: securityResourceGroupName
-    vnetsInfo: vnetsInfo
     vwanName: vwanName
     hubInfo: hubInfo
     monitoringResourceGroupName: monitoringResourceGroupName
@@ -342,56 +431,13 @@ module networkingResources 'networking/networkingResources.bicep' = {
     appRuleCollectionGroupName: appRuleCollectionGroupName
     appRulesInfo: appRulesInfo
     networkRuleCollectionGroupName: networkRuleCollectionGroupName
-    networkRulesInfo: networkRulesInfo
+    networkRulesInfo: networkRulesInfo 
     fwPublicIpName: fwPublicIpName
-    firewallName: firewallName
-    destinationAddresses: destinationAddresses
+    firewallName:firewallName
+    destinationAddresses: privateTrafficPrefix
     hubVnetConnectionsInfo: hubVnetConnectionsInfo
-    dnsSnetInfo: dnsSnetInfo
-    jumpSnetInfo: jumpSnetInfo
-    privateDnsZonesInfo: privateDnsZonesInfo
   }
 }
 
-
-//---------------------------------------------------------------------
-// -----------------  dnsAndJumpResourceGroup  -----------------------
-//---------------------------------------------------------------------
-
-resource dnsAndJumpResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
-  name: dnsAndJumpResourceGroupName
-  location: location
-}
-
-module dnsAndJumpResources 'dnsAndJump/dnsAndJumpResources.bicep' = {
-  scope: dnsAndJumpResourceGroup
-  name: 'dnsAndJumpResources_Deploy'
-  dependsOn: [
-    networkingResources
-    monitoringResources
-  ]
-  params: {
-    location: location
-    env: env
-    tags: tags
-    networkingResourceGroupName: networkingResourceGroupName
-    deployPublicIpJump: deployPublicIpJump
-    nicJumpName: nicJumpName
-    subnetJumpName: jumpSnetInfo.name
-    nsgJumpNicName: nsgJumpNicName
-    vmJumpName: vmJumpName
-    vmJumpSize: vmJumpSize
-    vmJumpAdminUsername: vmJumpAdminUsername
-    vmJumpAdminPassword: vmJumpAdminPassword
-    deployPublicIpDns: deployPublicIpDns
-    nicDnsName: nicDnsName
-    subnetDnsName: dnsSnetInfo.name
-    nsgDnsNicName:nsgDnsNicName
-    vmDnsName: vmDnsName
-    vmDnsSize: vmDnsSize
-    vmDnsAdminUsername: vmDnsAdminUsername
-    vmDnsAdminPassword: vmDnsAdminPassword
-  }
-}
 
 output logWorkspaceName string = monitoringResources.outputs.logWorkspaceName

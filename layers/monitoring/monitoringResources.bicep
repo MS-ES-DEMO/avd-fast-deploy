@@ -12,7 +12,7 @@ param existingLogWorkspaceName string
 
 var logWorkspaceName = 'workspace-${toLower(env)}-awvd'
 
-module logWorkspaceResources '../modules/Microsoft.OperationalInsights/logWorkspace.bicep' = if (deployLogWorkspace) {
+module logWorkspaceResources '../../modules/Microsoft.OperationalInsights/logWorkspace.bicep' = if (deployLogWorkspace) {
   //scope: resourceGroup(monitoringResourceGroupName)
   name: 'logWorkspaceResources_Deploy'
   params: {

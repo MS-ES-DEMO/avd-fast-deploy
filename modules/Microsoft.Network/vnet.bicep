@@ -6,14 +6,13 @@ param vnetInfo object = {
     range: '10.0.1.0/24'
 }
 param dnsNicName string
-param commonResourceGroupName string
+param sharedResourceGroupName string
 param deployCustomDns bool
 
-resource dnsNic 'Microsoft.Network/networkInterfaces@2021-02-01' = if (deployCustomDns) {
+resource dnsNic 'Microsoft.Network/networkInterfaces@2021-02-01' existing = if (deployCustomDns) {
   name: dnsNicName
-  scope: resourceGroup(commonResourceGroupName)
+  scope: resourceGroup(sharedResourceGroupName)
 }
-
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: vnetInfo.name
