@@ -2,6 +2,8 @@
 param hubInfo object 
 param firewallName string
 param destinations array
+param securityResourceGroupName string
+    
 
 resource hub 'Microsoft.Network/virtualHubs@2021-02-01' existing = {
   name: hubInfo.name
@@ -9,6 +11,7 @@ resource hub 'Microsoft.Network/virtualHubs@2021-02-01' existing = {
 
 resource firewall 'Microsoft.Network/azureFirewalls@2020-06-01' existing = {
   name: firewallName
+  scope: resourceGroup(securityResourceGroupName)
 }
 
 resource hubNoneRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2021-02-01' = {

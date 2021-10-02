@@ -4,10 +4,16 @@ param tags object
 param name string 
 param snetName string
 param nsgName string
+param vnetName string
 
+
+resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
+  name: vnetName
+}
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   name: snetName
+  parent: vnet
 }
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = {

@@ -49,11 +49,14 @@ param dnsVnetInfo object = {
     name: 'vnet-${toLower(env)}-dns'
     range: '10.0.1.0/24'
 }
-@description('Name and range for DNS subnet')
-param dnsSnetInfo object = {
+@description('Name and range for DNS subnets')
+param dnsSnetsInfo array = [
+  {
   name: 'snet-${toLower(env)}-dns'
   range: '10.0.1.0/26'
-}
+  }
+]
+@description('Name and rules for DNS nsg')
 param dnsNicNsgInfo object = {
   name: 'nsg-${toLower(env)}-nic-dns'
   inboundRules: [
@@ -85,6 +88,8 @@ param dnsNicNsgInfo object = {
     }
   ]
 }
+@description('Name for DNS nic')
+param dnsNicName string = 'nic-${toLower(env)}-dns'
 @description('Name for DNS vm')
 param vmDnsName string = 'vm-${toLower(env)}-dns'
 @description('Size for DNS vm')
@@ -104,11 +109,13 @@ param sharedVnetInfo object = {
     name: 'vnet-${toLower(env)}-shared'
     range: '10.0.2.0/24'
 }
-@description('Name and range for Jump subnet')
-param jumpSnetInfo object = {
+@description('Name and range for shared subnets')
+param sharedSnetsInfo array = [
+  {
   name: 'snet-${toLower(env)}-jump'
   range: '10.0.2.0/26'
-}
+  }
+]
 @description('Nsg info for Jump Nic')
 param jumpNicNsgInfo object = {
   name: 'nsg-${toLower(env)}-nic-jump'
@@ -223,7 +230,7 @@ param appRulesInfo object = {
           fqdnTags: []
           webCategories: []
           targetFqdns: [
-            '*.monitor.core.windows.net'
+            format('*.monitor.{0}', environment().suffixes.storage)
           ]
           targetUrls: []
           terminateTLS: false
@@ -286,10 +293,12 @@ param hubVnetConnectionsInfo array = [
   {
     name: 'hub-to-dns'
     remoteVnetName: 'vnet-${toLower(env)}-dns'
+    resourceGroup: dnsResourceGroupName
   }
   {
-    name: 'hub-to-jump'
-    remoteVnetName: 'vnet-${toLower(env)}-jump'
+    name: 'hub-to-shared'
+    remoteVnetName: 'vnet-${toLower(env)}-shared'
+    resourceGroup: sharedResourceGroupName
   }
 /*
   {
@@ -329,6 +338,11 @@ var privateTrafficPrefix = [
 
 resource monitoringResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: monitoringResourceGroupName
+  location: location
+}
+
+resource securityResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: securityResourceGroupName
   location: location
 }
 
@@ -375,11 +389,11 @@ module dnsResources 'layers/dns/dnsResources.bicep' = {
     tags: tags
     vnetInfo: dnsVnetInfo 
     nsgInfo: dnsNicNsgInfo
-    snetInfo: dnsSnetInfo
+    snetsInfo: dnsSnetsInfo
     privateDnsZonesInfo: privateDnsZonesInfo    
-    nicName: dnsNicNsgInfo.name
+    nicName: dnsNicName
     deployCustomDns: false
-    sharedResourceGroupName: sharedResourceGroupName
+    dnsResourceGroupName: dnsResourceGroupName
     vmName: vmDnsName
     vmSize: vmDnsSize
     vmAdminUsername: vmDnsAdminUsername
@@ -399,11 +413,12 @@ module sharedResources 'layers/shared/sharedResources.bicep' = {
     tags: tags
     vnetInfo: sharedVnetInfo 
     nsgInfo: jumpNicNsgInfo
-    snetInfo: jumpSnetInfo
+    snetsInfo: sharedSnetsInfo
     privateDnsZonesInfo: privateDnsZonesInfo 
     nicName: jumpNicName
     deployCustomDns: deployCustomDnsOnSharedVnet
-    sharedResourceGroupName: sharedResourceGroupName
+    dnsNicName: dnsNicName
+    dnsResourceGroupName: dnsResourceGroupName
     vmName: vmJumpName
     vmSize: vmJumpSize
     vmAdminUsername: vmJumpAdminUsername
@@ -413,8 +428,9 @@ module sharedResources 'layers/shared/sharedResources.bicep' = {
 
 module hubResources 'layers/hub/hubResources.bicep' = {
   scope: hubResourceGroup
-  name: 'hubResources_Deploy'
+  name: 'hubResources_Deploy1'
   dependsOn: [
+    securityResourceGroup
     hubResourceGroup
     dnsResources
     sharedResources
@@ -427,6 +443,7 @@ module hubResources 'layers/hub/hubResources.bicep' = {
     hubInfo: hubInfo
     monitoringResourceGroupName: monitoringResourceGroupName
     logWorkspaceName: monitoringResources.outputs.logWorkspaceName
+    hubResourceGroupName: hubResourceGroupName
     fwPolicyInfo: fwPolicyInfo
     appRuleCollectionGroupName: appRuleCollectionGroupName
     appRulesInfo: appRulesInfo

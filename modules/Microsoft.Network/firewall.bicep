@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 param tags object
 param logWorkspaceName string 
 param monitoringResourceGroupName string
+param hubResourceGroupName string
 param fwPolicyInfo object 
 param name string
 param hubName string
@@ -20,6 +21,7 @@ resource fwPolicy 'Microsoft.Network/firewallPolicies@2021-02-01' existing = {
 
 resource hub 'Microsoft.Network/virtualHubs@2021-02-01' existing = {
   name: hubName
+  scope: resourceGroup(hubResourceGroupName)
 }
 
 resource fwPublicIp 'Microsoft.Network/publicIPAddresses@2020-11-01' existing = {

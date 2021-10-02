@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "resources": [
+        {
+            "apiVersion": "2020-05-01",
+            "name": "firstVNet",
+            "location": "[resourceGroup().location]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/22"
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "2020-06-01",
+            "type": "Microsoft.Resources/deployments",
+            "name": "updateVNet",
+            "dependsOn": [
+                "firstVNet"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {},
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.1",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "apiVersion": "2020-05-01",
+                            "name": "firstVNet/firstSubnet",
+                            "location": "[resourceGroup().location]",
+                            "type": "Microsoft.Network/virtualNetworks/subnets",
+                            "properties": {
+                                "addressPrefix": "10.0.0.0/24"
+                            }
+                        },
+                        {
+                            "apiVersion": "2020-05-01",
+                            "name": "firstVNet/secondSubnet",
+                            "location": "[resourceGroup().location]",
+                            "type": "Microsoft.Network/virtualNetworks/subnets",
+                            "properties": {
+                                "addressPrefix": "10.0.1.0/24"
+                            }
+                        },
+                        {
+                            "apiVersion": "2020-05-01",
+                            "name": "firstVNet/thridSubnet",
+                            "location": "[resourceGroup().location]",
+                            "type": "Microsoft.Network/virtualNetworks/subnets",
+                            "properties": {
+                                "addressPrefix": "10.0.2.0/24"
+                            }
+                        }
+                    ],
+                    "outputs": {}
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

@@ -5,6 +5,7 @@ param connectInfo object
 
 resource remoteVnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: connectInfo.remoteVnetName
+  scope: resourceGroup(connectInfo.resourceGroup)
 }
 
 resource hub 'Microsoft.Network/virtualHubs@2021-02-01' existing = {

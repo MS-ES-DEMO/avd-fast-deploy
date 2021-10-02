@@ -9,6 +9,7 @@ param vwanName string
 param hubInfo object 
 param monitoringResourceGroupName string
 param logWorkspaceName string
+param hubResourceGroupName string
 param fwPolicyInfo object 
 param appRuleCollectionGroupName string
 param appRulesInfo object 
@@ -107,6 +108,7 @@ module firewallResources '../../modules/Microsoft.Network/firewall.bicep' = {
     tags: tags
     name: firewallName
     monitoringResourceGroupName: monitoringResourceGroupName
+    hubResourceGroupName: hubResourceGroupName
     fwPolicyInfo: fwPolicyInfo
     hubName: hubInfo.name
     fwPublicIpName: fwPublicIpName
@@ -124,6 +126,7 @@ module hubRouteTableResources '../../modules/Microsoft.Network/hubRouteTable.bic
     hubInfo: hubInfo
     firewallName: firewallName
     destinations: destinationAddresses
+    securityResourceGroupName: securityResourceGroupName
   }
 }
 

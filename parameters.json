@@ -10,6 +10,8 @@
         "sharedResourceGroupName":{"value": "rg-shared"},
         "securityResourceGroupName":{"value": "rg-security"},
         "deployLogWorkspace":{"value": true},
-        "existingLogWorkspaceName":{"value": ""}
+        "existingLogWorkspaceName":{"value": ""},
+        "vmDnsAdminUsername":{"value": "dnsadmin"},
+        "vmJumpAdminUsername":{"value": "jumpadmin"}
     }
 }

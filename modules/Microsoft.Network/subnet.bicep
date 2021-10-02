@@ -17,8 +17,8 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' = {
   parent: vnet
   properties: {
     addressPrefix: '${snetInfo.range}'
-    networkSecurityGroup: {
-      id: (!empty(nsgName)) ? nsg.id : json('null')
-    }
+    networkSecurityGroup: (!empty(nsgName)) ? {
+      id: nsg.id 
+    }: json('null')
   }
 }

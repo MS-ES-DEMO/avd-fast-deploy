@@ -20,7 +20,7 @@ resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: vnet.name
+      id: vnet.id
     }
   }
 }
