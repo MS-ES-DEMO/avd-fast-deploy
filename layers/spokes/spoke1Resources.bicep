@@ -18,7 +18,9 @@ param vmSize string
 param vmAdminUsername string
 @secure()
 param vmAdminPassword string
-
+param storageAccountName string
+param blobStorageAccountPrivateEndpointName string
+param blobPrivateDnsZoneName string
 
 
 module vnetResources '../../modules/Microsoft.Network/vnet.bicep' = {
@@ -97,5 +99,33 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
     nicName: nicName
   }
 }
+
+module storageAccountResources '../../modules/Microsoft.Storage/storageAccount.bicep' = {
+  name: 'storageAccountResources_Deploy'
+  params: {
+    location: location
+    tags: tags
+    name: storageAccountName
+  }
+}
+
+module blobPrivateEndpointResources '../../modules/Microsoft.Network/privateEndpoint.bicep' = {
+  name: 'privateEndpointResources_Deploy'
+  dependsOn: [
+    vnetResources
+    storageAccountResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    name: blobStorageAccountPrivateEndpointName
+    vnetName: vnetInfo.name
+    snetName: snetsInfo[1].name
+    storageAccountName: storageAccountName
+    blobPrivateDnsZoneName: blobPrivateDnsZoneName
+  }
+}
+
+
 
 

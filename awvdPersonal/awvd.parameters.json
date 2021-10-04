@@ -8,10 +8,12 @@
         "hubResourceGroupName":{"value": "rg-hub"},
         "dnsResourceGroupName":{"value": "rg-dns"},
         "sharedResourceGroupName":{"value": "rg-shared"},
+        "spoke1ResourceGroupName":{"value": "rg-spoke1"},
         "securityResourceGroupName":{"value": "rg-security"},
         "deployLogWorkspace":{"value": true},
         "existingLogWorkspaceName":{"value": ""},
         "vmDnsAdminUsername":{"value": "dnsadmin"},
-        "vmJumpAdminUsername":{"value": "jumpadmin"}
+        "vmJumpAdminUsername":{"value": "jumpadmin"},
+        "vmSpoke1AdminUsername":{"value": "spoke1admin"}
     }
 }

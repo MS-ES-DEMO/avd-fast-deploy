@@ -28,8 +28,12 @@ param hubResourceGroupName string
 param dnsResourceGroupName string
 @description('Name for shared services RG')
 param sharedResourceGroupName string
+@description('Name for spoke1 RG')
+param spoke1ResourceGroupName string
 @description('Name for security RG')
 param securityResourceGroupName string
+@description('Name for AWVD RG')
+param awvdResourceGroupName string
 
 
 // monitoringResources
@@ -162,6 +166,71 @@ param vmJumpAdminUsername string
 @description('Admin password for Jump vm')
 @secure()
 param vmJumpAdminPassword string
+
+// spoke1Resources
+
+@description('Name and range for spoke1 services vNet')
+param spoke1VnetInfo object = {
+    name: 'vnet-${toLower(env)}-spoke1'
+    range: '10.0.3.0/24'
+}
+@description('Name and range for spoke1 subnets')
+param spoke1SnetsInfo array = [
+  {
+  name: 'snet-${toLower(env)}-app'
+  range: '10.0.3.0/26'
+  }
+  {
+  name: 'snet-${toLower(env)}-plinks'
+  range: '10.0.3.64/26'
+  }
+]
+@description('Nsg info for spoke1 Nic')
+param spoke1NicNsgInfo object = {
+  name: 'nsg-${toLower(env)}-nic-spoke1'
+  inboundRules: [
+    {
+      name: 'rule1'
+      rule: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '10.0.1.0/24'
+        destinationAddressPrefix: '10.0.1.0/26'
+        access: 'Allow'
+        priority: 300
+        direction: 'Inbound'
+      }
+    }
+    {
+      name: 'rule2'
+      rule: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '10.0.1.0/24'
+        destinationAddressPrefix: '10.0.1.0/24'
+        access: 'Allow'
+        priority: 301
+        direction: 'Inbound'
+      }
+    }
+  ]
+}
+@description('Name for Spoke1 Nic')
+param spoke1NicName string = 'nic-${toLower(env)}-spoke1'
+@description('Deploy Custom DNS on spoke1 vnet?')
+param deployCustomDnsOnSpoke1Vnet bool = true
+@description('Name for spoke1 vm')
+param vmSpoke1Name string = 'vm-${toLower(env)}-spoke1'
+@description('Size for Spoke1 vm')
+param vmSpoke1Size string = 'Standard_DS3_V2'
+@description('Admin username for Spoke1 vm')
+@secure()
+param vmSpoke1AdminUsername string
+@description('Admin password for Spoke1 vm')
+@secure()
+param vmSpoke1AdminPassword string
 
 
 // hubResources
@@ -300,23 +369,55 @@ param hubVnetConnectionsInfo array = [
     remoteVnetName: 'vnet-${toLower(env)}-shared'
     resourceGroup: sharedResourceGroupName
   }
-/*
   {
     name: 'hub-to-awvd'
     remoteVnetName: 'vnet-${toLower(env)}-awvd'
   }
-*/
+  {
+    name: 'hub-to-spoke1'
+    remoteVnetName: 'vnet-${toLower(env)}-spoke1'
+  }
 ]
+@description('Name for storage account')
+param storageAccountName string = 'blob-${toLower(env)}-spoke1'
+@description('Name for blob storage private endpoint')
+param blobStorageAccountPrivateEndpointName string = 'plink-blob-${toLower(env)}-spoke1'
+
+// awvdResources
+
+@description('Name and range for awvd vNet')
+param awvdVnetInfo object = {
+    name: 'vnet-${toLower(env)}-awvd'
+    range: '10.0.4.0/24'
+}
+@description('Name and range for new awvd subnet')
+param newAwvdSnetInfo array = [
+  {
+  name: 'snet-${toLower(env)}-jump'
+  range: '10.0.4.0/26'
+  }
+]
+@description('Name and range for existing awvd subnets')
+param existingAwvdSnetsInfo array = []
 
 
-
-
+var awvdSnetsInfo = union(newAwvdSnetInfo, existingAwvdSnetsInfo) 
 
 
 var privateDnsZonesInfo = [
   {
     name: format('privatelink.blob.{0}', environment().suffixes.storage)
     vnetLinkName: 'vnet-link-blob'
+    vnetName: 'vnet-${toLower(env)}-dns'
+  }
+  {
+    name: format('privatelink.file.{0}', environment().suffixes.storage)
+    vnetLinkName: 'vnet-link-file'
+    vnetName: 'vnet-${toLower(env)}-dns'
+  }
+  {
+    name: format('privatelink.database.{0}', environment().suffixes.sqlServerHostname)
+    vnetLinkName: 'vnet-link-sqldatabase'
     vnetName: 'vnet-${toLower(env)}-dns'
   }
 ]
@@ -333,6 +434,7 @@ var privateTrafficPrefix = [
     '192.168.0.0/16'
     '${sharedVnetInfo.range}'
     '${dnsVnetInfo.range}'
+    '${spoke1VnetInfo.range}'
 ]
 
 
@@ -356,13 +458,23 @@ resource sharedResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   location: location
 }
 
+resource spoke1ResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: spoke1ResourceGroupName
+  location: location
+}
+
+resource awvdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: awvdResourceGroupName
+  location: location
+}
+
 resource hubResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: hubResourceGroupName
   location: location
 }
 
 
-module monitoringResources 'layers/monitoring/monitoringResources.bicep' = {
+module monitoringResources 'monitoring/monitoringResources.bicep' = {
   scope: monitoringResourceGroup
   name: 'monitoringResources_Deploy'
   dependsOn: [
@@ -377,7 +489,7 @@ module monitoringResources 'layers/monitoring/monitoringResources.bicep' = {
   }
 }
 
-module dnsResources 'layers/dns/dnsResources.bicep' = {
+module dnsResources 'dns/dnsResources.bicep' = {
   scope: dnsResourceGroup
   name: 'dnsResources_Deploy'
   dependsOn: [
@@ -401,7 +513,7 @@ module dnsResources 'layers/dns/dnsResources.bicep' = {
   }
 }
 
-module sharedResources 'layers/shared/sharedResources.bicep' = {
+module sharedResources 'shared/sharedResources.bicep' = {
   scope: sharedResourceGroup
   name: 'sharedResources_Deploy'
   dependsOn: [
@@ -426,7 +538,56 @@ module sharedResources 'layers/shared/sharedResources.bicep' = {
   }
 }
 
-module hubResources 'layers/hub/hubResources.bicep' = {
+module spoke1Resources 'spokes/spoke1Resources.bicep' = {
+  scope: spoke1ResourceGroup
+  name: 'spoke1Resources_Deploy'
+  dependsOn: [
+    spoke1ResourceGroup
+    dnsResources
+  ]
+  params: {
+    location:location
+    tags: tags
+    vnetInfo: spoke1VnetInfo 
+    nsgInfo: spoke1NicNsgInfo
+    snetsInfo: spoke1SnetsInfo
+    privateDnsZonesInfo: privateDnsZonesInfo 
+    nicName: spoke1NicName
+    deployCustomDns: deployCustomDnsOnSpoke1Vnet
+    dnsNicName: dnsNicName
+    dnsResourceGroupName: dnsResourceGroupName
+    vmName: vmSpoke1Name
+    vmSize: vmSpoke1Size
+    vmAdminUsername: vmSpoke1AdminUsername
+    vmAdminPassword: vmSpoke1AdminPassword
+    storageAccountName: storageAccountName
+    blobStorageAccountPrivateEndpointName: blobStorageAccountPrivateEndpointName
+    blobPrivateDnsZoneName: privateDnsZonesInfo[0].name
+  }
+}
+
+module awvdResources 'awvd/awvdResources.bicep' = {
+  scope: awvdResourceGroup
+  name: 'awvdResources_Deploy'
+  dependsOn: [
+    awvdResourceGroup
+    dnsResources
+    sharedResources
+    spoke1Resources
+  ]
+  params: {
+    location:location
+    tags: tags
+    vnetInfo: awvdVnetInfo 
+    snetsInfo: awvdSnetsInfo
+    privateDnsZonesInfo: privateDnsZonesInfo 
+    deployCustomDns: deployCustomDnsOnSpoke1Vnet
+    dnsNicName: dnsNicName
+    dnsResourceGroupName: dnsResourceGroupName
+  }
+}
+
+module hubResources 'hub/hubResources.bicep' = {
   scope: hubResourceGroup
   name: 'hubResources_Deploy1'
   dependsOn: [
