@@ -33,7 +33,8 @@ resource applicationGroups 'Microsoft.DesktopVirtualization/applicationgroups@20
   }
 }
 
-resource ResourceDiagName 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = if (deployDiagnostic) {
+
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = if (deployDiagnostic) {
   name: '${name}-diagsetting'
   scope: applicationGroups
   properties: {
