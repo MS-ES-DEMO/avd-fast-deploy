@@ -109,8 +109,8 @@ module storageAccountResources '../../modules/Microsoft.Storage/storageAccount.b
   }
 }
 
-module blobPrivateEndpointResources '../../modules/Microsoft.Network/privateEndpoint.bicep' = {
-  name: 'privateEndpointResources_Deploy'
+module blobPrivateEndpointResources '../../modules/Microsoft.Network/storagePrivateEndpoint.bicep' = {
+  name: 'blobPrivateEndpointResources_Deploy'
   dependsOn: [
     vnetResources
     storageAccountResources
@@ -122,7 +122,8 @@ module blobPrivateEndpointResources '../../modules/Microsoft.Network/privateEndp
     vnetName: vnetInfo.name
     snetName: snetsInfo[1].name
     storageAccountName: storageAccountName
-    blobPrivateDnsZoneName: blobPrivateDnsZoneName
+    privateDnsZoneName: blobPrivateDnsZoneName
+    groupIds: 'blob'
   }
 }
 

@@ -12,6 +12,7 @@ resource logWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
   scope: resourceGroup(monitoringResourceGroupName)
 }
 
+
 resource workspace 'Microsoft.DesktopVirtualization/workspaces@2019-12-10-preview' = {
   name: name
   location: location
@@ -20,6 +21,7 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2019-12-10-previe
     applicationGroupReferences: applicationGroupIds
   }
 }
+
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = if (deployDiagnostic) {
   name: '${name}-diagsetting'
@@ -65,3 +67,4 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-pr
     ]
   }
 }
+

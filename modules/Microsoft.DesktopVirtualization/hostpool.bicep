@@ -7,6 +7,8 @@ param hostPoolType string
 param deployDiagnostic bool 
 param maxSessionLimit int
 param validationEnvironment bool = true
+param personalDesktopAssignmentType string
+param customRdpProperty string
 
 @description('Get string with $((get-date).ToUniversalTime().AddDays(1).ToString(\'yyyy-MM-ddTHH:mm:ss.fffffffZ\'))')
 param tokenExpirationTime string = '7/31/2022 8:55:50 AM'
@@ -17,6 +19,7 @@ resource logWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
   name: logWorkspaceName
   scope: resourceGroup(monitoringResourceGroupName)
 }
+
 
 resource hostpools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
   name: name
@@ -30,8 +33,8 @@ resource hostpools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
     description: 'Created through the WVD extension'
     hostPoolType: hostPoolType
     preferredAppGroupType: 'Desktop'
-    personalDesktopAssignmentType: 'Automatic'
-    customRdpProperty: 'audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;'
+    personalDesktopAssignmentType: personalDesktopAssignmentType
+    customRdpProperty: customRdpProperty
     ring: null
     startVMOnConnect: true
     registrationInfo: {
@@ -42,6 +45,7 @@ resource hostpools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
     vmTemplate: ''
   }
 }
+
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = if (deployDiagnostic) {
   name: '${name}-diagsetting'
@@ -95,5 +99,8 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-pr
     ]
   }
 }
+
+
+
 
 output hostpoolToken string = hostpools.properties.registrationInfo.token

@@ -10,6 +10,9 @@ param privateDnsZonesInfo array
 param deployCustomDns bool = true
 param dnsNicName string
 param dnsResourceGroupName string
+param storageAccountName string
+param fileStorageAccountPrivateEndpointName string
+param filePrivateDnsZoneName string
 
 
 
@@ -38,6 +41,33 @@ module vnetLinks '../../modules/Microsoft.Network/vnetLink.bicep' = [ for (priva
     privateDnsZoneName: privateDnsZoneInfo.name
   }
 }]
+
+module storageAccountResources '../../modules/Microsoft.Storage/storageAccount.bicep' = {
+  name: 'storageAccountResources_Deploy'
+  params: {
+    location: location
+    tags: tags
+    name: storageAccountName
+  }
+}
+
+module filePrivateEndpointResources '../../modules/Microsoft.Network/storagePrivateEndpoint.bicep' = {
+  name: 'filePrivateEndpointResources_Deploy'
+  dependsOn: [
+    vnetResources
+    storageAccountResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    name: fileStorageAccountPrivateEndpointName
+    vnetName: vnetInfo.name
+    snetName: snetsInfo[0].name
+    storageAccountName: storageAccountName
+    privateDnsZoneName: filePrivateDnsZoneName
+    groupIds: 'file'
+  }
+}
 
 
 

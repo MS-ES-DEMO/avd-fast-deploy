@@ -233,6 +233,8 @@ param vmSpoke1AdminUsername string
 param vmSpoke1AdminPassword string
 
 
+
+
 // hubResources
 
 
@@ -388,20 +390,33 @@ param blobStorageAccountPrivateEndpointName string = 'plink-blob-${toLower(env)}
 @description('Name and range for awvd vNet')
 param awvdVnetInfo object = {
     name: 'vnet-${toLower(env)}-awvd'
-    range: '10.0.4.0/24'
+    range: '10.0.4.0/23'
 }
+@description('Name and range for Azure Files subnet')
+param azureFilesAwvdSnetInfo array = [
+  {
+  name: 'snet-${toLower(env)}-azurefiles'
+  range: '10.0.4.0/27'
+  }
+]
 @description('Name and range for new awvd subnet')
 param newAwvdSnetInfo array = [
   {
-  name: 'snet-${toLower(env)}-jump'
-  range: '10.0.4.0/26'
+  name: 'snet-${toLower(env)}-hostpool1'
+  range: '10.0.4.0/27'
   }
 ]
 @description('Name and range for existing awvd subnets')
 param existingAwvdSnetsInfo array = []
 
 
-var awvdSnetsInfo = union(newAwvdSnetInfo, existingAwvdSnetsInfo) 
+param fslogixStorageAccountName string
+param filePrivateDnsZoneName string
+param fslogixFileStorageAccountPrivateEndpointName string
+
+
+
+var awvdSnetsInfo = union(azureFilesAwvdSnetInfo, newAwvdSnetInfo, existingAwvdSnetsInfo) 
 
 
 var privateDnsZonesInfo = [
@@ -584,6 +599,9 @@ module awvdResources 'awvd/awvdResources.bicep' = {
     deployCustomDns: deployCustomDnsOnSpoke1Vnet
     dnsNicName: dnsNicName
     dnsResourceGroupName: dnsResourceGroupName
+    storageAccountName: fslogixStorageAccountName
+    filePrivateDnsZoneName: filePrivateDnsZoneName
+    fileStorageAccountPrivateEndpointName: fslogixFileStorageAccountPrivateEndpointName
   }
 }
 
