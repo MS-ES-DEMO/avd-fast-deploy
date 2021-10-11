@@ -43,12 +43,13 @@
 #$vmJumpAdminPassword = GeneratePassword
 $vmJumpAdminPassword = 'jumpadmin123$'
 $vmDnsAdminPassword = 'dnsadmin123$'
+$vmSpoke1AdminPassword = 'spoke1admin123$'
 
-$deploymentName="Layers-Deployment-$(New-Guid)"
+$deploymentName="Lz-Deployment-$(New-Guid)"
 
-$params = "{ \`"vmJumpAdminPassword\`":{\`"value\`": \`"${vmJumpAdminPassword}\`" }, \`"vmDnsAdminPassword\`":{\`"value\`": \`"${vmDnsAdminPassword}\`" } }"
+$params = "{ \`"vmJumpAdminPassword\`":{\`"value\`": \`"${vmJumpAdminPassword}\`" }, \`"vmDnsAdminPassword\`":{\`"value\`": \`"${vmDnsAdminPassword}\`" }, \`"vmSpoke1AdminPassword\`":{\`"value\`": \`"${vmSpoke1AdminPassword}\`" }}"
 
 # The deployment is applied at the subscription scope
 # TODO: Ensure the parameters.json file us up to date
 # TODO: For production deployments, update the deployment parameter file in the command below.
-az deployment sub create -l westeurope -n $deploymentName --template-file '.\layers\main.bicep' --parameters '.\layers\layers.parameters.json' --parameters $params
+az deployment sub create -l westeurope -n $deploymentName --template-file '.\lz\main.bicep' --parameters '.\lz\parameters.json' --parameters $params

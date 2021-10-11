@@ -3,9 +3,11 @@ param tags object
 param name string 
 param vnetName string
 param privateDnsZoneName string
+param vnetResourceGroupName string
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: vnetName
+  scope: resourceGroup(vnetResourceGroupName)
 }
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {

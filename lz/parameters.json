@@ -10,6 +10,7 @@
         "sharedResourceGroupName":{"value": "rg-shared"},
         "spoke1ResourceGroupName":{"value": "rg-spoke1"},
         "securityResourceGroupName":{"value": "rg-security"},
+        "awvdResourceGroupName":{"value": "rg-awvd"},
         "deployLogWorkspace":{"value": true},
         "existingLogWorkspaceName":{"value": ""},
         "vmDnsAdminUsername":{"value": "dnsadmin"},

@@ -7,6 +7,7 @@ param snetName string
 param storageAccountName string
 param privateDnsZoneName string
 param groupIds string
+param dnsResourceGroupName string
 
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
@@ -24,6 +25,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing 
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: privateDnsZoneName
+  scope: resourceGroup(dnsResourceGroupName)
 }
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2021-02-01' = {
@@ -50,6 +52,9 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2021-02-01' = {
 
 resource privateDnsZoneGroups 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-02-01' = {
   name: format('{0}/{1}', name, '${groupIds}PrivateDnsZoneGroup')
+  dependsOn: [
+    privateEndpoint
+  ]
   properties: {
     privateDnsZoneConfigs: [
       {

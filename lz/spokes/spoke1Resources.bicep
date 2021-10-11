@@ -18,7 +18,9 @@ param vmSize string
 param vmAdminUsername string
 @secure()
 param vmAdminPassword string
-
+param storageAccountName string
+param blobStorageAccountPrivateEndpointName string
+param blobPrivateDnsZoneName string
 
 
 module vnetResources '../../modules/Microsoft.Network/vnet.bicep' = {
@@ -57,15 +59,17 @@ module nsgInboundRulesResources '../../modules/Microsoft.Network/nsgRule.bicep' 
 }]
 
 module vnetLinks '../../modules/Microsoft.Network/vnetLink.bicep' = [ for (privateDnsZoneInfo, i) in privateDnsZonesInfo : {
-  name: 'vnetLinksResources_Deploy${i}'
+  name: 'spoke1VnetLinksResources_Deploy${i}'
+  scope: resourceGroup(dnsResourceGroupName)
   dependsOn: [
     vnetResources
   ]
   params: {
     tags: tags
-    name: privateDnsZoneInfo.vnetLinkName
+    name: '${privateDnsZoneInfo.vnetLinkName}spoke1'
     vnetName: vnetInfo.name
     privateDnsZoneName: privateDnsZoneInfo.name
+    vnetResourceGroupName: resourceGroup().name
   }
 }]
 
@@ -97,5 +101,35 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
     nicName: nicName
   }
 }
+
+module storageAccountResources '../../modules/Microsoft.Storage/storageAccount.bicep' = {
+  name: 'storageAccountResources_Deploy'
+  params: {
+    location: location
+    tags: tags
+    name: storageAccountName
+  }
+}
+
+module blobPrivateEndpointResources '../../modules/Microsoft.Network/storagePrivateEndpoint.bicep' = {
+  name: 'blobPrivateEndpointResources_Deploy'
+  dependsOn: [
+    vnetResources
+    storageAccountResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    name: blobStorageAccountPrivateEndpointName
+    vnetName: vnetInfo.name
+    snetName: snetsInfo[1].name
+    storageAccountName: storageAccountName
+    privateDnsZoneName: blobPrivateDnsZoneName
+    groupIds: 'blob'
+    dnsResourceGroupName: dnsResourceGroupName
+  }
+}
+
+
 
 

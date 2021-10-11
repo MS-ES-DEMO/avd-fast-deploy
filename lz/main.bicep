@@ -381,7 +381,7 @@ param hubVnetConnectionsInfo array = [
   }
 ]
 @description('Name for storage account')
-param storageAccountName string = 'blob-${toLower(env)}-spoke1'
+param storageAccountName string = 'blob${toLower(env)}spoke1'
 @description('Name for blob storage private endpoint')
 param blobStorageAccountPrivateEndpointName string = 'plink-blob-${toLower(env)}-spoke1'
 
@@ -410,9 +410,9 @@ param newAwvdSnetInfo array = [
 param existingAwvdSnetsInfo array = []
 
 
-param fslogixStorageAccountName string
-param filePrivateDnsZoneName string
-param fslogixFileStorageAccountPrivateEndpointName string
+param fslogixStorageAccountName string = 'fslogix${toLower(env)}profiles'
+param filePrivateDnsZoneName string = 'file-dns-zone'
+param fslogixFileStorageAccountPrivateEndpointName string = 'plink-fslogix-${toLower(env)}-profiles'
 
 
 
@@ -422,17 +422,17 @@ var awvdSnetsInfo = union(azureFilesAwvdSnetInfo, newAwvdSnetInfo, existingAwvdS
 var privateDnsZonesInfo = [
   {
     name: format('privatelink.blob.{0}', environment().suffixes.storage)
-    vnetLinkName: 'vnet-link-blob'
+    vnetLinkName: 'vnet-link-blob-to-'
     vnetName: 'vnet-${toLower(env)}-dns'
   }
   {
     name: format('privatelink.file.{0}', environment().suffixes.storage)
-    vnetLinkName: 'vnet-link-file'
+    vnetLinkName: 'vnet-link-file-to-'
     vnetName: 'vnet-${toLower(env)}-dns'
   }
   {
-    name: format('privatelink.database.{0}', environment().suffixes.sqlServerHostname)
-    vnetLinkName: 'vnet-link-sqldatabase'
+    name: format('privatelink{0}', environment().suffixes.sqlServerHostname)
+    vnetLinkName: 'vnet-link-sqldatabase-to-'
     vnetName: 'vnet-${toLower(env)}-dns'
   }
 ]
@@ -450,6 +450,7 @@ var privateTrafficPrefix = [
     '${sharedVnetInfo.range}'
     '${dnsVnetInfo.range}'
     '${spoke1VnetInfo.range}'
+    '${awvdVnetInfo.range}'
 ]
 
 
@@ -558,6 +559,7 @@ module spoke1Resources 'spokes/spoke1Resources.bicep' = {
   name: 'spoke1Resources_Deploy'
   dependsOn: [
     spoke1ResourceGroup
+    sharedResources
     dnsResources
   ]
   params: {

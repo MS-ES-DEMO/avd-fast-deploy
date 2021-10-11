@@ -30,15 +30,17 @@ module vnetResources '../../modules/Microsoft.Network/vnet.bicep' = {
 }
 
 module vnetLinks '../../modules/Microsoft.Network/vnetLink.bicep' = [ for (privateDnsZoneInfo, i) in privateDnsZonesInfo : {
-  name: 'vnetLinksResources_Deploy${i}'
+  name: 'awvdVnetLinksResources_Deploy${i}'
+  scope: resourceGroup(dnsResourceGroupName)
   dependsOn: [
     vnetResources
   ]
   params: {
     tags: tags
-    name: privateDnsZoneInfo.vnetLinkName
+    name: '${privateDnsZoneInfo.vnetLinkName}awvd'
     vnetName: vnetInfo.name
     privateDnsZoneName: privateDnsZoneInfo.name
+    vnetResourceGroupName: resourceGroup().name
   }
 }]
 
