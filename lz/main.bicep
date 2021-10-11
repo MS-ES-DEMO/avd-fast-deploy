@@ -222,7 +222,7 @@ param spoke1NicName string = 'nic-${toLower(env)}-spoke1'
 @description('Deploy Custom DNS on spoke1 vnet?')
 param deployCustomDnsOnSpoke1Vnet bool = true
 @description('Name for spoke1 vm')
-param vmSpoke1Name string = 'vm-${toLower(env)}-spoke1'
+param vmSpoke1Name string = 'vm-${toLower(env)}-spo1'
 @description('Size for Spoke1 vm')
 param vmSpoke1Size string = 'Standard_DS3_V2'
 @description('Admin username for Spoke1 vm')
@@ -374,10 +374,12 @@ param hubVnetConnectionsInfo array = [
   {
     name: 'hub-to-awvd'
     remoteVnetName: 'vnet-${toLower(env)}-awvd'
+    resourceGroup: awvdResourceGroupName
   }
   {
     name: 'hub-to-spoke1'
     remoteVnetName: 'vnet-${toLower(env)}-spoke1'
+    resourceGroup: spoke1ResourceGroupName
   }
 ]
 @description('Name for storage account')
@@ -403,7 +405,7 @@ param azureFilesAwvdSnetInfo array = [
 param newAwvdSnetInfo array = [
   {
   name: 'snet-${toLower(env)}-hostpool1'
-  range: '10.0.4.0/27'
+  range: '10.0.4.32/27'
   }
 ]
 @description('Name and range for existing awvd subnets')
@@ -615,6 +617,7 @@ module hubResources 'hub/hubResources.bicep' = {
     hubResourceGroup
     dnsResources
     sharedResources
+    awvdResources
   ]
   params: {
     location:location

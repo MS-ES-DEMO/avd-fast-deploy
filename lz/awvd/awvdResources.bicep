@@ -68,6 +68,7 @@ module filePrivateEndpointResources '../../modules/Microsoft.Network/storagePriv
     storageAccountName: storageAccountName
     privateDnsZoneName: filePrivateDnsZoneName
     groupIds: 'file'
+    dnsResourceGroupName: dnsResourceGroupName
   }
 }
 
