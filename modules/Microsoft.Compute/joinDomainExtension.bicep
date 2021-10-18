@@ -5,9 +5,10 @@ param name string
 param vmName string
 param domainToJoin string
 param ouPath string
-param administratorAccountUserName string
+param domainAdminUsername string
 @secure()
-param administratorAccountPassword string
+param domainAdminPassword string
+
 //TODO: COMPLETE
 
 
@@ -28,14 +29,14 @@ resource joindomain 'Microsoft.Compute/virtualMachines/extensions@2021-04-01' = 
     settings: {
       name: domainToJoin
       ouPath: ouPath
-      user: administratorAccountUserName
+      user: domainAdminUsername
       restart: 'true'
       options: '3'
       NumberOfRetries: '4'
       RetryIntervalInMilliseconds: '30000'
     }
     protectedSettings: {
-      password: administratorAccountPassword
+      password: domainAdminPassword
     }
   }
 }

@@ -38,8 +38,8 @@ param vmPrefix string
 ])
 param vmDiskType string
 param vmSize string
-param administratorAccountUserName string
-param administratorAccountPassword string
+param existingDomainAdminName string
+param existingDomainAdminPassword string
 param awvdResourceGroupName string
 param existingVnetName string
 param existingSnetName string
@@ -90,89 +90,49 @@ module availabilitySetResources '../../modules/Microsoft.Compute/availabilitySet
   }
 }
 
-module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
+module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(0, awvdNumberOfInstances): {
   name: 'vmResources_Deploy'
   dependsOn: [
     nicResources
+    availabilitySetResources
   ]
   params: {
     tags: tags
-    name: vmName
+    name: '${vmPrefix}-${i + currentInstances}'
     vmSize: vmSize
-    adminUsername: vmAdminUsername
-    adminPassword: vmAdminPassword
-    nicName: nicName
+    availabilitySetName: '${vmPrefix}-av'
+    adminUsername: localVmAdminUsername
+    adminPassword: localVmAdminPassword
+    nicName: '${networkAdapterPrefix}${vmPrefix}-${i + currentInstances}'
+    osDiskName: '${vmPrefix}-${i + currentInstances}-os'
+    storageAccountType: vmDiskType
+    imageReference: '/subscriptions/${sharedImageGallerySubscription}/resourceGroups/${sharedImageGalleryResourceGroup}/providers/Microsoft.Compute/galleries/${sharedImageGalleryName}/images/${sharedImageGalleryDefinitionname}/versions/${sharedImageGalleryVersionName}'
   }
-}
-
-resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = [for i in range(0, AVDnumberOfInstances): {
-  name: '${vmPrefix}-${i + currentInstances}'
-  location: location
-  properties: {
-    licenseType: 'Windows_Client'
-    hardwareProfile: {
-      vmSize: vmSize
-    }
-    availabilitySet: {
-      id: resourceId('Microsoft.Compute/availabilitySets', '${vmPrefix}-AV')
-    }
-    osProfile: {
-      computerName: '${vmPrefix}-${i + currentInstances}'
-      adminUsername: existingDomainUserName
-      adminPassword: administratorAccountPassword
-      windowsConfiguration: {
-        enableAutomaticUpdates: false
-        patchSettings: {
-          patchMode: 'Manual'
-        }
-      }
-    }
-    storageProfile: {
-      osDisk: {
-        name: '${vmPrefix}-${i + currentInstances}-OS'
-        managedDisk: {
-          storageAccountType: vmDiskType
-        }
-        osType: 'Windows'
-        createOption: 'FromImage'
-      }
-      imageReference: {
-        //id: resourceId(sharedImageGalleryResourceGroup, 'Microsoft.Compute/galleries/images/versions', sharedImageGalleryName, sharedImageGalleryDefinitionname, sharedImageGalleryVersionName)
-        id: '/subscriptions/${sharedImageGallerySubscription}/resourceGroups/${sharedImageGalleryResourceGroup}/providers/Microsoft.Compute/galleries/${sharedImageGalleryName}/images/${sharedImageGalleryDefinitionname}/versions/${sharedImageGalleryVersionName}'
-      }
-      dataDisks: []
-    }
-    networkProfile: {
-      networkInterfaces: [
-        {
-          id: resourceId('Microsoft.Network/networkInterfaces', '${vmPrefix}-${i + currentInstances}${networkAdapterPostfix}')
-        }
-      ]
-    }
-  }
-  dependsOn: [
-    availabilitySet
-    nic[i]
-  ]
 }]
-
 
 module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
   name: 'joinDomainExtensionResources_Deploy${i}'
+  dependsOn: [
+    vmResources
+  ]
   params: {
     tags: tags
     name: joinDomainExtensionName
     vmName: '${vmPrefix}-${i + currentInstances}'
     domainToJoin: domainToJoin
     ouPath: ouPath
-    administratorAccountUserName: administratorAccountUserName
-    administratorAccountPassword: administratorAccountPassword
+    domainAdminUsername: existingDomainAdminName
+    domainAdminPassword: existingDomainAdminPassword
   }
 }]
 
 
 module dscExtensionResources '../../modules/Microsoft.Compute/dscExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
   name: 'dscExtensionResources_Deploy${i}'
+  dependsOn: [
+    vmResources
+    joinDomainExtensionResources
+  ]
   params: {
     tags: tags
     name: dscExtensionName
