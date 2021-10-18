@@ -1,36 +1,21 @@
+
+
 param location string = resourceGroup().location
 param tags object
-
-
-
 param artifactsLocation string
-
-@secure()
-param AzTenantID string
 param awvdNumberOfInstances int
 param currentInstances int
-
-@description('Location for all standard resources to be deployed into.')
-param location string
 param hostPoolName string
 param domainToJoin string
-@description('Name of resource group containing AVD HostPool')
-param resourceGroupName string
 
 @description('OU Path were new AVD Session Hosts will be placed in Active Directory')
 param ouPath string
-param appGroupName string
-param desktopName string
 
-@description('Application ID for Service Principal. Used for DSC scripts.')
-param appID string
-
-@description('Application Secret for Service Principal.')
-param appSecret string
-
-@description('CSV list of default users to assign to AVD Application Group.')
-param defaultUsers string
 param vmPrefix string
+@secure()
+param localVmAdminUsername string
+@secure()
+param localVmAdminPassword string
 
 @allowed([
   'Standard_LRS'
@@ -61,9 +46,6 @@ param sharedImageGalleryVersionName string
 
 
 var avSetSku = 'Aligned'
-var existingDomainUserName = first(split(administratorAccountUserName, '@'))
-var numberOfInstances = (currentInstances + AVDnumberOfInstances)
-var copyIndexOffset = ((currentInstances > 0) ? currentInstances : 0)
 var networkAdapterPrefix = 'nic-'
 
 var joinDomainExtensionName = 'JsonADDomainExtension'
@@ -72,6 +54,7 @@ var dscExtensionName = 'dscExtension'
 module nicResources '../../modules/Microsoft.Network/nic.bicep' = [for i in range(0, awvdNumberOfInstances): {
   name: 'nicResources_Deploy${i}'
   params: {
+    location: location
     tags: tags
     name: '${networkAdapterPrefix}${vmPrefix}-${i + currentInstances}'
     vnetName: existingVnetName
@@ -84,6 +67,7 @@ module nicResources '../../modules/Microsoft.Network/nic.bicep' = [for i in rang
 module availabilitySetResources '../../modules/Microsoft.Compute/availabilitySet.bicep' = {
   name: 'availabilitySetResources_Deploy'
   params: {
+    location: location
     tags: tags
     name: '${vmPrefix}-av'
     avSetSku: avSetSku
@@ -97,6 +81,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
     availabilitySetResources
   ]
   params: {
+    location: location
     tags: tags
     name: '${vmPrefix}-${i + currentInstances}'
     vmSize: vmSize
@@ -116,6 +101,7 @@ module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainE
     vmResources
   ]
   params: {
+    location: location
     tags: tags
     name: joinDomainExtensionName
     vmName: '${vmPrefix}-${i + currentInstances}'
@@ -134,6 +120,7 @@ module dscExtensionResources '../../modules/Microsoft.Compute/dscExtension.bicep
     joinDomainExtensionResources
   ]
   params: {
+    location: location
     tags: tags
     name: dscExtensionName
     vmName: '${vmPrefix}-${i + currentInstances}' 
