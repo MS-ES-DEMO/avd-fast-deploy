@@ -1,6 +1,7 @@
 @description('The base URI where artifacts required by this template are located.')
 param DSCModule object = {
-  url: 'https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration.zip'
+  //url: 'https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration.zip'
+  url: 
   configuration: 'Configuration.ps1\\AddSessionHost'
 }
 param vmGalleryImage object = {
