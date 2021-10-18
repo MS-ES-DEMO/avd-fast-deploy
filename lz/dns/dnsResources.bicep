@@ -17,6 +17,9 @@ param vmSize string
 param vmAdminUsername string
 @secure()
 param vmAdminPassword string
+param addsAndDnsExtensionName string
+param artifactsLocation string
+param domainName string
 
 
 
@@ -95,6 +98,7 @@ module nicResources '../../modules/Microsoft.Network/nic.bicep' = {
     tags: tags
     name: nicName
     vnetName: vnetInfo.name
+    vnetResourceGroupName: resourceGroup().name
     snetName: snetsInfo[0].name
     nsgName: nsgInfo.name
   }
@@ -112,6 +116,22 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
     adminUsername: vmAdminUsername
     adminPassword: vmAdminPassword
     nicName: nicName
+  }
+}
+
+module addsAndDnsExtensionResources '../../modules/Microsoft.Compute/addsAndDnsExtension.bicep' = {
+  name: 'addsAndDnsExtensionResources_Deploy'
+  dependsOn: [
+    nicResources
+  ]
+  params: {
+    tags: tags
+    name: addsAndDnsExtensionName
+    vmName: vmName
+    artifactsLocation: artifactsLocation
+    domainName: domainName
+    adminUsername: vmAdminUsername
+    adminPassword: vmAdminPassword
   }
 }
 

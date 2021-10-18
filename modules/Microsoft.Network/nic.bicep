@@ -5,10 +5,12 @@ param name string
 param snetName string
 param nsgName string
 param vnetName string
+param vnetResourceGroupName string
 
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: vnetName
+  scope: resourceGroup(vnetResourceGroupName)
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
@@ -40,9 +42,9 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
     ]
     enableAcceleratedNetworking: false
     enableIPForwarding: false
-    networkSecurityGroup: {
-      id: nsg.id
-    }
+    networkSecurityGroup: (!empty(nsgName)) ? {
+      id: nsg.id 
+    }: json('null')
   }
 }
 

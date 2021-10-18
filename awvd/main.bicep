@@ -29,7 +29,7 @@ param awvdResourceGroupName string
 // awvdResources Parameters
 @description('If true Host Pool, App Group and Workspace will be created. Default is to join Session Hosts to existing AVD environment')
 param newScenario bool = false
-@description('Name for the existing workspace')
+@description('Name for the new or existing workspace')
 param newOrExistingWorkspaceName string
 @description('Deploy workspace diagnostic?')
 param deployWorkspaceDiagnostic bool = true
@@ -119,6 +119,9 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
     deployRemoteAppApplicationGroupDiagnostic: deployRemoteAppApplicationGroupDiagnostic
   }
 }
+
+
+
 
 
 

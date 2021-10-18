@@ -104,6 +104,10 @@ param vmDnsAdminUsername string
 @description('Admin password for DNS vm')
 @secure()
 param vmDnsAdminPassword string
+param addsAndDnsExtensionName string = 'addsanddnsextension'
+param artifactsLocation string = 'https://github.com/MS-ES-DEMO/awvd-consumption-play'
+param domainName string = 'microsoft.com'
+
 
 
 // sharedResources
@@ -527,6 +531,9 @@ module dnsResources 'dns/dnsResources.bicep' = {
     vmSize: vmDnsSize
     vmAdminUsername: vmDnsAdminUsername
     vmAdminPassword: vmDnsAdminPassword
+    addsAndDnsExtensionName: addsAndDnsExtensionName
+    artifactsLocation: artifactsLocation
+    domainName: domainName
   }
 }
 

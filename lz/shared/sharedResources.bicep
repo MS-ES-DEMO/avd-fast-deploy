@@ -80,6 +80,7 @@ module nicResources '../../modules/Microsoft.Network/nic.bicep' = {
     tags: tags
     name: nicName
     vnetName: vnetInfo.name
+    vnetResourceGroupName: resourceGroup().name
     snetName: snetsInfo[0].name
     nsgName: nsgInfo.name
   }
