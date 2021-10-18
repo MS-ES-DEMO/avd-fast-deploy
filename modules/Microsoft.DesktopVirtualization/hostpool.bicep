@@ -3,6 +3,7 @@ param tags object
 param logWorkspaceName string 
 param monitoringResourceGroupName string
 param name string
+param friendlyName string
 param hostPoolType string
 param deployDiagnostic bool 
 param maxSessionLimit int
@@ -26,7 +27,7 @@ resource hostpools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
   location: location
   tags: tags
   properties: {
-    friendlyName: name
+    friendlyName: friendlyName
     maxSessionLimit: (hostPoolType == 'Pooled') ? maxSessionLimit : null
     loadBalancerType: (hostPoolType == 'Pooled') ? 'BreadthFirst' : 'Persistent' 
     validationEnvironment: validationEnvironment

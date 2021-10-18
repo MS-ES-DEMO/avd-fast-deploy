@@ -16,6 +16,7 @@ param deployWorkspaceDiagnostic bool = true
 param tokenExpirationTime string
 param hostPoolType string 
 param hostPoolName string 
+param hostPoolFriendlyName string
 param deployHostPoolDiagnostic bool = true
 param personalDesktopAssignmentType string 
 param maxSessionLimit int = 12
@@ -56,6 +57,7 @@ module hostPoolResources '../../modules/Microsoft.DesktopVirtualization/hostPool
     location: location
     tags: tags
     name: hostPoolName
+    friendlyName: hostPoolFriendlyName
     logWorkspaceName: logWorkspaceName
     monitoringResourceGroupName: monitoringResourceGroupName
     hostPoolType: hostPoolType

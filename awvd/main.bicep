@@ -28,14 +28,16 @@ param awvdResourceGroupName string
 
 // awvdResources Parameters
 @description('If true Host Pool, App Group and Workspace will be created. Default is to join Session Hosts to existing AVD environment')
-param newScenario bool = false
+param newScenario bool = true
+@description('Add new session hosts?')
+param addHost bool = false
 @description('Name for the new or existing workspace')
 param newOrExistingWorkspaceName string
 @description('Deploy workspace diagnostic?')
 param deployWorkspaceDiagnostic bool = true
 
 @description('Expiration time for the HostPool registration token. This must be up to 30 days from todays date.')
-param tokenExpirationTime string
+param tokenExpirationTime string = '7/31/2022 8:55:50 AM'
 
 @allowed([
   'Personal'
@@ -78,6 +80,41 @@ param existingSubnetName string = 'snet-${toLower(env)}-hp-data-pers-001'
 param logWorkspaceName string
 
 
+
+param artifactsLocation string
+param awvdNumberOfInstances int
+param currentInstances int
+param domainToJoin string
+
+@description('OU Path were new AVD Session Hosts will be placed in Active Directory')
+param ouPath string
+
+param vmPrefix string
+@secure()
+param localVmAdminUsername string
+@secure()
+param localVmAdminPassword string
+
+@allowed([
+  'Standard_LRS'
+  'Premium_LRS'
+])
+param vmDiskType string
+param vmSize string
+@secure()
+param existingDomainAdminName string
+@secure()
+param existingDomainAdminPassword string
+
+@description('Image Gallery Information')
+param vmGalleryImage object = {
+  imageOffer: 'Windows-10'
+  imageSKU: '20h1-pro'
+  imagePublisher: 'MicrosoftWindowsDesktop'
+}
+
+
+
 var desktopApplicationGroupName = '${hostPoolName}-dag'
 var remoteAppApplicationGroupName = '${hostPoolName}-rag'
 
@@ -105,6 +142,7 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
     newOrExistingWorkspaceName: newOrExistingWorkspaceName
     deployWorkspaceDiagnostic: deployWorkspaceDiagnostic
     hostPoolName: hostPoolName
+    hostPoolFriendlyName: hostPoolFriendlyName
     logWorkspaceName: logWorkspaceName
     monitoringResourceGroupName: monitoringResourceGroupName
     hostPoolType: hostPoolType
@@ -117,6 +155,37 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
     deployDesktopApplicationGroupDiagnostic: deployDesktopApplicationGroupDiagnostic  
     remoteAppApplicationGroupName: remoteAppApplicationGroupName
     deployRemoteAppApplicationGroupDiagnostic: deployRemoteAppApplicationGroupDiagnostic
+  }
+}
+
+
+module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
+  scope: awvdResourceGroup
+  name: 'addHostResources_Deploy'
+  dependsOn: [
+    awvdResourceGroup
+    environmentResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    artifactsLocation: artifactsLocation
+    awvdNumberOfInstances: awvdNumberOfInstances
+    currentInstances: currentInstances
+    hostPoolName: hostPoolName
+    domainToJoin: domainToJoin
+    ouPath: ouPath
+    vmPrefix: vmPrefix
+    localVmAdminUsername: localVmAdminUsername
+    localVmAdminPassword: localVmAdminPassword
+    vmDiskType: vmDiskType
+    vmSize: vmSize
+    existingDomainAdminName: existingDomainAdminName
+    existingDomainAdminPassword: existingDomainAdminPassword
+    awvdResourceGroupName: awvdResourceGroupName
+    existingVnetName: existingAwvdVnetName
+    existingSnetName: existingSubnetName
+    vmGalleryImage: vmGalleryImage
   }
 }
 

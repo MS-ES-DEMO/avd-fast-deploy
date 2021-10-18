@@ -29,20 +29,11 @@ param awvdResourceGroupName string
 param existingVnetName string
 param existingSnetName string
 
-@description('Subscription containing the Shared Image Gallery')
-param sharedImageGallerySubscription string
-
-@description('Resource Group containing the Shared Image Gallery.')
-param sharedImageGalleryResourceGroup string
-
-@description('Name of the existing Shared Image Gallery to be used for image.')
-param sharedImageGalleryName string
-
-@description('Name of the Shared Image Gallery Definition being used for deployment. I.e: AVDGolden')
-param sharedImageGalleryDefinitionname string
-
-@description('Version name for image to be deployed as. I.e: 1.0.0')
-param sharedImageGalleryVersionName string
+param vmGalleryImage object = {
+  imageOffer: 'Windows-10'
+  imageSKU: '20h1-pro'
+  imagePublisher: 'MicrosoftWindowsDesktop'
+}
 
 
 var avSetSku = 'Aligned'
@@ -75,7 +66,7 @@ module availabilitySetResources '../../modules/Microsoft.Compute/availabilitySet
 }
 
 module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'vmResources_Deploy'
+  name: 'vmResources_Deploy${i + currentInstances}'
   dependsOn: [
     nicResources
     availabilitySetResources
@@ -91,7 +82,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
     nicName: '${networkAdapterPrefix}${vmPrefix}-${i + currentInstances}'
     osDiskName: '${vmPrefix}-${i + currentInstances}-os'
     storageAccountType: vmDiskType
-    imageReference: '/subscriptions/${sharedImageGallerySubscription}/resourceGroups/${sharedImageGalleryResourceGroup}/providers/Microsoft.Compute/galleries/${sharedImageGalleryName}/images/${sharedImageGalleryDefinitionname}/versions/${sharedImageGalleryVersionName}'
+    vmGalleryImage: vmGalleryImage
   }
 }]
 
