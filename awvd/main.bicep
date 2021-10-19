@@ -44,7 +44,7 @@ param tokenExpirationTime string = '7/31/2022 8:55:50 AM'
   'Pooled'
 ])
 param hostPoolType string = 'Pooled'
-param hostPoolName string = 'hp-${toLower(env)}-data-pers-001' 
+param hostPoolName string = 'hp-${toLower(env)}-data-pers' 
 param deployHostPoolDiagnostic bool = true
 
 @allowed([

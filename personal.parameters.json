@@ -17,7 +17,7 @@
         "customRdpProperty":{"value": "audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;"},
         "deployDesktopApplicationGroupDiagnostic":{"value": true},
         "existingAwvdVnetName":{"value": "vnet-preprod-awvd"},
-        "existingSubnetName":{"value": "snet-preprod-hp-data-pers-001"},
+        "existingSubnetName":{"value": "snet-preprod-hp-data-pers"},
         "logWorkspaceName":{"value": "workspace-preprod-lz"},
         "artifactsLocation":{"value": "https://github.com/MS-ES-DEMO/awvd-consumption-play"},
         "awvdNumberOfInstances":{"value": 2},
