@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location":{"value": "westeurope"},
+        "env": {"value": "PreProd"},
+        "monitoringResourceGroupName":{"value": "rg-monitoring"},
+        "awvdResourceGroupName":{"value": "rg-awvd-data"},
+        "newScenario":{"value": true},
+        "newOrExistingWorkspaceName":{"value": "wk-data-pooled"},
+        "deployWorkspaceDiagnostic":{"value": true},
+        "tokenExpirationTime":{"value": "7/31/2022 8:55:50 AM"},
+        "hostPoolType":{"value": "Pooled"},
+        "deployHostPoolDiagnostic":{"value": true},
+        "personalDesktopAssignmentType":{"value": "Direct"},
+        "maxSessionLimit":{"value": 10},
+        "customRdpProperty":{"value": "audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;"},
+        "deployDesktopApplicationGroupDiagnostic":{"value": true},
+        "existingAwvdVnetName":{"value": "vnet-preprod-awvd"},
+        "existingSubnetName":{"value": "snet-preprod-hp-data-pooled-001"},
+        "logWorkspaceName":{"value": "workspace-preprod-lz"},
+        "artifactsLocation":{"value": "https://github.com/MS-ES-DEMO/awvd-consumption-play"},
+        "awvdNumberOfInstances":{"value": 2},
+        "currentInstances":{"value": 0},
+        "domainToJoin":{"value": "mydomain.local"},
+        "ouPath":{"value": ""},
+        "vmPrefix":{"value": "vmsh-data-pooled"},
+        "vmDiskType":{"value": "Standard_LRS"},
+        "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h1-pro", "imagePublisher": "MicrosoftWindowsDesktop"}}
+    }
+}
