@@ -111,7 +111,7 @@ param existingDomainAdminPassword string
 @description('Image Gallery Information')
 param vmGalleryImage object = {
   imageOffer: 'Windows-10'
-  imageSKU: '20h1-pro'
+  imageSKU: '20h2-pro'
   imagePublisher: 'MicrosoftWindowsDesktop'
 }
 
