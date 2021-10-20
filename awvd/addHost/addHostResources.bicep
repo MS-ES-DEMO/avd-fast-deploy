@@ -29,11 +29,7 @@ param networkAwvdResourceGroupName string
 param existingVnetName string
 param existingSnetName string
 
-param vmGalleryImage object = {
-  imageOffer: 'Windows-10'
-  imageSKU: '20h1-pro'
-  imagePublisher: 'MicrosoftWindowsDesktop'
-}
+param vmGalleryImage object
 
 
 var avSetSku = 'Aligned'
