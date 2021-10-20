@@ -26,6 +26,7 @@
         "ouPath":{"value": ""},
         "vmPrefix":{"value": "vmsh-data-pooled"},
         "vmDiskType":{"value": "Standard_LRS"},
-        "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h1-pro", "imagePublisher": "MicrosoftWindowsDesktop"}}
+        "vmSize":{"value": "Standard_DS3_V2"},
+        "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h2-evd", "imagePublisher": "MicrosoftWindowsDesktop"}}
     }
 }
