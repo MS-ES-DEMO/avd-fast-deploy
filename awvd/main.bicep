@@ -110,7 +110,7 @@ param existingDomainAdminPassword string
 
 @description('Image Gallery Information')
 param vmGalleryImage object
-
+param1
 
 param2
 
