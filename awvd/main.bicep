@@ -13,7 +13,7 @@ param location string
 @allowed([
   'Dev'
   'Test'
-  'PreProd'
+  'Pre'
   'Uat'
   'Prod'
   'ProdDr'
@@ -23,6 +23,8 @@ param env string
 // resourceGroupNames
 @description('Name for monitoring RG')
 param monitoringResourceGroupName string
+@description('Name for AWVD RG containing networking resources')
+param networkAwvdResourceGroupName string
 @description('Name for AWVD Scenario RG')
 param awvdResourceGroupName string
 
@@ -182,7 +184,7 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
     vmSize: vmSize
     existingDomainAdminName: existingDomainAdminName
     existingDomainAdminPassword: existingDomainAdminPassword
-    awvdResourceGroupName: awvdResourceGroupName
+    networkAwvdResourceGroupName: networkAwvdResourceGroupName
     existingVnetName: existingAwvdVnetName
     existingSnetName: existingSubnetName
     vmGalleryImage: vmGalleryImage

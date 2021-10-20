@@ -25,7 +25,7 @@ param vmDiskType string
 param vmSize string
 param existingDomainAdminName string
 param existingDomainAdminPassword string
-param awvdResourceGroupName string
+param networkAwvdResourceGroupName string
 param existingVnetName string
 param existingSnetName string
 
@@ -43,13 +43,13 @@ var joinDomainExtensionName = 'JsonADDomainExtension'
 var dscExtensionName = 'dscExtension'
 
 module nicResources '../../modules/Microsoft.Network/nic.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'nicResources_Deploy${i}'
+  name: 'nicResources_Deploy${i + currentInstances}'
   params: {
     location: location
     tags: tags
     name: '${networkAdapterPrefix}${vmPrefix}-${i + currentInstances}'
     vnetName: existingVnetName
-    vnetResourceGroupName: awvdResourceGroupName
+    vnetResourceGroupName: networkAwvdResourceGroupName
     snetName: existingSnetName
     nsgName: ''
   }
@@ -87,7 +87,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
 }]
 
 module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'joinDomainExtensionResources_Deploy${i}'
+  name: 'joinDomainExtensionResources_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
   ]
@@ -105,7 +105,7 @@ module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainE
 
 
 module dscExtensionResources '../../modules/Microsoft.Compute/dscExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'dscExtensionResources_Deploy${i}'
+  name: 'dscExtensionResources_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
     joinDomainExtensionResources
