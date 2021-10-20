@@ -111,8 +111,6 @@ param existingDomainAdminPassword string
 @description('Image Gallery Information')
 param vmGalleryImage object
 
-param2
-
 var desktopApplicationGroupName = '${hostPoolName}-dag'
 var remoteAppApplicationGroupName = '${hostPoolName}-rag'
 
