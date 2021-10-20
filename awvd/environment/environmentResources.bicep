@@ -116,6 +116,7 @@ module workspaceResources '../../modules/Microsoft.DesktopVirtualization/workspa
   name: 'workspaceResources_Deploy'
   dependsOn: [
     hostPoolResources
+    desktopApplicationGroupResources
     remoteAppApplicationGroupResources
   ]
   params: {
