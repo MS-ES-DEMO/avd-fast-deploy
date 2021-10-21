@@ -12,6 +12,7 @@
         "newOrExistingWorkspaceName":{"value": "ws-data-pers"},
         "deployWorkspaceDiagnostic":{"value": true},
         "tokenExpirationTime":{"value": "10/30/2021 8:55:50 AM"},
+        "hostPoolName":{"value": "hp-data-pers"},
         "hostPoolType":{"value": "Personal"},
         "deployHostPoolDiagnostic":{"value": true},
         "personalDesktopAssignmentType":{"value": "Direct"},
