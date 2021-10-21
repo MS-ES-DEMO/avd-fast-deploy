@@ -1,12 +1,16 @@
-# Warning: Change deploymentName for a new awvd scenario
+# Warning: Change parameters file based on desired deployment type: personal or pooled scenario
 
+
+Import-Module Tools
+randomPassword
 
 $deploymentName="AWVD-Deployment-$(New-Guid)"
 
-$localVmAdminPassword = 'localVmAdmin123$'
 $localVmAdminUsername = 'localVmAdmin'
+$localVmAdminPassword = randomPassword
+
 $existingDomainAdminName = 'dnsadmin'
-$existingDomainAdminPassword = 'dnsadmin123$'
+$existingDomainAdminPassword = randomPassword
 
 $params = "{ \`"localVmAdminUsername\`":{\`"value\`": \`"${localVmAdminUsername}\`" }, \`"localVmAdminPassword\`":{\`"value\`": \`"${localVmAdminPassword}\`" }, \`"existingDomainAdminName\`":{\`"value\`": \`"${existingDomainAdminName}\`" }, \`"existingDomainAdminPassword\`":{\`"value\`": \`"${existingDomainAdminPassword}\`" } }"
 
