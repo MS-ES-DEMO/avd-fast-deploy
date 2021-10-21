@@ -45,9 +45,8 @@ param tokenExpirationTime string = '7/31/2022 8:55:50 AM'
   'Personal'
   'Pooled'
 ])
-param hostPoolType string = 'Pooled'
-//TODO: modify hostPoolName to allow pers/poooled suffix
 param hostPoolName string
+param hostPoolType string = 'Pooled'
 param deployHostPoolDiagnostic bool = true
 
 @allowed([
@@ -93,24 +92,24 @@ param domainToJoin string
 param ouPath string
 
 param vmPrefix string
-@secure()
-param localVmAdminUsername string
-@secure()
-param localVmAdminPassword string
-
 @allowed([
   'Standard_LRS'
   'Premium_LRS'
 ])
 param vmDiskType string
 param vmSize string
+@description('Image Gallery Information')
+param vmGalleryImage object
+@secure()
+param localVmAdminUsername string
+@secure()
+param localVmAdminPassword string
 @secure()
 param existingDomainAdminName string
 @secure()
 param existingDomainAdminPassword string
 
-@description('Image Gallery Information')
-param vmGalleryImage object
+
 
 var desktopApplicationGroupName = '${hostPoolName}-dag'
 var remoteAppApplicationGroupName = '${hostPoolName}-rag'

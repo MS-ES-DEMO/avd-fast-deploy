@@ -25,11 +25,12 @@
         "artifactsLocation":{"value": "https://extensionsawvd.blob.core.windows.net/extensions/"},
         "awvdNumberOfInstances":{"value": 1},
         "currentInstances":{"value": 0},
-        "domainToJoin":{"value": "mydomain.local"},
-        "ouPath":{"value": ""},
         "vmPrefix":{"value": "vmshdataps"},
         "vmDiskType":{"value": "Standard_LRS"},
         "vmSize":{"value": "Standard_DS3_V2"},
-        "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h2-ent", "imagePublisher": "MicrosoftWindowsDesktop"}}
+        "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h2-ent", "imagePublisher": "MicrosoftWindowsDesktop"}},
+        "domainToJoin":{"value": "mydomain.local"},
+        "ouPath":{"value": ""},
+        "localVmAdminUsername":{"value": "localVmAdmin"}
     }
 }

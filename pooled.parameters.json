@@ -9,7 +9,7 @@
         "networkAwvdResourceGroupName":{"value": "rg-pre-awvd"},
         "newScenario":{"value": false},
         "addHost":{"value": true},
-        "newOrExistingWorkspaceName":{"value": "wk-data-pooled"},
+        "newOrExistingWorkspaceName":{"value": "ws-data-pooled"},
         "deployWorkspaceDiagnostic":{"value": true},
         "tokenExpirationTime":{"value": "10/30/2021 8:55:50 AM"},
         "hostPoolName":{"value": "hp-data-pooled"},
@@ -19,17 +19,19 @@
         "maxSessionLimit":{"value": 10},
         "customRdpProperty":{"value": "audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;"},
         "deployDesktopApplicationGroupDiagnostic":{"value": true},
+        "deployRemoteAppApplicationGroupDiagnostic":{"value": true},
         "existingAwvdVnetName":{"value": "vnet-awvd"},
         "existingSubnetName":{"value": "snet-hp-data-pooled"},
         "logWorkspaceName":{"value": "workspace-lz"},
         "artifactsLocation":{"value": "https://extensionsawvd.blob.core.windows.net/extensions/"},
         "awvdNumberOfInstances":{"value": 1},
         "currentInstances":{"value": 0},
-        "domainToJoin":{"value": "mydomain.local"},
-        "ouPath":{"value": ""},
         "vmPrefix":{"value": "vmshdatapd"},
         "vmDiskType":{"value": "Standard_LRS"},
         "vmSize":{"value": "Standard_DS3_V2"},
-        "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h2-evd", "imagePublisher": "MicrosoftWindowsDesktop"}}
+        "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h2-evd", "imagePublisher": "MicrosoftWindowsDesktop"}},
+        "domainToJoin":{"value": "mydomain.local"},
+        "ouPath":{"value": ""},
+        "localVmAdminUsername":{"value": "localVmAdmin"}
     }
 }

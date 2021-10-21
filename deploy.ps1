@@ -9,7 +9,7 @@ $deploymentName="AWVD-Deployment-$(New-Guid)"
 $localVmAdminUsername = 'localVmAdmin'
 $localVmAdminPassword = randomPassword
 
-$existingDomainAdminName = 'dnsadmin'
+$existingDomainAdminName = 'addsdnsadmin'
 $existingDomainAdminPassword = randomPassword
 
 $params = "{ \`"localVmAdminUsername\`":{\`"value\`": \`"${localVmAdminUsername}\`" }, \`"localVmAdminPassword\`":{\`"value\`": \`"${localVmAdminPassword}\`" }, \`"existingDomainAdminName\`":{\`"value\`": \`"${existingDomainAdminName}\`" }, \`"existingDomainAdminPassword\`":{\`"value\`": \`"${existingDomainAdminPassword}\`" } }"
