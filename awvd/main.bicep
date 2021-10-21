@@ -47,7 +47,7 @@ param tokenExpirationTime string = '7/31/2022 8:55:50 AM'
 ])
 param hostPoolType string = 'Pooled'
 //TODO: modify hostPoolName to allow pers/poooled suffix
-param hostPoolName string = 'hp-${toLower(env)}-data-pers' 
+param hostPoolName string = 'hp-data-pers' 
 param deployHostPoolDiagnostic bool = true
 
 @allowed([
@@ -75,8 +75,8 @@ param hostPoolFriendlyName string = hostPoolName
 param deployDesktopApplicationGroupDiagnostic bool = true
 param deployRemoteAppApplicationGroupDiagnostic bool = true
 
-param existingAwvdVnetName string = 'vnet-${toLower(env)}-awvd'
-param existingSubnetName string = 'snet-${toLower(env)}-hp-data-pers-001'
+param existingAwvdVnetName string = 'vnet-awvd'
+param existingSubnetName string = 'snet-hp-data-pers-001'
 
 
 // monitoringResources
