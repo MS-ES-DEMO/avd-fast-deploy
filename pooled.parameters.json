@@ -11,7 +11,7 @@
         "addHost":{"value": false},
         "newOrExistingWorkspaceName":{"value": "wk-data-pooled"},
         "deployWorkspaceDiagnostic":{"value": true},
-        "tokenExpirationTime":{"value": "7/31/2022 8:55:50 AM"},
+        "tokenExpirationTime":{"value": "10/30/2021 8:55:50 AM"},
         "hostPoolType":{"value": "Pooled"},
         "deployHostPoolDiagnostic":{"value": true},
         "personalDesktopAssignmentType":{"value": "Direct"},
