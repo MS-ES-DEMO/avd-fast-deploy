@@ -1,5 +1,6 @@
 # Warning: Change parameters file based on desired deployment type: personal or pooled scenario
-
+# Warning: Running this script multiple times will cause the admin
+# password for the session host to be changed. Be sure to change the parameters file properly.
 
 Import-Module Tools
 randomPassword
