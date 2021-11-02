@@ -41,11 +41,11 @@ param deployWorkspaceDiagnostic bool = true
 @description('Expiration time for the HostPool registration token. This must be up to 30 days from todays date.')
 param tokenExpirationTime string = '7/31/2022 8:55:50 AM'
 
+param hostPoolName string
 @allowed([
   'Personal'
   'Pooled'
 ])
-param hostPoolName string
 param hostPoolType string = 'Pooled'
 param deployHostPoolDiagnostic bool = true
 
@@ -83,7 +83,7 @@ param logWorkspaceName string
 
 
 
-param artifactsLocation string
+param artifactsLocation string = 'https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"'
 param awvdNumberOfInstances int
 param currentInstances int
 param domainToJoin string
@@ -100,7 +100,6 @@ param vmDiskType string
 param vmSize string
 @description('Image Gallery Information')
 param vmGalleryImage object
-@secure()
 param localVmAdminUsername string
 @secure()
 param localVmAdminPassword string

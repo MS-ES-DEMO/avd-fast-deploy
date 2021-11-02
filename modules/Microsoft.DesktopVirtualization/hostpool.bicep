@@ -41,7 +41,7 @@ resource hostpools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
     registrationInfo: {
       expirationTime: tokenExpirationTime
       //token: null
-      registrationTokenOperation: 'Update'
+      registrationTokenOperation: 'None'
     }
     vmTemplate: ''
   }

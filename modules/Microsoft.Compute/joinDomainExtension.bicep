@@ -29,7 +29,7 @@ resource joindomain 'Microsoft.Compute/virtualMachines/extensions@2021-04-01' = 
     settings: {
       name: domainToJoin
       ouPath: ouPath
-      user: domainAdminUsername
+      user: '${domainAdminUsername}@${domainToJoin}'
       restart: 'true'
       options: '3'
       NumberOfRetries: '4'

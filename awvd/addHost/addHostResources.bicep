@@ -1,5 +1,4 @@
 
-
 param location string = resourceGroup().location
 param tags object
 param artifactsLocation string
@@ -12,7 +11,6 @@ param domainToJoin string
 param ouPath string
 
 param vmPrefix string
-@secure()
 param localVmAdminUsername string
 @secure()
 param localVmAdminPassword string

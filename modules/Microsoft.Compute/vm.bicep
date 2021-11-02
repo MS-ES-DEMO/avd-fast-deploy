@@ -4,7 +4,6 @@ param tags object
 param name string 
 param vmSize string
 param availabilitySetName string
-@secure()
 param adminUsername string 
 @secure()
 param adminPassword string 

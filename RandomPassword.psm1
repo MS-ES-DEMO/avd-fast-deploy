@@ -1,7 +1,8 @@
 
 function randomPassword {
 
-    $charlist = [char]94..[char]126 + [char]65..[char]90 + [char]47..[char]57
+    # 0..255 | Foreach-Object {"$_ : $([char]$_)"}
+    $charlist = [char]97..[char]122 + [char]65..[char]90 + [char]47..[char]57
     # All uppercase and lowercase letters, all numbers and some special characters. 
    
     # Built in parameters from a native PowerShell cmdlet.
