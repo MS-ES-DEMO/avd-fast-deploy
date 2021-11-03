@@ -37,7 +37,7 @@ resource hostpools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
     personalDesktopAssignmentType: personalDesktopAssignmentType
     customRdpProperty: customRdpProperty
     ring: null
-    startVMOnConnect: (hostPoolType == 'Pooled') ? null : true
+    startVMOnConnect: true
     registrationInfo: {
       expirationTime: tokenExpirationTime
       //token: null

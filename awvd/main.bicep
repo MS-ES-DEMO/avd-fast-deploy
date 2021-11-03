@@ -129,7 +129,7 @@ resource awvdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
 
 module environmentResources 'environment/environmentResources.bicep' = if (newScenario) {
   scope: awvdResourceGroup
-  name: 'environmentResources_Deploy'
+  name: 'environmentRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
     awvdResourceGroup
   ]
@@ -158,7 +158,7 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
 
 module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
   scope: awvdResourceGroup
-  name: 'addHostResources_Deploy'
+  name: 'addHostRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
     awvdResourceGroup
     environmentResources
@@ -170,6 +170,7 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
     awvdNumberOfInstances: awvdNumberOfInstances
     currentInstances: currentInstances
     hostPoolName: hostPoolName
+    hostPoolType: hostPoolType
     domainToJoin: domainToJoin
     ouPath: ouPath
     vmPrefix: vmPrefix

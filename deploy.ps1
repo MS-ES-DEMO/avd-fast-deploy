@@ -4,7 +4,7 @@
 
 Import-Module Tools
 
-$deploymentName="AWVD-Deployment-$(New-Guid)"
+$deploymentName="AVD-Deployment-$(New-Guid)"
 
 #$localVmAdminPassword = randomPassword
 $localVmAdminPassword = 'Rq/29lATmDy^AuOM//DxHuxDqm'

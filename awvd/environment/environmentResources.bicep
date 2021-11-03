@@ -52,7 +52,7 @@ var descriptionPooledAppGroup = 'Remote App Application Group created through th
 
 
 module hostPoolResources '../../modules/Microsoft.DesktopVirtualization/hostPool.bicep' = {
-  name: 'hostPoolResources_Deploy'
+  name: 'hostPoolRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   params: {
     location: location
     tags: tags
@@ -72,7 +72,7 @@ module hostPoolResources '../../modules/Microsoft.DesktopVirtualization/hostPool
 
 
 module desktopApplicationGroupResources '../../modules/Microsoft.DesktopVirtualization/applicationGroup.bicep' = {
-  name: 'applicationGroupResources_Deploy'
+  name: 'desktopAppGroupRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
     hostPoolResources
   ]
@@ -91,7 +91,7 @@ module desktopApplicationGroupResources '../../modules/Microsoft.DesktopVirtuali
 }
 
 module remoteAppApplicationGroupResources '../../modules/Microsoft.DesktopVirtualization/applicationGroup.bicep' = if (hostPoolType == 'Pooled') {
-  name: 'pooledApplicationGroupResources_Deploy'
+  name: 'pooledAppGroupRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
     hostPoolResources
     desktopApplicationGroupResources
@@ -113,7 +113,7 @@ module remoteAppApplicationGroupResources '../../modules/Microsoft.DesktopVirtua
 
 
 module workspaceResources '../../modules/Microsoft.DesktopVirtualization/workspace.bicep' = {
-  name: 'workspaceResources_Deploy'
+  name: 'workspaceRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
     hostPoolResources
     desktopApplicationGroupResources

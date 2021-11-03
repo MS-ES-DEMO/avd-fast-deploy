@@ -5,6 +5,7 @@ param artifactsLocation string
 param awvdNumberOfInstances int
 param currentInstances int
 param hostPoolName string
+param hostPoolType string
 param domainToJoin string
 
 @description('OU Path were new AVD Session Hosts will be placed in Active Directory')
@@ -41,7 +42,7 @@ var joinDomainExtensionName = 'JsonADDomainExtension'
 var dscExtensionName = 'dscExtension'
 
 module nicResources '../../modules/Microsoft.Network/nic.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'nicResources_Deploy${i + currentInstances}'
+  name: 'nicRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   params: {
     location: location
     tags: tags
@@ -54,7 +55,7 @@ module nicResources '../../modules/Microsoft.Network/nic.bicep' = [for i in rang
 }]
 
 module availabilitySetResources '../../modules/Microsoft.Compute/availabilitySet.bicep' = {
-  name: 'availabilitySetResources_Deploy'
+  name: 'availabilitySetRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   params: {
     location: location
     tags: tags
@@ -64,7 +65,7 @@ module availabilitySetResources '../../modules/Microsoft.Compute/availabilitySet
 }
 
 module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'vmResources_Deploy${i + currentInstances}'
+  name: 'vmRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     nicResources
     availabilitySetResources
@@ -85,7 +86,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
 }]
 
 module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'joinDomainExtensionResources_Deploy${i + currentInstances}'
+  name: 'joinDomainExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
   ]
@@ -103,7 +104,7 @@ module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainE
 
 
 module dscExtensionResources '../../modules/Microsoft.Compute/dscExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'dscExtensionResources_Deploy${i + currentInstances}'
+  name: 'dscExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
     joinDomainExtensionResources
@@ -119,7 +120,7 @@ module dscExtensionResources '../../modules/Microsoft.Compute/dscExtension.bicep
 }]
 
 module daExtensionResources '../../modules/Microsoft.Compute/daExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'daExtensionResources_Deploy${i + currentInstances}'
+  name: 'daExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
     dscExtensionResources
@@ -132,7 +133,7 @@ module daExtensionResources '../../modules/Microsoft.Compute/daExtension.bicep' 
 }]
 
 module diagnosticsExtensionResources '../../modules/Microsoft.Compute/diagnosticsExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'diagnosticsExtensionResources_Deploy${i + currentInstances}'
+  name: 'diagnosticsExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
     daExtensionResources
@@ -147,7 +148,7 @@ module diagnosticsExtensionResources '../../modules/Microsoft.Compute/diagnostic
 }]
 
 module monitoringAgentExtensionResources '../../modules/Microsoft.Compute/monitoringAgentExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
-  name: 'monitoringAgentExtensionResources_Deploy${i + currentInstances}'
+  name: 'monitoringAgentExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
     diagnosticsExtensionResources
