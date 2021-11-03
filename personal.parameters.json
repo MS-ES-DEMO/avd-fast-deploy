@@ -7,7 +7,7 @@
         "monitoringResourceGroupName":{"value": "rg-pre-monitoring"},
         "awvdResourceGroupName":{"value": "rg-pre-awvd-data"},
         "networkAwvdResourceGroupName":{"value": "rg-pre-awvd"},
-        "newScenario":{"value": true},
+        "newScenario":{"value": false},
         "addHost":{"value": true},
         "newOrExistingWorkspaceName":{"value": "ws-data-pers"},
         "deployWorkspaceDiagnostic":{"value": true},
@@ -24,13 +24,14 @@
         "logWorkspaceName":{"value": "workspace-pre-lz"},
         "artifactsLocation":{"value": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"},
         "awvdNumberOfInstances":{"value": 1},
-        "currentInstances":{"value": 2},
+        "currentInstances":{"value": 1},
         "vmPrefix":{"value": "vmshdataps"},
         "vmDiskType":{"value": "Standard_LRS"},
         "vmSize":{"value": "Standard_DS3_V2"},
         "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h2-ent", "imagePublisher": "MicrosoftWindowsDesktop"}},
         "domainToJoin":{"value": "mydomain.local"},
-        "ouPath":{"value": ""},
-        "localVmAdminUsername":{"value": "localVmAdmin"}
+        "ouPath":{"value": "OU=Personal,OU=AVD,DC=mydomain,DC=local"},
+        "localVmAdminUsername":{"value": "localVmAdmin"},
+        "diagnosticsStorageAccountName":{"value": "sadiagnosticdatademo"}
     }
 }

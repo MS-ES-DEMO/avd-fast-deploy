@@ -31,7 +31,8 @@
         "vmSize":{"value": "Standard_DS3_V2"},
         "vmGalleryImage":{"value": {"imageOffer": "Windows-10", "imageSKU": "20h2-evd", "imagePublisher": "MicrosoftWindowsDesktop"}},
         "domainToJoin":{"value": "mydomain.local"},
-        "ouPath":{"value": ""},
-        "localVmAdminUsername":{"value": "localVmAdmin"}
+        "ouPath":{"value": "OU=Pooled,OU=AVD,DC=mydomain,DC=local"},
+        "localVmAdminUsername":{"value": "localVmAdmin"},
+        "diagnosticsStorageAccountName":{"value": "sadiagnosticdatademo"}
     }
 }

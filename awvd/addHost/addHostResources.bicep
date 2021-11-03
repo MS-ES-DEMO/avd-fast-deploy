@@ -29,6 +29,10 @@ param existingSnetName string
 
 param vmGalleryImage object
 
+param diagnosticsStorageAccountName string
+param monitoringResourceGroupName string
+param logWorkspaceName string
+
 
 var avSetSku = 'Aligned'
 var networkAdapterPrefix = 'nic-'
@@ -114,4 +118,47 @@ module dscExtensionResources '../../modules/Microsoft.Compute/dscExtension.bicep
   }
 }]
 
+module daExtensionResources '../../modules/Microsoft.Compute/daExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
+  name: 'daExtensionResources_Deploy${i + currentInstances}'
+  dependsOn: [
+    vmResources
+    dscExtensionResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    vmName: '${vmPrefix}-${i + currentInstances}'
+  }
+}]
+
+module diagnosticsExtensionResources '../../modules/Microsoft.Compute/diagnosticsExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
+  name: 'diagnosticsExtensionResources_Deploy${i + currentInstances}'
+  dependsOn: [
+    vmResources
+    daExtensionResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    vmName: '${vmPrefix}-${i + currentInstances}'
+    diagnosticsStorageAccountName: diagnosticsStorageAccountName
+    monitoringResourceGroupName: monitoringResourceGroupName
+  }
+}]
+
+module monitoringAgentExtensionResources '../../modules/Microsoft.Compute/monitoringAgentExtension.bicep' = [for i in range(0, awvdNumberOfInstances): {
+  name: 'monitoringAgentExtensionResources_Deploy${i + currentInstances}'
+  dependsOn: [
+    vmResources
+    diagnosticsExtensionResources
+    daExtensionResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    vmName: '${vmPrefix}-${i + currentInstances}'
+    logWorkspaceName: logWorkspaceName
+    monitoringResourceGroupName: monitoringResourceGroupName
+  }
+}]
 

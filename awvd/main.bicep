@@ -80,6 +80,8 @@ param existingSubnetName string = 'snet-hp-data-pers-001'
 
 // monitoringResources
 param logWorkspaceName string
+@description('Name for diagnostic storage account')
+param diagnosticsStorageAccountName string
 
 
 
@@ -181,6 +183,9 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
     existingVnetName: existingAwvdVnetName
     existingSnetName: existingSubnetName
     vmGalleryImage: vmGalleryImage
+    diagnosticsStorageAccountName: diagnosticsStorageAccountName
+    monitoringResourceGroupName: monitoringResourceGroupName
+    logWorkspaceName: logWorkspaceName
   }
 }
 
