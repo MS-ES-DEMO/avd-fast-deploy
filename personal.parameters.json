@@ -7,6 +7,7 @@
         "monitoringResourceGroupName":{"value": "rg-pre-monitoring"},
         "awvdResourceGroupName":{"value": "rg-pre-awvd-data"},
         "networkAwvdResourceGroupName":{"value": "rg-pre-awvd"},
+        "avdAutoscaleRoleName":{"value": "AVD Autoscale"},
         "newScenario":{"value": true},
         "addHost":{"value": false},
         "newOrExistingWorkspaceName":{"value": "ws-data-pers"},

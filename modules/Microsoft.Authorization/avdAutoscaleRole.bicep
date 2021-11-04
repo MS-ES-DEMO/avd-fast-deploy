@@ -26,7 +26,7 @@ resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
     roleName: name
     type: 'customRole'
     assignableScopes: [ 
-      '/subscriptions/${subscription().id}' 
+      '/subscriptions/${subscription().id}/' 
     ]
     description: 'This role will allow Windows Virtual Desktop to power manage all VMs in this subscription.'
     permissions: [
