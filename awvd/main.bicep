@@ -28,6 +28,10 @@ param networkAwvdResourceGroupName string
 @description('Name for AWVD Scenario RG')
 param awvdResourceGroupName string
 
+// sharedResources Parameters
+@description('Name for the AVD autoscale role')
+param avdAutoscaleRoleName string
+
 // awvdResources Parameters
 @description('If true Host Pool, App Group and Workspace will be created. Default is to join Session Hosts to existing AVD environment')
 param newScenario bool = true
@@ -126,6 +130,16 @@ resource awvdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: awvdResourceGroupName
   location: location
 }
+
+
+module sharedResources 'shared/sharedResources.bicep' = if (newScenario) {
+  scope: awvdResourceGroup
+  name: 'sharedRss_Deploy'
+  params: {
+    name: avdAutoscaleRoleName
+  }
+}
+
 
 module environmentResources 'environment/environmentResources.bicep' = if (newScenario) {
   scope: awvdResourceGroup

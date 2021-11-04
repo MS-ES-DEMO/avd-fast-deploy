@@ -70,7 +70,6 @@ module hostPoolResources '../../modules/Microsoft.DesktopVirtualization/hostPool
   }
 }
 
-
 module desktopApplicationGroupResources '../../modules/Microsoft.DesktopVirtualization/applicationGroup.bicep' = {
   name: 'desktopAppGroupRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
