@@ -70,6 +70,17 @@ module hostPoolResources '../../modules/Microsoft.DesktopVirtualization/hostPool
   }
 }
 
+module scalingPlanResources '../../modules/Microsoft.DesktopVirtualization/scalingPlan.bicep' = {
+  name: 'scalingPlanRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
+  dependsOn: [
+    hostPoolResources
+  ]
+  params: {
+    location:location
+    tags: tags
+  }
+}
+
 module desktopApplicationGroupResources '../../modules/Microsoft.DesktopVirtualization/applicationGroup.bicep' = {
   name: 'desktopAppGroupRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
