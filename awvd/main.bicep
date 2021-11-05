@@ -74,6 +74,21 @@ param customRdpProperty string = 'audiocapturemode:i:0;audiomode:i:0;drivestored
 @description('Friendly Name of the Host Pool, this is visible via the AVD client')
 param hostPoolFriendlyName string = hostPoolName
 
+@description('The name of the Scaling plan to be created.')
+param scalingPlanName string
+
+@description('Scaling plan autoscaling triggers and Start/Stop actions will execute in the time zone selected.')
+param timeZone string
+
+@description('The schedules of the Scaling plan to be created.')
+param schedules array
+
+@description('Is the scaling plan enabled for this hostpool?.')
+param scalingPlanEnabled bool
+
+@description('The name of the tag associated with the VMs that will be excluded from the Scaling plan.')
+param exclusionTag string = ''
+
 
 param deployDesktopApplicationGroupDiagnostic bool = true
 param deployRemoteAppApplicationGroupDiagnostic bool = true
@@ -132,9 +147,8 @@ resource awvdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
 }
 
 
-module sharedResources 'shared/sharedResources.bicep' = if (newScenario) {
-  scope: awvdResourceGroup
-  name: 'sharedRss_Deploy'
+module iamResources 'iam/iamResources.bicep' = if (newScenario) {
+  name: 'iamRss_Deploy'
   params: {
     name: avdAutoscaleRoleName
   }
@@ -160,6 +174,11 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
     deployHostPoolDiagnostic: deployHostPoolDiagnostic
     maxSessionLimit: maxSessionLimit
     tokenExpirationTime: tokenExpirationTime
+    scalingPlanName: scalingPlanName
+    timeZone: timeZone
+    schedules: schedules
+    scalingPlanEnabled: scalingPlanEnabled
+    exclusionTag: exclusionTag
     personalDesktopAssignmentType: personalDesktopAssignmentType
     customRdpProperty: customRdpProperty
     desktopApplicationGroupName: desktopApplicationGroupName

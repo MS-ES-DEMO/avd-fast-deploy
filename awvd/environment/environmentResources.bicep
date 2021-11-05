@@ -26,7 +26,12 @@ param maxSessionLimit int = 12
 
 param customRdpProperty string = 'audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;'
 
-//param hostPoolFriendlyName string = hostPoolName
+param scalingPlanName string
+param timeZone string
+param schedules array
+param scalingPlanEnabled bool
+param exclusionTag string
+
 
 param existingApplicationGroupIds array = []
 
@@ -78,6 +83,12 @@ module scalingPlanResources '../../modules/Microsoft.DesktopVirtualization/scali
   params: {
     location:location
     tags: tags
+    hostPoolName: hostPoolName
+    scalingPlanName: scalingPlanName
+    timeZone: timeZone
+    schedules: schedules
+    scalingPlanEnabled: scalingPlanEnabled
+    exclusionTag: exclusionTag
   }
 }
 

@@ -1,4 +1,5 @@
 
+targetScope = 'subscription'
 
 // TODO: verify the required parameters
 

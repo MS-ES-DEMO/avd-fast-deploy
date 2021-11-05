@@ -1,3 +1,4 @@
+targetScope = 'subscription'
 
 param name string 
 
@@ -26,7 +27,8 @@ resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
     roleName: name
     type: 'customRole'
     assignableScopes: [ 
-      '/subscriptions/${subscription().id}' 
+      '${subscription().id}'
+      //'${subscription().id}/resourcegroups/rg-awvd-data'
     ]
     description: 'This role will allow Windows Virtual Desktop to power manage all VMs in this subscription.'
     permissions: [
@@ -41,10 +43,10 @@ resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
 }
 
 // az ad sp show --id 26da2792-4d23-4313-b9e7-60bd7c1bf0b1 to get principalId
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
-  name: '${name}Assignment'
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+  name: guid(name, 'Role Assignment')
   properties: {
-    principalId: '9cdead84-a844-4324-93f2-b2e6bb768d07'
+    principalId: '26da2792-4d23-4313-b9e7-60bd7c1bf0b1'
     principalType: 'ServicePrincipal'
     roleDefinitionId: role.id
   }

@@ -22,7 +22,7 @@ resource logWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
 }
 
 
-resource hostpools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
+resource hostPools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
   name: name
   location: location
   tags: tags
@@ -50,7 +50,7 @@ resource hostpools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = if (deployDiagnostic) {
   name: '${name}-diagsetting'
-  scope: hostpools
+  scope: hostPools
   properties: {
     storageAccountId: null
     eventHubAuthorizationRuleId: null
@@ -104,4 +104,4 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-pr
 
 
 
-output hostpoolToken string = hostpools.properties.registrationInfo.token
+output hostpoolToken string = hostPools.properties.registrationInfo.token
