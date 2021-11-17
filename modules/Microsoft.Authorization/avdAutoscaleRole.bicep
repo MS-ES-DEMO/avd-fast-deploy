@@ -28,7 +28,7 @@ resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
     type: 'customRole'
     assignableScopes: [ 
       '${subscription().id}'
-      //'${subscription().id}/resourcegroups/rg-awvd-data'
+      //'${subscription().id}/resourcegroups/rg-avd-data'
     ]
     description: 'This role will allow Windows Virtual Desktop to power manage all VMs in this subscription.'
     permissions: [

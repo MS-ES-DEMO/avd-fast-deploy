@@ -23,16 +23,16 @@ param env string
 // resourceGroupNames
 @description('Name for monitoring RG')
 param monitoringResourceGroupName string
-@description('Name for AWVD RG containing networking resources')
-param networkAwvdResourceGroupName string
-@description('Name for AWVD Scenario RG')
-param awvdResourceGroupName string
+@description('Name for AVD RG containing networking resources')
+param networkAvdResourceGroupName string
+@description('Name for AVD Scenario RG')
+param avdResourceGroupName string
 
 // sharedResources Parameters
 @description('Name for the AVD autoscale role')
 param avdAutoscaleRoleName string
 
-// awvdResources Parameters
+// avdResources Parameters
 @description('If true Host Pool, App Group and Workspace will be created. Default is to join Session Hosts to existing AVD environment')
 param newScenario bool = true
 @description('Add new session hosts?')
@@ -93,7 +93,7 @@ param exclusionTag string = ''
 param deployDesktopApplicationGroupDiagnostic bool = true
 param deployRemoteAppApplicationGroupDiagnostic bool = true
 
-param existingAwvdVnetName string = 'vnet-awvd'
+param existingAvdVnetName string = 'vnet-avd'
 param existingSubnetName string = 'snet-hp-data-pers-001'
 
 
@@ -105,7 +105,7 @@ param diagnosticsStorageAccountName string
 
 
 param artifactsLocation string = 'https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"'
-param awvdNumberOfInstances int
+param avdNumberOfInstances int
 param currentInstances int
 param domainToJoin string
 
@@ -141,8 +141,8 @@ var tags = {
   Location: 'AzureWestEurope' // <CSP><AzureRegion>
 }
 
-resource awvdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
-  name: awvdResourceGroupName
+resource avdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: avdResourceGroupName
   location: location
 }
 
@@ -156,10 +156,10 @@ module iamResources 'iam/iamResources.bicep' = if (newScenario) {
 
 
 module environmentResources 'environment/environmentResources.bicep' = if (newScenario) {
-  scope: awvdResourceGroup
+  scope: avdResourceGroup
   name: 'environmentRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
-    awvdResourceGroup
+    avdResourceGroup
   ]
   params: {
     location: location
@@ -190,17 +190,17 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
 
 
 module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
-  scope: awvdResourceGroup
+  scope: avdResourceGroup
   name: 'addHostRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
-    awvdResourceGroup
+    avdResourceGroup
     environmentResources
   ]
   params: {
     location: location
     tags: tags
     artifactsLocation: artifactsLocation
-    awvdNumberOfInstances: awvdNumberOfInstances
+    avdNumberOfInstances: avdNumberOfInstances
     currentInstances: currentInstances
     hostPoolName: hostPoolName
     hostPoolType: hostPoolType
@@ -213,8 +213,8 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
     vmSize: vmSize
     existingDomainAdminName: existingDomainAdminName
     existingDomainAdminPassword: existingDomainAdminPassword
-    networkAwvdResourceGroupName: networkAwvdResourceGroupName
-    existingVnetName: existingAwvdVnetName
+    networkAvdResourceGroupName: networkAvdResourceGroupName
+    existingVnetName: existingAvdVnetName
     existingSnetName: existingSubnetName
     vmGalleryImage: vmGalleryImage
     diagnosticsStorageAccountName: diagnosticsStorageAccountName

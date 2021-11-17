@@ -10,7 +10,7 @@ param tags object
 // resourceGroupNames
 param monitoringResourceGroupName string
 
-// awvdResources Parameters
+// avdResources Parameters
 param newOrExistingWorkspaceName string
 param deployWorkspaceDiagnostic bool = true
 param tokenExpirationTime string
