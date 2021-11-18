@@ -75,7 +75,7 @@ module hostPoolResources '../../modules/Microsoft.DesktopVirtualization/hostPool
   }
 }
 
-module scalingPlanResources '../../modules/Microsoft.DesktopVirtualization/scalingPlan.bicep' = {
+module scalingPlanResources '../../modules/Microsoft.DesktopVirtualization/scalingPlan.bicep' = if (hostPoolType == 'Pooled') {
   name: 'scalingPlanRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
     hostPoolResources
