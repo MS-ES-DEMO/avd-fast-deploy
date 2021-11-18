@@ -22,7 +22,7 @@
         "deployDesktopApplicationGroupDiagnostic":{"value": true},
         "existingAvdVnetName":{"value": "vnet-avd"},
         "existingSubnetName":{"value": "snet-hp-data-pers"},
-        "logWorkspaceName":{"value": "workspace-pre-lz"},
+        "logWorkspaceName":{"value": "workspace-pre-base"},
         "artifactsLocation":{"value": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"},
         "avdNumberOfInstances":{"value": 1},
         "currentInstances":{"value": 0},
