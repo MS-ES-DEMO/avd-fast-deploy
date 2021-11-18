@@ -124,7 +124,6 @@ param vmGalleryImage object
 param localVmAdminUsername string
 @secure()
 param localVmAdminPassword string
-@secure()
 param existingDomainAdminName string
 @secure()
 param existingDomainAdminPassword string
@@ -223,6 +222,8 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
   }
 }
 
+output localVmAdminPassword string = localVmAdminPassword
+output existingDomainAdminPassword string = existingDomainAdminPassword
 
 
 

@@ -6,13 +6,10 @@ Import-Module Tools
 
 $deploymentName="AVD-Deployment-$(New-Guid)"
 
-#$localVmAdminPassword = randomPassword
-$localVmAdminPassword = 'Rq/29lATmDy^AuOM//DxHuxDqm'
+$localVmAdminPassword = randomPassword
+$existingDomainAdminPassword = randomPassword 
 
-$existingDomainAdminName = 'addsdnsadmin'
-$existingDomainAdminPassword = 'G6vOWZ1DrmUZaAP0maOgWJhDMAAkS5z' #TODO: Remove
-
-$params = "{ \`"localVmAdminPassword\`":{\`"value\`": \`"${localVmAdminPassword}\`" }, \`"existingDomainAdminName\`":{\`"value\`": \`"${existingDomainAdminName}\`" }, \`"existingDomainAdminPassword\`":{\`"value\`": \`"${existingDomainAdminPassword}\`" } }"
+$params = "{ \`"localVmAdminPassword\`":{\`"value\`": \`"${localVmAdminPassword}\`" }, \`"existingDomainAdminPassword\`":{\`"value\`": \`"${existingDomainAdminPassword}\`" } }"
 
 # The deployment is applied at the subscription scope
 # TODO: Ensure the parameters.json file us up to date

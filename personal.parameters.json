@@ -33,6 +33,7 @@
         "domainToJoin":{"value": "mydomain.local"},
         "ouPath":{"value": "OU=Personal,OU=AVD,DC=mydomain,DC=local"},
         "localVmAdminUsername":{"value": "localVmAdmin"},
+        "existingDomainAdminName":{"value": "addsdnsadmin"},
         "diagnosticsStorageAccountName":{"value": "sadiagnosticdatademo"}
     }
 }
