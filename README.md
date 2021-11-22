@@ -4,19 +4,19 @@ This repository contains the templates required to deploy a Virtual Desktop scen
 
 ## Repository files
 
-The avd folder structure is as follow:
+The `avd` folder structure is as follow:
 
-- environment: deploys hostpool (pooled or personal) resources, scaling plan, desktop application group, remoteapp application group (only for pooled hostpool) and a workspace.
+- `environment`: deploys hostpool (pooled or personal) resources, scaling plan, desktop application group, remoteapp application group (only for pooled hostpool) and a workspace.
 
-- addHost: deploys the required modules to add new session hosts to the hostpool deployed.
+- `addHost`: deploys the required modules to add new session hosts to the hostpool deployed.
 
-- iam: deploys virtual desktop autoscale role resources.
+- `iam`: deploys virtual desktop autoscale role resources.
 
 ## Prerequisites
 
-* [Install the latest version of PowerShell available for your operating system.](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2). Powershell 7.0 is the minimum required version to run this script.
+* [Install the latest version of PowerShell available for your operating system](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2). Powershell 7.0 is the minimum required version to run this script.
 
-* [Azure CLI version 2.20.0 or later installed is also required.](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). Use the below command to check your current installed version.
+* [Azure CLI version 2.20.0 or later installed is also required](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). Use the below command to check your current installed version.
 
 ``` shell
 az --version
@@ -43,6 +43,7 @@ It will be necessary some resources:
 - A network Resource Group
 - A vnet for virtual desktop workloads created in the network Resource Group
 - A subnet for the hostpool 
+- An Active Directory Domain Services or Azure Active Directory Domain Services connectivity
 
 ### Steps
 
@@ -52,11 +53,13 @@ It will be necessary some resources:
 git clone https://github.com/MS-ES-DEMO/avd-consumption-play.git
 ```
 
-* Create a folder called "Tools" under the "C:\Program Files\PowerShell\7\Modules" path and copy the RandomPassword.psm1 file into this folder. This powershell module will be use by deploy.ps1 to generate strong passwords for two important required parameters.
+* Create a folder called "Tools" under the `C:\Program Files\PowerShell\7\Modules` path and copy the `RandomPassword.psm1` file into this folder. This powershell module will be use by `deploy.ps1` to generate strong passwords for two important required parameters.
 
 * Select and edit the parameter file based on whether you will deploy personal or pooled host pool.
 
-* Edit the '--parameters' attribute in the deploy.ps1 script with the correct parameter file name and then run the "deploy.ps1" script.
+* Login to AZ CLI using the `az login` command.
+
+* Edit the `--parameters` attribute in the `deploy.ps1` script with the correct parameter file name and then run the `deploy.ps1` script.
 
 
 
