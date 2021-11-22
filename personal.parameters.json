@@ -17,7 +17,6 @@
         "hostPoolType":{"value": "Personal"},
         "deployHostPoolDiagnostic":{"value": true},
         "personalDesktopAssignmentType":{"value": "Direct"},
-        "maxSessionLimit":{"value": 10},
         "customRdpProperty":{"value": "audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;"},
         "deployDesktopApplicationGroupDiagnostic":{"value": true},
         "existingAvdVnetName":{"value": "vnet-avd"},

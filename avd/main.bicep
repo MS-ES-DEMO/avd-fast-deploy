@@ -75,16 +75,16 @@ param customRdpProperty string = 'audiocapturemode:i:0;audiomode:i:0;drivestored
 param hostPoolFriendlyName string = hostPoolName
 
 @description('The name of the Scaling plan to be created.')
-param scalingPlanName string
+param scalingPlanName string = 'sp-hp-data-pool'
 
 @description('Scaling plan autoscaling triggers and Start/Stop actions will execute in the time zone selected.')
-param timeZone string
+param timeZone string = 'Romance Standard Time'
 
 @description('The schedules of the Scaling plan to be created.')
-param schedules array
+param schedules array = []
 
 @description('Is the scaling plan enabled for this hostpool?.')
-param scalingPlanEnabled bool
+param scalingPlanEnabled bool= false
 
 @description('The name of the tag associated with the VMs that will be excluded from the Scaling plan.')
 param exclusionTag string = ''
