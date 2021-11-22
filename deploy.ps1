@@ -7,7 +7,7 @@ Import-Module Tools
 $deploymentName="AVD-Deployment-$(New-Guid)"
 
 $localVmAdminPassword = randomPassword
-$existingDomainAdminPassword = randomPassword 
+$existingDomainAdminPassword = 'XgXqIlT6LYBydGnhvKd\cue/9q5k'
 
 $params = "{ \`"localVmAdminPassword\`":{\`"value\`": \`"${localVmAdminPassword}\`" }, \`"existingDomainAdminPassword\`":{\`"value\`": \`"${existingDomainAdminPassword}\`" } }"
 

@@ -53,7 +53,7 @@ It will be necessary some resources:
 git clone https://github.com/MS-ES-DEMO/avd-consumption-play.git
 ```
 
-* Create a folder called "Tools" under the `C:\Program Files\PowerShell\7\Modules` path and copy the `RandomPassword.psm1` file into this folder. This powershell module will be used by `deploy.ps1` to generate strong passwords for two important required parameters.
+* Create a folder called "Tools" under the `C:\Program Files\PowerShell\7\Modules` path and copy the `RandomPassword.psm1` file into this folder. This powershell module will be used by `deploy.ps1` to generate strong password for one important required parameter.
 
 * Select and edit the parameter file based on whether you will deploy personal or pooled host pool.
 
