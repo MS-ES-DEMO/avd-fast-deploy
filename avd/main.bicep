@@ -68,7 +68,7 @@ param deployHostPoolDiagnostic bool = true
   'Automatic'
   'Direct'
 ])
-param personalDesktopAssignmentType string = 'Direct'
+param personalDesktopAssignmentType string = 'Automatic'
 param maxSessionLimit int = 12
 
 /*
@@ -104,8 +104,8 @@ param exclusionTag string = ''
 param deployDesktopApplicationGroupDiagnostic bool = true
 param deployRemoteAppApplicationGroupDiagnostic bool = true
 
-param existingAvdVnetName string = 'vnet-avd'
-param existingSubnetName string = 'snet-hp-data-pers-001'
+param existingAvdVnetName string
+param existingSubnetName string
 
 
 // monitoringResources

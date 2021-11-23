@@ -34,7 +34,7 @@ resource hostPools 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
     description: 'Created through the WVD extension'
     hostPoolType: hostPoolType
     preferredAppGroupType: 'Desktop'
-    personalDesktopAssignmentType: personalDesktopAssignmentType
+    personalDesktopAssignmentType: (hostPoolType == 'Personal') ? personalDesktopAssignmentType : null
     customRdpProperty: customRdpProperty
     ring: null
     startVMOnConnect: true
