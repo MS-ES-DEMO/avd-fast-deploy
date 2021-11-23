@@ -5,12 +5,27 @@ targetScope = 'subscription'
 
 // Global Parameters
 
-param name string 
+param avdAutoscaleRoleInfo object 
+param avdStartOnConnectRoleInfo object 
 
-module avdAutoscaleRoleResources '../../modules/Microsoft.Authorization/avdAutoscaleRole.bicep' = {
-  name: 'avdAutoscaleRole_Deploy'
+
+module avdAutoscaleRoleResources '../../modules/Microsoft.Authorization/role.bicep' = {
+  name: 'avdAutoscaleRoleRss_Deploy'
   params: {
-    name: name
+    name: avdAutoscaleRoleInfo.name
+    description: avdAutoscaleRoleInfo.description
+    actions: avdAutoscaleRoleInfo.actions
+    principalId: avdAutoscaleRoleInfo.principalId
+  }
+}
+
+module avdStartOnConnectRoleResources '../../modules/Microsoft.Authorization/role.bicep' = {
+  name: 'avdStartOnConnectRoleRss_Deploy'
+  params: {
+    name: avdStartOnConnectRoleInfo.name
+    description: avdStartOnConnectRoleInfo.description
+    actions: avdStartOnConnectRoleInfo.actions
+    principalId: avdStartOnConnectRoleInfo.principalId
   }
 }
 

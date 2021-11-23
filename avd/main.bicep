@@ -29,8 +29,19 @@ param networkAvdResourceGroupName string
 param avdResourceGroupName string
 
 // sharedResources Parameters
-@description('Name for the AVD autoscale role')
-param avdAutoscaleRoleName string
+@description('Info for the AVD autoscale role')
+param avdAutoscaleRoleInfo object
+@description('Info for the AVD Start VM on connect role')
+param avdStartOnConnectRoleInfo object = {
+  name: 'AVD Start VM on connect (Custom)'
+  description: 'Start VM on connect with AVD (Custom)'
+  actions: [ 
+    'Microsoft.Compute/virtualMachines/start/action'
+    'Microsoft.Compute/virtualMachines/*/read'
+  ]
+  principalId: '26da2792-4d23-4313-b9e7-60bd7c1bf0b1'
+}
+
 
 // avdResources Parameters
 @description('If true Host Pool, App Group and Workspace will be created. Default is to join Session Hosts to existing AVD environment')
@@ -149,7 +160,8 @@ resource avdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
 module iamResources 'iam/iamResources.bicep' = if (newScenario) {
   name: 'iamRss_Deploy'
   params: {
-    name: avdAutoscaleRoleName
+    avdAutoscaleRoleInfo: avdAutoscaleRoleInfo
+    avdStartOnConnectRoleInfo: avdStartOnConnectRoleInfo
   }
 }
 
