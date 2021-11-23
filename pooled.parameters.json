@@ -38,7 +38,7 @@
           "principalId": "26da2792-4d23-4313-b9e7-60bd7c1bf0b1"
         }},
         "newScenario":{"value": true},
-        "addHost":{"value": false},
+        "addHost":{"value": true},
         "newOrExistingWorkspaceName":{"value": "ws-data-pool"},
         "deployWorkspaceDiagnostic":{"value": true},
         "tokenExpirationTime":{"value": "11/30/2021 8:55:50 AM"},
@@ -96,6 +96,7 @@
         "domainToJoin":{"value": "mydomain.local"},
         "ouPath":{"value": "OU=Pooled,OU=AVD,DC=mydomain,DC=local"},
         "localVmAdminUsername":{"value": "localVmAdmin"},
+        "existingDomainAdminName":{"value": "addsdnsadmin"},
         "diagnosticsStorageAccountName":{"value": "sadiagnosticdatademo"}
     }
 }
