@@ -131,6 +131,26 @@ module remoteAppApplicationGroupResources '../../modules/Microsoft.DesktopVirtua
   }
 }
 
+module remoteAppApplicationsResources '../../modules/Microsoft.DesktopVirtualization/application.bicep' = if (hostPoolType == 'Pooled') {
+  name: 'applicationsRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
+  dependsOn: [
+    hostPoolResources
+    desktopApplicationGroupResources
+    remoteAppApplicationGroupResources
+  ]
+  params: {
+    name: remoteAppApplicationGroupName
+    applicationGroupName:  
+    applicationType: 
+    description: 
+    filePath: 
+    friendlyName: 
+    iconIndex: 
+    iconPath: 
+    showInPortal: 
+  }
+}
+
 
 
 module workspaceResources '../../modules/Microsoft.DesktopVirtualization/workspace.bicep' = {
