@@ -42,6 +42,9 @@ param deployRemoteAppApplicationGroupDiagnostic bool = true
 param desktopApplicationGroupName string
 param remoteAppApplicationGroupName string
 
+
+param appsListInfo array
+
 // monitoringResources
 param logWorkspaceName string
 
@@ -131,25 +134,25 @@ module remoteAppApplicationGroupResources '../../modules/Microsoft.DesktopVirtua
   }
 }
 
-module remoteAppApplicationsResources '../../modules/Microsoft.DesktopVirtualization/application.bicep' = if (hostPoolType == 'Pooled') {
-  name: 'applicationsRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
+module remoteAppApplicationsResources '../../modules/Microsoft.DesktopVirtualization/application.bicep' = [ for (app, i) in appsListInfo : if (hostPoolType == 'Pooled') {
+  name: 'applicationsRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i}'
   dependsOn: [
     hostPoolResources
     desktopApplicationGroupResources
     remoteAppApplicationGroupResources
   ]
   params: {
-    name: remoteAppApplicationGroupName
-    applicationGroupName:  
-    applicationType: 
-    description: 
-    filePath: 
-    friendlyName: 
-    iconIndex: 
-    iconPath: 
-    showInPortal: 
+    name: app.remoteAppApplicationName
+    applicationGroupName: remoteAppApplicationGroupName
+    applicationType: app.applicationType
+    description: app.description
+    filePath: app.filePath
+    friendlyName: app.friendlyName
+    iconIndex: app.iconIndex
+    iconPath: app.iconPath
+    showInPortal: app.showInPortal
   }
-}
+}]
 
 
 
