@@ -38,7 +38,7 @@
           "principalId": "26da2792-4d23-4313-b9e7-60bd7c1bf0b1"
         }},
         "newScenario":{"value": true},
-        "addHost":{"value": true},
+        "addHost":{"value": false},
         "newOrExistingWorkspaceName":{"value": "ws-avd-datapool-prod-001"},
         "deployWorkspaceDiagnostic":{"value": true},
         "tokenExpirationTime":{"value": "11/30/2021 8:55:50 AM"},
@@ -85,6 +85,49 @@
         "deployRemoteAppApplicationGroupDiagnostic":{"value": true},
         "existingAvdVnetName":{"value": "vnet-avd-we-001"},
         "existingSubnetName":{"value": "HostPoolSubnet"},
+        "appsListInfo":{"value": [
+            {
+                "remoteAppApplicationName": "Word",
+                "applicationType": "Inbuilt",
+                "description": "Word",
+                "filePath": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+                "friendlyName": "Word",
+                "iconIndex": 0,
+                "iconPath": "C:\\Program Files\\Microsoft Office\\Root\\VFS\\Windows\\Installer\\{90160000-000F-0000-1000-0000000FF1CE}\\wordicon.exe",
+                "showInPortal": true
+              },
+              {
+                "remoteAppApplicationName": "Paint",
+                "applicationType": "InBuilt",
+                "description": "Paint",
+                "filePath": "C:\\Windows\\system32\\mspaint.exe",
+                "friendlyName": "Paint",
+                "iconIndex": 0,
+                "iconPath": "C:\\Windows\\system32\\mspaint.exe",
+                "showInPortal": true
+              },
+              {
+                "remoteAppApplicationName": "Remote Desktop Connection",
+                "applicationType": "InBuilt",
+                "description": "Remote Desktop Connection",
+                "filePath": "C:\\Windows\\system32\\mstsc.exe",
+                "friendlyName": "Paint",
+                "iconIndex": 0,
+                "iconPath": "C:\\Windows\\system32\\mstsc.exe",
+                "showInPortal": true
+              },
+              {
+                "remoteAppApplicationName": "Excel",
+                "applicationType": "InBuilt",
+                "description": "Excel",
+                "filePath": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+                "friendlyName": "Paint",
+                "iconIndex": 0,
+                "iconPath": "C:\\Program Files\\Microsoft Office\\Root\\VFS\\Windows\\Installer\\{90160000-000F-0000-1000-0000000FF1CE}\\xlicons.exe",
+                "showInPortal": true
+              }
+            ]
+        },
         "logWorkspaceName":{"value": "la-monitoring-prod-we-001"},
         "artifactsLocation":{"value": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"},
         "avdNumberOfInstances":{"value": 1},
