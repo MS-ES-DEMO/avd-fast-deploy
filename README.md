@@ -44,6 +44,7 @@ It will be necessary some resources:
 - A vnet for virtual desktop workloads created in the network Resource Group
 - A subnet for the hostpool 
 - An Active Directory Domain Services or Azure Active Directory Domain Services connectivity
+- A storage account used by the diagnostics extension 
 
 ### Steps
 
