@@ -21,8 +21,9 @@ $existingDomainAdminPassword = 'XgXqIlT6LYBydGnhvKd\cue/9q5k'#TODO: ONLY FOR TES
 $params = "{ \`"localVmAdminPassword\`":{\`"value\`": \`"${localVmAdminPassword}\`" }, \`"existingDomainAdminPassword\`":{\`"value\`": \`"${existingDomainAdminPassword}\`" } }"
 
 # The deployment is applied at the subscription scope
-# TODO: Ensure the parameters.json file is up to date
-# TODO: For production deployments, update the deployment parameter file in the command below.
+# Ensure the parameters.json file is up to date
+# For production deployments, update the deployment parameter file in the command below.
+# Uncomment the following lines based on your scenario
 
 #az deployment sub create -l westeurope -n $deploymentName --template-file '.\avd\main.bicep' --parameters '.\personal.parameters.json' --parameters $params
 az deployment sub create -l westeurope -n $deploymentName --template-file '.\avd\main.bicep' --parameters '.\pooled.parameters.json' --parameters $params
