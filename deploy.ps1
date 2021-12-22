@@ -9,7 +9,8 @@ $deploymentName="AVD-PRE-Data-Pooled-Deployment"
 #$deploymentName="AVD-PRE-Oper-Pooled-Deployment"
 #$deploymentName="AVD-PRE-Oper-Pers-Deployment"
 
-$localVmAdminPassword = randomPassword # Comment wheter you prefer to set up this parameter manually or are running this script multiple times.
+# Comment the variable below whether you prefer to set up this parameter manually or are running this script multiple times.
+$localVmAdminPassword = randomPassword 
 
 
 
