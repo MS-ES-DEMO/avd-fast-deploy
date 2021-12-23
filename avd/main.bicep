@@ -90,25 +90,15 @@ var customRdpProperty = avdConfiguration.hostPool.rdpProperties
 var desktopApplicationGroupName = '${hostPoolName}-dag'
 var remoteAppApplicationGroupName = '${hostPoolName}-rag'
 
-param appsListInfo array = []
-
+var appsListInfo = avdConfiguration.hostPool.apps
 
 // Azure Virtual Desktop Scale Plan
 
-@description('The name of the Scaling plan to be created.')
-param scalingPlanName string = 'sp-hp-data-pool'
-
-@description('Scaling plan autoscaling triggers and Start/Stop actions will execute in the time zone selected.')
-param timeZone string = 'Romance Standard Time'
-
-@description('The schedules of the Scaling plan to be created.')
-param schedules array = []
-
-@description('Is the scaling plan enabled for this hostpool?.')
-param scalingPlanEnabled bool= false
-
-@description('The name of the tag associated with the VMs that will be excluded from the Scaling plan.')
-param exclusionTag string = ''
+var scalingPlanName = avdConfiguration.hostPool.scalePlan.name
+var timeZone  = avdConfiguration.hostPool.scalePlan.timeZone
+var schedules  = avdConfiguration.hostPool.scalePlan.schedules
+var scalingPlanEnabled = avdConfiguration.hostPool.scalePlan.enabled
+var exclusionTag = avdConfiguration.hostPool.scalePlan.exclusionTag
 
 
 // Azure Virtual Desktop Monitoring Configuration
