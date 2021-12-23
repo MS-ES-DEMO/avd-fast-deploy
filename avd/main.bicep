@@ -1,89 +1,99 @@
 targetScope = 'subscription'
 
-// TODO: verify the required parameters
-
 // Global Parameters
-@description('Location of the resources')
-@allowed([
-  'northeurope'
-  'westeurope'
-])
+
+@description('Azure region where resource would be deployed')
 param location string
-@description('Environment: Dev,Test,PreProd,Uat,Prod,ProdDr.')
-@allowed([
-  'Dev'
-  'Test'
-  'Pre'
-  'Uat'
-  'Prod'
-  'ProdDr'
-])
-param env string
+@description('Tags associated with all resources')
+param tags object 
 
-// resourceGroupNames
-@description('Name for monitoring RG')
-param monitoringResourceGroupName string
-@description('Name for AVD RG containing networking resources')
-param networkAvdResourceGroupName string
-@description('Name for AVD Scenario RG')
-param avdResourceGroupName string
+// Resource Group Names
 
-// sharedResources Parameters
-@description('Info for the AVD autoscale role')
-param avdAutoscaleRoleInfo object
-@description('Info for the AVD Start VM on connect role')
-param avdStartOnConnectRoleInfo object = {
-  name: 'AVD Start VM on connect (Custom)'
-  description: 'Start VM on connect with AVD (Custom)'
-  actions: [ 
-    'Microsoft.Compute/virtualMachines/start/action'
-    'Microsoft.Compute/virtualMachines/*/read'
-  ]
-  principalId: '26da2792-4d23-4313-b9e7-60bd7c1bf0b1'
-}
+@description('Resource Groups names')
+param resourceGroupNames object
+
+var monitoringResourceGroupName = resourceGroupNames.monitoring
+var networkAvdResourceGroupName = resourceGroupNames.avd
+var avdResourceGroupName = resourceGroupNames.avd
+
+// Monitoring resources
+
+@description('Monitoring options')
+param monitoringOptions object
+
+var logWorkspaceName = monitoringOptions.newOrExistingLogAnalyticsWorkspaceName
+var diagnosticsStorageAccountName = monitoringOptions.diagnosticsStorageAccountName
+
+// Role definitions
+
+@description('Azure ARM RBAC role definitions to configure for autoscale and start on connect')
+param roleDefinitions object
+
+var avdAutoscaleRoleInfo = roleDefinitions.avdAutoScaleRole
+var avdStartOnConnectRoleInfo = roleDefinitions.avdStartOnConnectRole
+
+// Pool VM configuration
+
+@description('Virtual Machine configuration')
+param vmConfiguration object
+
+var vmPrefix = vmConfiguration.prefixName
+var vmDiskType = vmConfiguration.diskType
+var vmSize = vmConfiguration.sku
+var vmGalleryImage = vmConfiguration.image
+var localVmAdminUsername = vmConfiguration.adminUsername
+@secure()
+param localVmAdminPassword string
+
+var domainToJoin = vmConfiguration.domainConfiguration.name
+var ouPath = vmConfiguration.domainConfiguration.ouPath
+var existingDomainAdminName = vmConfiguration.domainConfiguration.vmJoinUserName
+@secure()
+param existingDomainAdminPassword string
+
+var artifactsLocation = vmConfiguration.domainConfiguration.artifactsLocation
+
+var existingAvdVnetName = vmConfiguration.networkConfiguration.vnetName 
+var existingSubnetName = vmConfiguration.networkConfiguration.subnetName 
+
+// Azure Virtual Desktop Configuration
+
+@description('Azure Virtual Desktop Configuration')
+param avdConfiguration object
+
+// Azure Virtual Desktop Workspace Configuration
+
+param deploymentFromScratch bool
+var newScenario = deploymentFromScratch
+
+var newOrExistingLogAnalyticsWorkspaceName = monitoringOptions.newOrExistingLogAnalyticsWorkspaceName
+var newOrExistingWorkspaceName = newOrExistingLogAnalyticsWorkspaceName
+
+var tokenExpirationTime  = avdConfiguration.workSpace.tokenExpirationTime
 
 
-// avdResources Parameters
-@description('If true Host Pool, App Group and Workspace will be created. Default is to join Session Hosts to existing AVD environment')
-param newScenario bool = true
-@description('Add new session hosts?')
-param addHost bool = false
-@description('Name for the new or existing workspace')
-param newOrExistingWorkspaceName string
-@description('Deploy workspace diagnostic?')
-param deployWorkspaceDiagnostic bool = true
+// Azure Virtual Desktop Pool Configuration
 
-@description('Expiration time for the HostPool registration token. This must be up to 30 days from todays date.')
-param tokenExpirationTime string = '7/31/2022 8:55:50 AM'
+var addHost = avdConfiguration.hostPool.addHosts
 
-param hostPoolName string
-@allowed([
-  'Personal'
-  'Pooled'
-])
-param hostPoolType string = 'Pooled'
-param deployHostPoolDiagnostic bool = true
+var hostPoolName = avdConfiguration.hostPool.name
+var hostPoolFriendlyName = hostPoolName
+var hostPoolType = avdConfiguration.hostPool.type
+var personalDesktopAssignmentType = avdConfiguration.hostPool.assignmentType
 
-@allowed([
-  'Automatic'
-  'Direct'
-])
-param personalDesktopAssignmentType string = 'Automatic'
-param maxSessionLimit int = 12
+var avdNumberOfInstances = avdConfiguration.hostPool.instances
+var currentInstances = 0
+var maxSessionLimit = avdConfiguration.hostPool.maxSessions
 
-/*
-@allowed([
-  'BreadthFirst'
-  'DepthFirst'
-  'Persistent'
-])
-param loadBalancerType string = 'BreadthFirst'
-*/
-@description('Custom RDP properties to be applied to the AVD Host Pool.')
-param customRdpProperty string = 'audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;'
+var customRdpProperty = avdConfiguration.hostPool.rdpProperties
 
-@description('Friendly Name of the Host Pool, this is visible via the AVD client')
-param hostPoolFriendlyName string = hostPoolName
+var desktopApplicationGroupName = '${hostPoolName}-dag'
+var remoteAppApplicationGroupName = '${hostPoolName}-rag'
+
+param appsListInfo array = []
+
+
+// Azure Virtual Desktop Scale Plan
 
 @description('The name of the Scaling plan to be created.')
 param scalingPlanName string = 'sp-hp-data-pool'
@@ -101,65 +111,25 @@ param scalingPlanEnabled bool= false
 param exclusionTag string = ''
 
 
-param deployDesktopApplicationGroupDiagnostic bool = true
-param deployRemoteAppApplicationGroupDiagnostic bool = true
+// Azure Virtual Desktop Monitoring Configuration
 
-param existingAvdVnetName string
-param existingSubnetName string
-
-
-param appsListInfo array = []
+var deployWorkspaceDiagnostic = avdConfiguration.workSpace.deployDiagnostics
+var deployHostPoolDiagnostic = avdConfiguration.monitoring.deployHostPoolDiagnostics
+var deployDesktopApplicationGroupDiagnostic = avdConfiguration.monitoring.deployDesktopDiagnostics
+var deployRemoteAppApplicationGroupDiagnostic = avdConfiguration.monitoring.deployRemoteAppDiagnostics
 
 
-// monitoringResources
-param logWorkspaceName string
-@description('Name for diagnostic storage account')
-param diagnosticsStorageAccountName string
-
-
-
-param artifactsLocation string = 'https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"'
-param avdNumberOfInstances int
-param currentInstances int
-param domainToJoin string
-
-@description('OU Path were new AVD Session Hosts will be placed in Active Directory')
-param ouPath string
-
-param vmPrefix string
-@allowed([
-  'Standard_LRS'
-  'Premium_LRS'
-])
-param vmDiskType string
-param vmSize string
-@description('Image Gallery Information')
-param vmGalleryImage object
-param localVmAdminUsername string
-@secure()
-param localVmAdminPassword string
-param existingDomainAdminName string
-@secure()
-param existingDomainAdminPassword string
-
-
-
-var desktopApplicationGroupName = '${hostPoolName}-dag'
-var remoteAppApplicationGroupName = '${hostPoolName}-rag'
-
-
-var tags = {
-  ProjectName: 'WVD' // defined at resource level
-  EnvironmentType: env // <Dev><Test><Uat><Prod><ProdDr>
-  Location: 'AzureWestEurope' // <CSP><AzureRegion>
-}
-
+/* 
+  Monitoring resources deployment 
+*/
 resource avdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: avdResourceGroupName
   location: location
 }
 
-
+/* 
+  Monitoring resources deployment 
+*/
 module iamResources 'iam/iamResources.bicep' = if (newScenario) {
   name: 'iamRss_Deploy'
   params: {
@@ -168,13 +138,12 @@ module iamResources 'iam/iamResources.bicep' = if (newScenario) {
   }
 }
 
-
+/* 
+  Monitoring resources deployment 
+*/
 module environmentResources 'environment/environmentResources.bicep' = if (newScenario) {
   scope: avdResourceGroup
   name: 'environmentRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
-  dependsOn: [
-    avdResourceGroup
-  ]
   params: {
     location: location
     tags: tags
@@ -203,12 +172,13 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
   }
 }
 
-
+/* 
+  Azure Virtual Desktop Hosts resources deployment 
+*/
 module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
   scope: avdResourceGroup
   name: 'addHostRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
-    avdResourceGroup
     environmentResources
   ]
   params: {
@@ -237,13 +207,5 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
     logWorkspaceName: logWorkspaceName
   }
 }
-
-output localVmAdminPassword string = localVmAdminPassword
-output existingDomainAdminPassword string = existingDomainAdminPassword
-
-
-
-
-
 
 
