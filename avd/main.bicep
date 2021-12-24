@@ -66,7 +66,6 @@ param avdConfiguration object
 param deploymentFromScratch bool
 var newScenario = deploymentFromScratch
 
-var newOrExistingLogAnalyticsWorkspaceName = monitoringOptions.newOrExistingLogAnalyticsWorkspaceName
 var newOrExistingWorkspaceName = avdConfiguration.workSpace.name
 
 var tokenExpirationTime  = avdConfiguration.workSpace.tokenExpirationTime
@@ -108,9 +107,18 @@ var deployHostPoolDiagnostic = avdConfiguration.monitoring.deployHostPoolDiagnos
 var deployDesktopApplicationGroupDiagnostic = avdConfiguration.monitoring.deployDesktopDiagnostics
 var deployRemoteAppApplicationGroupDiagnostic = avdConfiguration.monitoring.deployRemoteAppDiagnostics
 
+// FSLogix User Profiles resources
+
+var profileStorageAccountName = avdConfiguration.profiles.storageAccountName
+var profileFileShareName = avdConfiguration.profiles.fileShareName
+var profilePrivateEndpointName = avdConfiguration.profiles.privateEndpointConfig.name
+var profilePrivateEndpointVnetName = avdConfiguration.profiles.privateEndpointConfig.vnetName
+var profilePrivateEndpointSubnetName = avdConfiguration.profiles.privateEndpointConfig.snetName
+var profilePrivateEndpointDnsZoneName = avdConfiguration.profiles.privateEndpointConfig.dnsZoneName
+var profilePrivateEndpointDnsZoneResourceGroupName = avdConfiguration.profiles.privateEndpointConfig.dnsZoneResourceGroupName
 
 /* 
-  Monitoring resources deployment 
+  AVD Resource Group deployment 
 */
 resource avdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: avdResourceGroupName
@@ -118,7 +126,7 @@ resource avdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
 }
 
 /* 
-  Monitoring resources deployment 
+  Azure RBAC role resources deployment 
 */
 module iamResources 'iam/iamResources.bicep' = if (newScenario) {
   name: 'iamRss_Deploy'
@@ -129,7 +137,7 @@ module iamResources 'iam/iamResources.bicep' = if (newScenario) {
 }
 
 /* 
-  Monitoring resources deployment 
+  Azure Virtual Desktop resources deployment 
 */
 module environmentResources 'environment/environmentResources.bicep' = if (newScenario) {
   scope: avdResourceGroup
@@ -198,4 +206,22 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
   }
 }
 
+/*
+  FSLogix User Profiles resources
+*/
+module userProfilesFileShare 'profilesShare/userProfileStorage.bicep' = if (avdConfiguration.hostPool.type == 'Pooled') {
+  name: 'userProfilesFileShare_Deploy'
+  scope: avdResourceGroup
+  params: {
+    name: profileStorageAccountName
+    location: location
+    tags: tags
+    fileShareName: profileFileShareName
+    vnetName: profilePrivateEndpointVnetName
+    snetName: profilePrivateEndpointSubnetName
+    privateEndpointName: profilePrivateEndpointName
+    privateDnsZoneName: profilePrivateEndpointDnsZoneName
+    privateDnsZoneResourceGroupName: profilePrivateEndpointDnsZoneResourceGroupName
+  }
+}
 
