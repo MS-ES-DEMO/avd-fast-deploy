@@ -10,7 +10,7 @@ param (
   [string] 
   $templateFile = ".\avd\main.bicep",
   [string]
-  $parameterFile = "parameters.pooled.json",
+  $parameterFile = "parameters.personal.json",
   [string] 
   $deploymentPrefix='AVD-Data-Pooled-Deployment'
   )

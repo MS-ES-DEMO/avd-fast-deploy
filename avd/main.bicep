@@ -67,7 +67,7 @@ param deploymentFromScratch bool
 var newScenario = deploymentFromScratch
 
 var newOrExistingLogAnalyticsWorkspaceName = monitoringOptions.newOrExistingLogAnalyticsWorkspaceName
-var newOrExistingWorkspaceName = newOrExistingLogAnalyticsWorkspaceName
+var newOrExistingWorkspaceName = avdConfiguration.workSpace.name
 
 var tokenExpirationTime  = avdConfiguration.workSpace.tokenExpirationTime
 

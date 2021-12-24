@@ -85,6 +85,7 @@
     "avdConfiguration": {
       "value": {
         "workSpace": {
+          "name": "workspace-avd",
           "tokenExpirationTime": "01/15/2022 8:55:50 AM",
           "deployDiagnostics": true
         },
