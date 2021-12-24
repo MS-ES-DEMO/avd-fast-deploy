@@ -7,6 +7,8 @@ The following diagram shows a detailed architecture of the logical and network t
 - **rg-avd**: network configuration for provisioning Azure Virtual Desktop with different usage scenarios.
 - **rg-monitor**: a storage account and a Log Analytics Workspace to store the diagnostics information.
 
+![Logical architecture](/doc/images/logical-network-diagram.png)
+
 ## Repository structure
 
 This repository is organized in the following folders:
