@@ -11,12 +11,12 @@ targetScope = 'subscription'
 param location string
 @description('Environment: Dev,Test,PreProd,Uat,Prod,ProdDr.')
 @allowed([
-  'Dev'
-  'Test'
-  'Pre'
-  'Uat'
-  'Prod'
-  'ProdDr'
+  'dev'
+  'test'
+  'pre'
+  'uat'
+  'prod'
+  'proddr'
 ])
 param env string
 

@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location":{"value": "westeurope"},
-        "env": {"value": "Pre"},
-        "monitoringResourceGroupName":{"value": "rg-pre-monitoring"},
-        "avdResourceGroupName":{"value": "rg-pre-avd-data"},
-        "networkAvdResourceGroupName":{"value": "rg-pre-avd"},
+        "env": {"value": "dev"},
+        "monitoringResourceGroupName":{"value": "rg-monitor"},
+        "avdResourceGroupName":{"value": "rg-avd-data"},
+        "networkAvdResourceGroupName":{"value": "rg-avd"},
         "avdAutoscaleRoleInfo":{"value": {
             "name": "AVD Autoscale (Custom)",
             "description": "This role will allow Windows Virtual Desktop to power manage all VMs in this subscription.",
@@ -41,7 +41,7 @@
         "addHost":{"value": true},
         "newOrExistingWorkspaceName":{"value": "ws-data-pool"},
         "deployWorkspaceDiagnostic":{"value": true},
-        "tokenExpirationTime":{"value": "11/30/2021 8:55:50 AM"},
+        "tokenExpirationTime":{"value": "12/30/2021 8:55:50 AM"},
         "hostPoolName":{"value": "hp-data-pool"},
         "hostPoolType":{"value": "Pooled"},
         "deployHostPoolDiagnostic":{"value": true},
@@ -157,7 +157,7 @@
                 "showInPortal": true
               }
         ]},
-        "logWorkspaceName":{"value": "workspace-pre-base"},
+        "logWorkspaceName":{"value": "workspace-dev-base"},
         "artifactsLocation":{"value": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"},
         "avdNumberOfInstances":{"value": 1},
         "currentInstances":{"value": 0},
@@ -168,7 +168,7 @@
         "domainToJoin":{"value": "mydomain.local"},
         "ouPath":{"value": "OU=Pooled,OU=AVD,DC=mydomain,DC=local"},
         "localVmAdminUsername":{"value": "localVmAdmin"},
-        "existingDomainAdminName":{"value": "addsdnsadmin"},
-        "diagnosticsStorageAccountName":{"value": "sadiagnosticdatademo"}
+        "existingDomainAdminName":{"value": "azureAdmin"},
+        "diagnosticsStorageAccountName":{"value": "sadiagnosticdatadev"}
     }
 }
