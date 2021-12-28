@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-      "value": "northeurope"
+      "value": "westeurope"
     },
     "tags": {
       "value": {
@@ -71,8 +71,8 @@
           "imagePublisher": "MicrosoftWindowsDesktop"
         },
         "domainConfiguration": {
-          "name": "mydomain.local",
-          "ouPath": "OU=Personal,OU=AVD,DC=mydomain,DC=local",
+          "name": "myDomain.local",
+          "ouPath": "",
           "vmJoinUserName": "azureAdmin",
           "artifactsLocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"
         },
