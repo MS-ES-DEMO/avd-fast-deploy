@@ -101,12 +101,23 @@
           "tokenExpirationTime": "01/15/2022 8:55:50 AM",
           "scalePlan": {
             "enabled": false,
-            "name": "sp-hp-data-personal",
-            "timeZone": "Romance Standard Time",
+            "name": "NA",
+            "timeZone": "NA",
             "exclusionTag": "",
             "schedules": []
           },
           "apps": []
+        },
+        "profiles": {
+          "storageAccountName": "NA",
+          "fileShareName": "NA",
+          "privateEndpointConfig": {
+            "name": "NA",
+            "vnetName": "NA",
+            "snetName": "NA",
+            "dnsZoneName": "NA",
+            "dnsZoneResourceGroupName": "NA"
+          }
         },
         "monitoring": {
           "deployWorkspaceDiagnostics": true,

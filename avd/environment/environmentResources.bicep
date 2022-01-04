@@ -52,8 +52,8 @@ var desktopApplicationGroupFriendlyName = '${hostPoolName}-dag'
 var remoteAppApplicationGroupFriendlyName = '${hostPoolName}-rag'
 
 var desktopApplicationGroupId = array(resourceId('Microsoft.DesktopVirtualization/applicationgroups/', desktopApplicationGroupName))
-var remoteAppAppApplicationGroupId = hostPoolType != 'Pooled' ? [] : array(resourceId('Microsoft.DesktopVirtualization/applicationgroups/', remoteAppApplicationGroupName))
-var applicationGroupIds = union(existingApplicationGroupIds,desktopApplicationGroupId,remoteAppAppApplicationGroupId)
+var remoteAppApplicationGroupId = hostPoolType != 'Pooled' ? [] : array(resourceId('Microsoft.DesktopVirtualization/applicationgroups/', remoteAppApplicationGroupName))
+var applicationGroupIds = union(existingApplicationGroupIds,desktopApplicationGroupId,remoteAppApplicationGroupId)
 
 var descriptionPersonalAppGroup = 'Desktop Application Group created through the Hostpool Wizard'
 var descriptionPooledAppGroup = 'Remote App Application Group created through the Hostpool Wizard'
