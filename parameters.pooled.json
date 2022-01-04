@@ -71,7 +71,7 @@
           "imagePublisher": "MicrosoftWindowsDesktop"
         },
         "domainConfiguration": {
-          "name": "myDomain.local",
+          "name": "mydomain.local",
           "ouPath": "",
           "vmJoinUserName": "azureAdmin",
           "artifactsLocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"
@@ -86,17 +86,18 @@
       "value": {
         "workSpace": {
           "name": "workspace-avd",
-          "tokenExpirationTime": "01/15/2022 8:55:50 AM",
           "deployDiagnostics": true
         },
         "hostPool": {
           "addHosts": true,
           "name": "hp-data-pool",
           "instances": 1,
+          "currentInstances": 0,
           "type": "Pooled",
           "assignmentType": "Automatic",
           "maxSessions": 10,
           "rdpProperties": "audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;",
+          "tokenExpirationTime": "01/15/2022 8:55:50 AM",
           "scalePlan": {
             "enabled": false,
             "name": "sp-hp-data-pool",
