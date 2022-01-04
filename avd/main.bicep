@@ -4,8 +4,43 @@ targetScope = 'subscription'
 
 @description('Azure region where resource would be deployed')
 param location string
+<<<<<<< HEAD
 @description('Tags associated with all resources')
 param tags object 
+=======
+@description('Environment: Dev,Test,PreProd,Uat,Prod,ProdDr.')
+@allowed([
+  'dev'
+  'test'
+  'pre'
+  'uat'
+  'prod'
+  'proddr'
+])
+param env string
+
+// resourceGroupNames
+@description('Name for monitoring RG')
+param monitoringResourceGroupName string
+@description('Name for AVD RG containing networking resources')
+param networkAvdResourceGroupName string
+@description('Name for AVD Scenario RG')
+param avdResourceGroupName string
+
+// sharedResources Parameters
+@description('Info for the AVD autoscale role')
+param avdAutoscaleRoleInfo object
+@description('Info for the AVD Start VM on connect role')
+param avdStartOnConnectRoleInfo object = {
+  name: 'AVD Start VM on connect (Custom)'
+  description: 'Start VM on connect with AVD (Custom)'
+  actions: [ 
+    'Microsoft.Compute/virtualMachines/start/action'
+    'Microsoft.Compute/virtualMachines/*/read'
+  ]
+  principalId: '26da2792-4d23-4313-b9e7-60bd7c1bf0b1'
+}
+>>>>>>> main
 
 // Resource Group Names
 
