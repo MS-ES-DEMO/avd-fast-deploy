@@ -1,10 +1,4 @@
 param (
-  [Parameter(Mandatory = $true)]
-  [securestring]
-  $localAdminPassword,
-  [Parameter(Mandatory = $true)]
-  [securestring]
-  $vmJoinAccountPassword,
   [string]
   $location = "westeurope",
   [string] 
@@ -22,7 +16,5 @@ New-AzDeployment -Name $deploymentName `
                 -Location $location `
                 -TemplateFile $templateFile `
                 -TemplateParameterFile $parameterFile `
-                -localVmAdminPassword $localAdminPassword `
-                -existingDomainAdminPassword $vmJoinAccountPassword `
                 -Verbose
 
