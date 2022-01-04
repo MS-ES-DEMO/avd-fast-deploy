@@ -1,14 +1,13 @@
 targetScope = 'subscription'
 
-// TODO: verify the required parameters
-
 // Global Parameters
-@description('Location of the resources')
-@allowed([
-  'northeurope'
-  'westeurope'
-])
+
+@description('Azure region where resource would be deployed')
 param location string
+<<<<<<< HEAD
+@description('Tags associated with all resources')
+param tags object 
+=======
 @description('Environment: Dev,Test,PreProd,Uat,Prod,ProdDr.')
 @allowed([
   'dev'
@@ -41,125 +40,129 @@ param avdStartOnConnectRoleInfo object = {
   ]
   principalId: '26da2792-4d23-4313-b9e7-60bd7c1bf0b1'
 }
+>>>>>>> main
 
+// Resource Group Names
 
-// avdResources Parameters
-@description('If true Host Pool, App Group and Workspace will be created. Default is to join Session Hosts to existing AVD environment')
-param newScenario bool = true
-@description('Add new session hosts?')
-param addHost bool = false
-@description('Name for the new or existing workspace')
-param newOrExistingWorkspaceName string
-@description('Deploy workspace diagnostic?')
-param deployWorkspaceDiagnostic bool = true
+@description('Resource Groups names')
+param resourceGroupNames object
 
-@description('Expiration time for the HostPool registration token. This must be up to 30 days from todays date.')
-param tokenExpirationTime string = '7/31/2022 8:55:50 AM'
+var monitoringResourceGroupName = resourceGroupNames.monitoring
+var networkAvdResourceGroupName = resourceGroupNames.avd
+var avdResourceGroupName = resourceGroupNames.avd
 
-param hostPoolName string
-@allowed([
-  'Personal'
-  'Pooled'
-])
-param hostPoolType string = 'Pooled'
-param deployHostPoolDiagnostic bool = true
+// Monitoring resources
 
-@allowed([
-  'Automatic'
-  'Direct'
-])
-param personalDesktopAssignmentType string = 'Automatic'
-param maxSessionLimit int = 12
+@description('Monitoring options')
+param monitoringOptions object
 
-/*
-@allowed([
-  'BreadthFirst'
-  'DepthFirst'
-  'Persistent'
-])
-param loadBalancerType string = 'BreadthFirst'
-*/
-@description('Custom RDP properties to be applied to the AVD Host Pool.')
-param customRdpProperty string = 'audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;'
+var logWorkspaceName = monitoringOptions.newOrExistingLogAnalyticsWorkspaceName
+var diagnosticsStorageAccountName = monitoringOptions.diagnosticsStorageAccountName
 
-@description('Friendly Name of the Host Pool, this is visible via the AVD client')
-param hostPoolFriendlyName string = hostPoolName
+// Role definitions
 
-@description('The name of the Scaling plan to be created.')
-param scalingPlanName string = 'sp-hp-data-pool'
+@description('Azure ARM RBAC role definitions to configure for autoscale and start on connect')
+param roleDefinitions object
 
-@description('Scaling plan autoscaling triggers and Start/Stop actions will execute in the time zone selected.')
-param timeZone string = 'Romance Standard Time'
+var avdAutoscaleRoleInfo = roleDefinitions.avdAutoScaleRole
+var avdStartOnConnectRoleInfo = roleDefinitions.avdStartOnConnectRole
 
-@description('The schedules of the Scaling plan to be created.')
-param schedules array = []
+// Pool VM configuration
 
-@description('Is the scaling plan enabled for this hostpool?.')
-param scalingPlanEnabled bool= false
+@description('Virtual Machine configuration')
+param vmConfiguration object
 
-@description('The name of the tag associated with the VMs that will be excluded from the Scaling plan.')
-param exclusionTag string = ''
-
-
-param deployDesktopApplicationGroupDiagnostic bool = true
-param deployRemoteAppApplicationGroupDiagnostic bool = true
-
-param existingAvdVnetName string
-param existingSubnetName string
-
-
-param appsListInfo array = []
-
-
-// monitoringResources
-param logWorkspaceName string
-@description('Name for diagnostic storage account')
-param diagnosticsStorageAccountName string
-
-
-
-param artifactsLocation string = 'https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"'
-param avdNumberOfInstances int
-param currentInstances int
-param domainToJoin string
-
-@description('OU Path were new AVD Session Hosts will be placed in Active Directory')
-param ouPath string
-
-param vmPrefix string
-@allowed([
-  'Standard_LRS'
-  'Premium_LRS'
-])
-param vmDiskType string
-param vmSize string
-@description('Image Gallery Information')
-param vmGalleryImage object
-param localVmAdminUsername string
+var vmPrefix = vmConfiguration.prefixName
+var vmDiskType = vmConfiguration.diskType
+var vmSize = vmConfiguration.sku
+var vmGalleryImage = vmConfiguration.image
+var localVmAdminUsername = vmConfiguration.adminUsername
 @secure()
 param localVmAdminPassword string
-param existingDomainAdminName string
+
+var domainToJoin = vmConfiguration.domainConfiguration.name
+var ouPath = vmConfiguration.domainConfiguration.ouPath
+var existingDomainAdminName = vmConfiguration.domainConfiguration.vmJoinUserName
 @secure()
 param existingDomainAdminPassword string
 
+var artifactsLocation = vmConfiguration.domainConfiguration.artifactsLocation
 
+var existingAvdVnetName = vmConfiguration.networkConfiguration.vnetName 
+var existingSubnetName = vmConfiguration.networkConfiguration.subnetName 
+
+// Azure Virtual Desktop Configuration
+
+@description('Azure Virtual Desktop Configuration')
+param avdConfiguration object
+
+// Azure Virtual Desktop Workspace Configuration
+
+param deploymentFromScratch bool
+var newScenario = deploymentFromScratch
+
+var newOrExistingWorkspaceName = avdConfiguration.workSpace.name
+
+var tokenExpirationTime  = avdConfiguration.workSpace.tokenExpirationTime
+
+
+// Azure Virtual Desktop Pool Configuration
+
+var addHost = avdConfiguration.hostPool.addHosts
+
+var hostPoolName = avdConfiguration.hostPool.name
+var hostPoolFriendlyName = hostPoolName
+var hostPoolType = avdConfiguration.hostPool.type
+var personalDesktopAssignmentType = avdConfiguration.hostPool.assignmentType
+
+var avdNumberOfInstances = avdConfiguration.hostPool.instances
+var currentInstances = 0
+var maxSessionLimit = avdConfiguration.hostPool.maxSessions
+
+var customRdpProperty = avdConfiguration.hostPool.rdpProperties
 
 var desktopApplicationGroupName = '${hostPoolName}-dag'
 var remoteAppApplicationGroupName = '${hostPoolName}-rag'
 
+var appsListInfo = avdConfiguration.hostPool.apps
 
-var tags = {
-  ProjectName: 'WVD' // defined at resource level
-  EnvironmentType: env // <Dev><Test><Uat><Prod><ProdDr>
-  Location: 'AzureWestEurope' // <CSP><AzureRegion>
-}
+// Azure Virtual Desktop Scale Plan
 
+var scalingPlanName = avdConfiguration.hostPool.scalePlan.name
+var timeZone  = avdConfiguration.hostPool.scalePlan.timeZone
+var schedules  = avdConfiguration.hostPool.scalePlan.schedules
+var scalingPlanEnabled = avdConfiguration.hostPool.scalePlan.enabled
+var exclusionTag = avdConfiguration.hostPool.scalePlan.exclusionTag
+
+
+// Azure Virtual Desktop Monitoring Configuration
+
+var deployWorkspaceDiagnostic = avdConfiguration.workSpace.deployDiagnostics
+var deployHostPoolDiagnostic = avdConfiguration.monitoring.deployHostPoolDiagnostics
+var deployDesktopApplicationGroupDiagnostic = avdConfiguration.monitoring.deployDesktopDiagnostics
+var deployRemoteAppApplicationGroupDiagnostic = avdConfiguration.monitoring.deployRemoteAppDiagnostics
+
+// FSLogix User Profiles resources
+
+var profileStorageAccountName = avdConfiguration.profiles.storageAccountName
+var profileFileShareName = avdConfiguration.profiles.fileShareName
+var profilePrivateEndpointName = avdConfiguration.profiles.privateEndpointConfig.name
+var profilePrivateEndpointVnetName = avdConfiguration.profiles.privateEndpointConfig.vnetName
+var profilePrivateEndpointSubnetName = avdConfiguration.profiles.privateEndpointConfig.snetName
+var profilePrivateEndpointDnsZoneName = avdConfiguration.profiles.privateEndpointConfig.dnsZoneName
+var profilePrivateEndpointDnsZoneResourceGroupName = avdConfiguration.profiles.privateEndpointConfig.dnsZoneResourceGroupName
+
+/* 
+  AVD Resource Group deployment 
+*/
 resource avdResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: avdResourceGroupName
   location: location
 }
 
-
+/* 
+  Azure RBAC role resources deployment 
+*/
 module iamResources 'iam/iamResources.bicep' = if (newScenario) {
   name: 'iamRss_Deploy'
   params: {
@@ -168,13 +171,12 @@ module iamResources 'iam/iamResources.bicep' = if (newScenario) {
   }
 }
 
-
+/* 
+  Azure Virtual Desktop resources deployment 
+*/
 module environmentResources 'environment/environmentResources.bicep' = if (newScenario) {
   scope: avdResourceGroup
   name: 'environmentRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
-  dependsOn: [
-    avdResourceGroup
-  ]
   params: {
     location: location
     tags: tags
@@ -203,12 +205,13 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
   }
 }
 
-
+/* 
+  Azure Virtual Desktop Hosts resources deployment 
+*/
 module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
   scope: avdResourceGroup
   name: 'addHostRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   dependsOn: [
-    avdResourceGroup
     environmentResources
   ]
   params: {
@@ -238,12 +241,22 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
   }
 }
 
-output localVmAdminPassword string = localVmAdminPassword
-output existingDomainAdminPassword string = existingDomainAdminPassword
-
-
-
-
-
-
+/*
+  FSLogix User Profiles resources
+*/
+module userProfilesFileShare 'profilesShare/userProfileStorage.bicep' = if (avdConfiguration.hostPool.type == 'Pooled') {
+  name: 'userProfilesFileShare_Deploy'
+  scope: avdResourceGroup
+  params: {
+    name: profileStorageAccountName
+    location: location
+    tags: tags
+    fileShareName: profileFileShareName
+    vnetName: profilePrivateEndpointVnetName
+    snetName: profilePrivateEndpointSubnetName
+    privateEndpointName: profilePrivateEndpointName
+    privateDnsZoneName: profilePrivateEndpointDnsZoneName
+    privateDnsZoneResourceGroupName: profilePrivateEndpointDnsZoneResourceGroupName
+  }
+}
 
