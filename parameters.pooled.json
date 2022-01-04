@@ -85,7 +85,7 @@
     "avdConfiguration": {
       "value": {
         "workSpace": {
-          "name": "workspace-avd",
+          "name": "ws-avd-datapool",
           "deployDiagnostics": true
         },
         "hostPool": {
