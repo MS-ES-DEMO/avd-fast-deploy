@@ -5,7 +5,7 @@ targetScope = 'subscription'
 @description('Azure region where resource would be deployed')
 param location string
 @description('Tags associated with all resources')
-param tags object 
+param tags object
 
 // Resource Group Names
 
@@ -53,8 +53,8 @@ param existingDomainAdminPassword string
 
 var artifactsLocation = vmConfiguration.domainConfiguration.artifactsLocation
 
-var existingAvdVnetName = vmConfiguration.networkConfiguration.vnetName 
-var existingSubnetName = vmConfiguration.networkConfiguration.subnetName 
+var existingAvdVnetName = vmConfiguration.networkConfiguration.vnetName
+var existingSubnetName = vmConfiguration.networkConfiguration.subnetName
 
 // Azure Virtual Desktop Configuration
 
@@ -67,9 +67,6 @@ param deploymentFromScratch bool
 var newScenario = deploymentFromScratch
 
 var newOrExistingWorkspaceName = avdConfiguration.workSpace.name
-
-
-
 
 // Azure Virtual Desktop Pool Configuration
 
@@ -86,7 +83,7 @@ var maxSessionLimit = avdConfiguration.hostPool.maxSessions
 
 var customRdpProperty = avdConfiguration.hostPool.rdpProperties
 
-var tokenExpirationTime  = avdConfiguration.hostPool.tokenExpirationTime
+var tokenExpirationTime = avdConfiguration.hostPool.tokenExpirationTime
 
 var desktopApplicationGroupName = '${hostPoolName}-dag'
 var remoteAppApplicationGroupName = '${hostPoolName}-rag'
@@ -96,11 +93,10 @@ var appsListInfo = avdConfiguration.hostPool.apps
 // Azure Virtual Desktop Scale Plan
 
 var scalingPlanName = avdConfiguration.hostPool.scalePlan.name
-var timeZone  = avdConfiguration.hostPool.scalePlan.timeZone
-var schedules  = avdConfiguration.hostPool.scalePlan.schedules
+var timeZone = avdConfiguration.hostPool.scalePlan.timeZone
+var schedules = avdConfiguration.hostPool.scalePlan.schedules
 var scalingPlanEnabled = avdConfiguration.hostPool.scalePlan.enabled
 var exclusionTag = avdConfiguration.hostPool.scalePlan.exclusionTag
-
 
 // Azure Virtual Desktop Monitoring Configuration
 
@@ -111,13 +107,25 @@ var deployRemoteAppApplicationGroupDiagnostic = avdConfiguration.monitoring.depl
 
 // FSLogix User Profiles resources
 
-var profileStorageAccountName = avdConfiguration.profiles.storageAccountName
-var profileFileShareName = avdConfiguration.profiles.fileShareName
-var profilePrivateEndpointName = avdConfiguration.profiles.privateEndpointConfig.name
-var profilePrivateEndpointVnetName = avdConfiguration.profiles.privateEndpointConfig.vnetName
-var profilePrivateEndpointSubnetName = avdConfiguration.profiles.privateEndpointConfig.snetName
-var profilePrivateEndpointDnsZoneName = avdConfiguration.profiles.privateEndpointConfig.dnsZoneName
-var profilePrivateEndpointDnsZoneResourceGroupName = avdConfiguration.profiles.privateEndpointConfig.dnsZoneResourceGroupName
+var profileStorageAccountName = avdConfiguration.profiles.storageAccount.name
+var profileFileShareName = avdConfiguration.profiles.storageAccount.fileShareName
+var profilePrivateEndpointName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.name
+var profilePrivateEndpointVnetName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.vnetName
+var profilePrivateEndpointSubnetName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.snetName
+var profilePrivateEndpointDnsZoneName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.dnsZoneName
+var profilePrivateEndpointDnsZoneResourceGroupName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.dnsZoneResourceGroupName
+
+
+var profileNetAppAccountName = avdConfiguration.profiles.netAppAccount.name
+var profileNetAppVnetName = avdConfiguration.profiles.netAppAccount.networkConfiguration.vnetName
+var profileNetAppSubnetName = avdConfiguration.profiles.netAppAccount.networkConfiguration.subnetName
+var profileNetAppDnsAddresses = avdConfiguration.profiles.netAppAccount.networkConfiguration.DnsAddresses
+var profileNetAppServerName = avdConfiguration.profiles.netAppAccount.serverName
+var profileNetAppNetworkResourceGroupName = avdConfiguration.profiles.netAppAccount.networkConfiguration.resourceGroupName
+var profileNetAppDomainName = avdConfiguration.profiles.netAppAccount.domainConfiguration.domainName
+var profileNetAppDomainUsername = avdConfiguration.profiles.netAppAccount.domainConfiguration.domainUsername
+var profileNetAppDomainPassword = existingDomainAdminPassword
+
 
 /* 
   AVD Resource Group deployment 
@@ -165,7 +173,7 @@ module environmentResources 'environment/environmentResources.bicep' = if (newSc
     personalDesktopAssignmentType: personalDesktopAssignmentType
     customRdpProperty: customRdpProperty
     desktopApplicationGroupName: desktopApplicationGroupName
-    deployDesktopApplicationGroupDiagnostic: deployDesktopApplicationGroupDiagnostic  
+    deployDesktopApplicationGroupDiagnostic: deployDesktopApplicationGroupDiagnostic
     remoteAppApplicationGroupName: remoteAppApplicationGroupName
     deployRemoteAppApplicationGroupDiagnostic: deployRemoteAppApplicationGroupDiagnostic
     appsListInfo: appsListInfo
@@ -211,19 +219,20 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
 /*
   FSLogix User Profiles resources
 */
-module userProfilesFileShare 'profilesShare/userProfileStorage.bicep' = if (avdConfiguration.hostPool.type == 'Pooled') {
-  name: 'userProfilesFileShare_Deploy'
+module netAppAccount '../modules/Microsoft.NetApp/netappaccount.bicep' = {
   scope: avdResourceGroup
+  name: 'netAppAccount_Deploy'
   params: {
-    name: profileStorageAccountName
+    name: profileNetAppAccountName
     location: location
     tags: tags
-    fileShareName: profileFileShareName
-    vnetName: profilePrivateEndpointVnetName
-    snetName: profilePrivateEndpointSubnetName
-    privateEndpointName: profilePrivateEndpointName
-    privateDnsZoneName: profilePrivateEndpointDnsZoneName
-    privateDnsZoneResourceGroupName: profilePrivateEndpointDnsZoneResourceGroupName
+    dnsAddresses: profileNetAppDnsAddresses
+    serverName: profileNetAppServerName 
+    subnetName: profileNetAppSubnetName
+    domainUsername: profileNetAppDomainUsername
+    domainName: profileNetAppDomainName
+    vnetResourceGroup: profileNetAppNetworkResourceGroupName
+    vnetName: profileNetAppVnetName
+    domainPassword: profileNetAppDomainPassword
   }
 }
-

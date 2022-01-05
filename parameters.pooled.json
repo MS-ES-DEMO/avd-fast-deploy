@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-      "value": "westeurope"
+      "value": "francecentral"
     },
     "tags": {
       "value": {
@@ -12,8 +12,8 @@
     },
     "resourceGroupNames": {
       "value": {
-        "monitoring": "rg-monitor",
-        "avd": "rg-avd"
+        "monitoring": "rg-monitor-2",
+        "avd": "rg-avd-2"
       }
     },
     "deploymentFromScratch": {
@@ -22,7 +22,7 @@
     "monitoringOptions": {
       "value": {
         "newOrExistingLogAnalyticsWorkspaceName": "workspace-dev-base",
-        "diagnosticsStorageAccountName": "sadiagnosticdatademo"
+        "diagnosticsStorageAccountName": "sadiagnosticdatadem"
       }
     },
     "roleDefinitions": {
@@ -206,14 +206,30 @@
           ]
         },
         "profiles": {
-          "storageAccountName": "saprofilesdatademo",
-          "fileShareName": "profiles",
-          "privateEndpointConfig": {
-            "name": "pl-userProfiles-share",
-            "vnetName": "vnet-avd",
-            "snetName": "snet-profile-shares",
-            "dnsZoneName": "privatelink.file.core.windows.net",
-            "dnsZoneResourceGroupName": "rg-shared"
+          "storageAccount": {
+            "name": "saprofilesdatademo",
+            "fileShareName": "profiles",
+            "privateEndpointConfig": {
+              "name": "pl-userProfiles-share",
+              "vnetName": "vnet-avd",
+              "snetName": "snet-profile-shares",
+              "dnsZoneName": "privatelink.file.core.windows.net",
+              "dnsZoneResourceGroupName": "rg-shared"
+            }
+          },
+          "netAppAccount": {
+            "name": "netapp-profiles",
+            "serverName": "profiles",
+            "networkConfiguration": {
+              "vnetName": "vnet-avd",
+              "subnetName": "snet-profiles-share",
+              "dnsAddresses": "10.0.2.4",
+              "resourceGroupName": "vnet-avd"
+            },
+            "domainConfiguration": {
+              "domainName": "myDomain.local",
+              "domainUsername": "azureAdmin"
+            }
           }
         },
         "monitoring": {
