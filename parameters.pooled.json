@@ -158,7 +158,7 @@
               "applicationType": "InBuilt",
               "description": "Remote Desktop Connection",
               "filePath": "C:\\Windows\\system32\\mstsc.exe",
-              "friendlyName": "Paint",
+              "friendlyName": "Remote Desktop Connection",
               "iconIndex": 0,
               "iconPath": "C:\\Windows\\system32\\mstsc.exe",
               "showInPortal": true
