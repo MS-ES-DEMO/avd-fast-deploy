@@ -19,6 +19,7 @@ var galleryName = galleryProperties.name
 var gallerySoftDelete = galleryProperties.softDelete
 
 param imageDefinitionProperties object
+var imageDefinitionName = imageDefinitionProperties.name
 
 /* 
   AVD Images Resource Group deployment 
@@ -52,7 +53,7 @@ module imageResources '../modules/Microsoft.Compute/image.bicep' = {
   scope: avdImagesResourceGroup
   name: 'imageRss_Deploy'
   params: {
-    name: imageDefinitionProperties.name
+    name: imageDefinitionName
     tags: tags
     imageDefinitionProperties: imageDefinitionProperties
   }
