@@ -2,7 +2,7 @@ param (
   [string]
   $location = "westeurope",
   [string] 
-  $templateFile = ".\images\main.bicep",
+  $templateFile = ".\main.bicep",
   [string]
   $parameterFile = "parameters.json",
   [string] 

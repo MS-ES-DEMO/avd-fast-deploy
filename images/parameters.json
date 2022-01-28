@@ -23,7 +23,7 @@
       },
       "imageDefinitionProperties": {
         "value": {
-          "name": "image1",
+          "name": "imageforWinServer",
           "offer": "WindowsServer",
           "publisher": "AzureWindowsBaseline",
           "sku": "2019-Datacenter",
