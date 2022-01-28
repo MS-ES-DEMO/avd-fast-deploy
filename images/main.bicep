@@ -12,4 +12,33 @@ param tags object
 @description('Resource Groups names')
 param resourceGroupNames object
 
-var imagesResourceGroupName = resourceGroupNames.images
+var avdImagesResourceGroupName = resourceGroupNames.images
+
+param galleryProperties object
+var galleryName = galleryProperties.name
+var gallerySoftDelete = galleryProperties.softDelete
+
+
+/* 
+  AVD Images Resource Group deployment 
+*/
+resource avdImagesResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+  name: avdImagesResourceGroupName
+  location: location
+  tags: tags
+}
+
+
+/* 
+  Gallery resources deployment 
+*/
+
+module galleryResources '../modules/Microsoft.Compute/gallery.bicep' = {
+  scope: avdImagesResourceGroup
+  name: 'galleryRss_Deploy'
+  params: {
+    name: galleryName
+    softDelete: gallerySoftDelete
+    tags: tags
+  }
+}

@@ -2,6 +2,7 @@
 param location string = resourceGroup().location
 param tags object
 param name string 
+param softDelete bool
 
 resource imageGallery 'Microsoft.Compute/galleries@2021-07-01' = {
   name: name
@@ -10,7 +11,7 @@ resource imageGallery 'Microsoft.Compute/galleries@2021-07-01' = {
   properties: {
     description: 'Gallery for images'
     softDeletePolicy: {
-      isSoftDeleteEnabled: false
+      isSoftDeleteEnabled: softDelete
     }
   }
 }
