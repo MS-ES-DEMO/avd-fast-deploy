@@ -41,7 +41,7 @@ module galleryResources '../modules/Microsoft.Compute/gallery.bicep' = {
   params: {
     name: galleryName
     tags: tags
-    softDelete: gallerySoftDelete
+    //softDelete: gallerySoftDelete
   }
 }
 
@@ -58,4 +58,7 @@ module imageResources '../modules/Microsoft.Compute/image.bicep' = {
     galleryName: galleryName
     imageDefinitionProperties: imageDefinitionProperties
   }
+  dependsOn: [
+    galleryResources
+  ]
 }
