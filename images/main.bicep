@@ -16,7 +16,7 @@ var avdImagesResourceGroupName = resourceGroupNames.images
 
 param galleryProperties object
 var galleryName = galleryProperties.name
-var gallerySoftDelete = galleryProperties.softDelete
+var gallerySoftDelete = galleryProperties.softDelete // It is in preview.
 
 param imageDefinitionProperties object
 var imageDefinitionName = imageDefinitionProperties.name
