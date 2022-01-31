@@ -30,6 +30,54 @@ resource avdImagesResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' 
   tags: tags
 }
 
+/* 
+  Identity resources deployment 
+*/
+
+param imageBuilderIdentityName string
+param imageBuilderRoleInfo object 
+param deploymentScriptIdentityName string
+param deploymentScriptRoleInfo object 
+
+module imageBuilderIdentityResources '../modules/Microsoft.Authorization/userAssignedIdentity.bicep' = {
+  scope: avdImagesResourceGroup
+  name: 'imageBuilderIdentityRss_Deploy'
+  params: {
+    name: imageBuilderIdentityName
+    tags: tags
+  }
+}
+
+module deploymentScriptIdentityResources '../modules/Microsoft.Authorization/userAssignedIdentity.bicep' = {
+  scope: avdImagesResourceGroup
+  name: 'deploymentScriptIdentityRss_Deploy'
+  params: {
+    name: deploymentScriptIdentityName
+    tags: tags
+  }
+}
+
+module imageBuilderRoleResources '../modules/Microsoft.Authorization/roleBeta.bicep' = {
+  scope: avdImagesResourceGroup
+  name: 'imageBuilderRoleRss_Deploy'
+  params: {
+    name: imageBuilderRoleInfo.name
+    description: imageBuilderRoleInfo.description
+    actions: imageBuilderRoleInfo.actions
+    principalId: imageBuilderRoleInfo.principalId
+  }
+}
+
+module deploymentScriptRoleResources '../modules/Microsoft.Authorization/roleBeta.bicep' = {
+  scope: avdImagesResourceGroup
+  name: 'deploymentScriptRoleRss_Deploy'
+  params: {
+    name: deploymentScriptRoleInfo.name
+    description: deploymentScriptRoleInfo.description
+    actions: deploymentScriptRoleInfo.actions
+    principalId: deploymentScriptRoleInfo.principalId
+  }
+}
 
 /* 
   Gallery resources deployment 
