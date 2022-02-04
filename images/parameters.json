@@ -15,7 +15,38 @@
           "images": "rg-images"
         }
       },
-      ""
+      "roleDefinitions": {
+        "value": {
+          "imageBuilderRole": {
+            "name": "Image Builder (Custom)",
+            "description": "This role will allow Image Builder to read/write images, read in scripts from Azure Storage",
+            "actions": [
+              "Microsoft.Compute/galleries/read",
+              "Microsoft.Compute/galleries/images/read",
+              "Microsoft.Compute/galleries/images/versions/read",
+              "Microsoft.Compute/galleries/images/versions/write",
+              "Microsoft.Compute/images/read",
+              "Microsoft.Compute/images/write",
+              "Microsoft.Compute/images/delete",
+              "Microsoft.VirtualMachineImages/imageTemplates/run/action"
+            ]
+          },
+          "avdDeploymentScriptRole": {
+            "name": "Deployment Script for AVD Images (Custom)",
+            "description": "This role will allow Deployment Script Managed Identity to ",
+            "actions": [
+              "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+              "Microsoft.Storage/storageAccounts/blobServices/containers/write",
+              "Microsoft.ContainerInstance/containerGroups/read",
+              "Microsoft.ContainerInstance/containerGroups/write",
+              "Microsoft.ContainerInstance/containerGroups/start/action",
+              "Microsoft.Resources/deployments/read",
+              "Microsoft.Resources/deploymentScripts/read",
+              "Microsoft.Resources/deploymentScripts/write"
+            ]
+          }
+        }
+      },
       "galleryProperties": {
         "value": {
           "name": "gallery",
@@ -24,13 +55,27 @@
       },
       "imageDefinitionProperties": {
         "value": {
-          "name": "imageforWinServer",
-          "offer": "WindowsServer",
-          "publisher": "AzureWindowsBaseline",
-          "sku": "2019-Datacenter",
+          "name": "WVD10_Definition",
+          "offer": "Windows-10",
+          "publisher": "MicrosoftWindowsDesktop",
+          "sku": "20h1-ent",
           "vmGeneration": "V1"
         }
       },
-
+      "imageTemplateProperties": {
+        "value": {
+          "name": "WVD10_Template",
+          "runOutputName": "WVD10_CustomImage",
+          "artifactTags": {
+            "sourceimage": "wvd-10",
+            "baseosimage": "windows-10"
+          },
+          "replicationRegions": [
+            "westeurope",
+            "northeurope"
+            
+        ]
+      }
     }
+  }
 }

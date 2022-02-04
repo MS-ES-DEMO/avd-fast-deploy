@@ -5,8 +5,8 @@ param actions array
 param principalId string
 
 
-var roleDefName = guid(subscription().id, string(actions))
-
+var roleDefName = guid(name, resourceGroup().id, string(actions))
+var roleAssigmentName = guid(name, resourceGroup().id, principalId)
 
 resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
   name: roleDefName
@@ -30,7 +30,7 @@ resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
 
 // az ad sp show --id 26da2792-4d23-4313-b9e7-60bd7c1bf0b1 to get principalId
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(name, 'Role Assignment')
+  name: roleAssigmentName
   properties: {
     principalId: principalId
     principalType: 'ServicePrincipal'

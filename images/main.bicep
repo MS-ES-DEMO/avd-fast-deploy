@@ -14,12 +14,6 @@ param resourceGroupNames object
 
 var avdImagesResourceGroupName = resourceGroupNames.images
 
-param galleryProperties object
-var galleryName = galleryProperties.name
-var gallerySoftDelete = galleryProperties.softDelete // It is in preview.
-
-param imageDefinitionProperties object
-var imageDefinitionName = imageDefinitionProperties.name
 
 /* 
   AVD Images Resource Group deployment 
@@ -34,10 +28,12 @@ resource avdImagesResourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' 
   Identity resources deployment 
 */
 
-param imageBuilderIdentityName string
-param imageBuilderRoleInfo object 
-param deploymentScriptIdentityName string
-param deploymentScriptRoleInfo object 
+var imageBuilderIdentityName = 'imageBuilderIdentityAVD'
+@description('Role definitions for Image Builder and Deployment Script entities')
+param roleDefinitions object 
+var deploymentScriptIdentityName = 'deploymentScriptAvdImage'
+var imageBuilderRoleInfo = roleDefinitions.imageBuilderRole
+var deploymentScriptRoleInfo = roleDefinitions.avdDeploymentScriptRole
 
 module imageBuilderIdentityResources '../modules/Microsoft.Authorization/userAssignedIdentity.bicep' = {
   scope: avdImagesResourceGroup
@@ -64,7 +60,7 @@ module imageBuilderRoleResources '../modules/Microsoft.Authorization/roleBeta.bi
     name: imageBuilderRoleInfo.name
     description: imageBuilderRoleInfo.description
     actions: imageBuilderRoleInfo.actions
-    principalId: imageBuilderRoleInfo.principalId
+    principalId: imageBuilderIdentityResources.outputs.principalId
   }
 }
 
@@ -75,13 +71,17 @@ module deploymentScriptRoleResources '../modules/Microsoft.Authorization/roleBet
     name: deploymentScriptRoleInfo.name
     description: deploymentScriptRoleInfo.description
     actions: deploymentScriptRoleInfo.actions
-    principalId: deploymentScriptRoleInfo.principalId
+    principalId: deploymentScriptIdentityResources.outputs.principalId
   }
 }
 
 /* 
   Gallery resources deployment 
 */
+
+param galleryProperties object
+var galleryName = galleryProperties.name
+//var gallerySoftDelete = galleryProperties.softDelete // It is in preview.
 
 module galleryResources '../modules/Microsoft.Compute/gallery.bicep' = {
   scope: avdImagesResourceGroup
@@ -97,6 +97,9 @@ module galleryResources '../modules/Microsoft.Compute/gallery.bicep' = {
   Image resources deployment 
 */
 
+param imageDefinitionProperties object
+var imageDefinitionName = imageDefinitionProperties.name
+
 module imageResources '../modules/Microsoft.Compute/image.bicep' = {
   scope: avdImagesResourceGroup
   name: 'imageRss_Deploy'
@@ -108,5 +111,34 @@ module imageResources '../modules/Microsoft.Compute/image.bicep' = {
   }
   dependsOn: [
     galleryResources
+  ]
+}
+
+/*
+Image Template resources deployment
+*/
+
+
+param imageTemplateProperties object
+
+var imageTemplateName = imageTemplateProperties.name
+var runOutputName = imageTemplateProperties.runOutputName
+var artifactTags = imageTemplateProperties.artifactTags
+var replicationRegions = imageTemplateProperties.replicationRegions 
+
+module imageTemplateResources '../modules/Microsoft.VirtualMachineImages/imageTemplate.bicep' = {
+  scope: avdImagesResourceGroup
+  name: 'imageTemplateRss_Deploy'
+  params: {
+    name: imageTemplateName
+    tags: tags
+    imageBuilderIdentityName: imageBuilderIdentityName
+    imageDefinitionName: imageDefinitionName
+    runOutputName: runOutputName
+    artifactsTags: artifactTags
+    replicationRegions: replicationRegions    
+  }
+  dependsOn: [
+    imageResources
   ]
 }

@@ -9,3 +9,5 @@ resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' 
   location: location
   tags: tags
 }
+
+output principalId string = identity.properties.principalId
