@@ -64,8 +64,8 @@
       },
       "imageTemplateProperties": {
         "value": {
-          "name": "WVD10_Template",
-          "runOutputName": "WVD10_CustomImage",
+          "name": "WVD10-Template",
+          "runOutputName": "WVD10-CustomImage",
           "artifactTags": {
             "sourceimage": "wvd-10",
             "baseosimage": "windows-10"
@@ -73,9 +73,8 @@
           "replicationRegions": [
             "westeurope",
             "northeurope"
-            
-        ]
+          ]
+        }
       }
-    }
   }
 }

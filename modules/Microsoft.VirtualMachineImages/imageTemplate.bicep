@@ -16,7 +16,7 @@ resource imageDefinition 'Microsoft.Compute/galleries/images@2021-07-01' existin
   name: imageDefinitionName
 }
 
-resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2021-10-01' = {
+resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2020-02-14' = {
   name: name
   location: location
   tags: tags
@@ -40,46 +40,46 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2021-10-01
       version: 'latest'
     }
     customize: [
-      {
-        type: 'PowerShell'
-        name: 'installFsLogix'
-        runElevated: true
-        runAsSystem: true
-        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1'
-      }
-      {
-        type: 'PowerShell'
-        name: 'OptimizeOS'
-        runElevated: true
-        runAsSystem: true
-        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/1_Optimize_OS_for_WVD.ps1'
-      }
-      {
-        type: 'WindowsRestart'
-        restartCheckCommand: 'write-host \'restarting post Optimizations\''
-        restartTimeout: '5m'
-      }
-      {
-        type: 'PowerShell'
-        name: 'Install Teams'
-        runElevated: true
-        runAsSystem: true
-        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/2_installTeams.ps1'
-      }
-      {
-        type: 'WindowsRestart'
-        restartCheckCommand: 'write-host \'restarting post Teams Install\''
-        restartTimeout: '5m'
-      }
-      {
-        type: 'WindowsUpdate'
-        searchCriteria: 'IsInstalled=0'
-        filters: [
-          'exclude:$_.Title -like \'*Preview*\''
-          'include:$true'
-        ]
-        updateLimit: 40
-      }
+//      {
+//        type: 'PowerShell'
+//        name: 'installFsLogix'
+//        runElevated: true
+//        runAsSystem: true
+//        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1'
+//      }
+//      {
+//        type: 'PowerShell'
+//        name: 'OptimizeOS'
+//        runElevated: true
+//        runAsSystem: true
+//        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/1_Optimize_OS_for_WVD.ps1'
+//      }
+//      {
+//        type: 'WindowsRestart'
+//        restartCheckCommand: 'write-host \'restarting post Optimizations\''
+//        restartTimeout: '5m'
+//      }
+//      {
+//        type: 'PowerShell'
+//        name: 'Install Teams'
+//        runElevated: true
+//        runAsSystem: true
+//        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/2_installTeams.ps1'
+//      }
+//      {
+//        type: 'WindowsRestart'
+//        restartCheckCommand: 'write-host \'restarting post Teams Install\''
+//        restartTimeout: '5m'
+//      }
+//      {
+//        type: 'WindowsUpdate'
+//        searchCriteria: 'IsInstalled=0'
+//        filters: [
+//          'exclude:$_.Title -like \'*Preview*\''
+//          'include:$true'
+//        ]
+//        updateLimit: 40
+//      }
     ]
     distribute: [
       {
