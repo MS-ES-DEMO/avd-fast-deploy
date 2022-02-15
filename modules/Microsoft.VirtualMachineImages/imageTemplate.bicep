@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 param tags object
 param name string
 param imageBuilderIdentityName string
+param galleryName string
 param imageDefinitionName string
 param runOutputName string
 param replicationRegions array
@@ -12,11 +13,16 @@ resource imageBuilderIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   name: imageBuilderIdentityName
 }
 
-resource imageDefinition 'Microsoft.Compute/galleries/images@2021-07-01' existing = {
+resource gallery 'Microsoft.Compute/galleries@2020-09-30' existing = {
+  name: galleryName
+}
+
+resource imageDefinition 'Microsoft.Compute/galleries/images@2020-09-30' existing = {
+  parent: gallery
   name: imageDefinitionName
 }
 
-resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2020-02-14' = {
+resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2021-10-01' = {
   name: name
   location: location
   tags: tags
@@ -24,6 +30,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2020-02-14
     type: 'UserAssigned'
     userAssignedIdentities: {
       '${imageBuilderIdentity.id}': {}
+      //'${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${imageBuilderIdentityName}': {} 
     }
   }
   properties: {
@@ -40,51 +47,52 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2020-02-14
       version: 'latest'
     }
     customize: [
-//      {
-//        type: 'PowerShell'
-//        name: 'installFsLogix'
-//        runElevated: true
-//        runAsSystem: true
-//        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1'
-//      }
-//      {
-//        type: 'PowerShell'
-//        name: 'OptimizeOS'
-//        runElevated: true
-//        runAsSystem: true
-//        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/1_Optimize_OS_for_WVD.ps1'
-//      }
-//      {
-//        type: 'WindowsRestart'
-//        restartCheckCommand: 'write-host \'restarting post Optimizations\''
-//        restartTimeout: '5m'
-//      }
-//      {
-//        type: 'PowerShell'
-//        name: 'Install Teams'
-//        runElevated: true
-//        runAsSystem: true
-//        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/2_installTeams.ps1'
-//      }
-//      {
-//        type: 'WindowsRestart'
-//        restartCheckCommand: 'write-host \'restarting post Teams Install\''
-//        restartTimeout: '5m'
-//      }
-//      {
-//        type: 'WindowsUpdate'
-//        searchCriteria: 'IsInstalled=0'
-//        filters: [
-//          'exclude:$_.Title -like \'*Preview*\''
-//          'include:$true'
-//        ]
-//        updateLimit: 40
-//      }
+      {
+        type: 'PowerShell'
+        name: 'installFsLogix'
+        runElevated: true
+        runAsSystem: true
+        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1'
+      }
+      {
+        type: 'PowerShell'
+        name: 'OptimizeOS'
+        runElevated: true
+        runAsSystem: true
+        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/1_Optimize_OS_for_WVD.ps1'
+      }
+      {
+        type: 'WindowsRestart'
+        restartCheckCommand: 'write-host \'restarting post Optimizations\''
+        restartTimeout: '5m'
+      }
+      {
+        type: 'PowerShell'
+        name: 'Install Teams'
+        runElevated: true
+        runAsSystem: true
+        scriptUri: 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/2_installTeams.ps1'
+      }
+      {
+        type: 'WindowsRestart'
+        restartCheckCommand: 'write-host \'restarting post Teams Install\''
+        restartTimeout: '5m'
+      }
+      {
+        type: 'WindowsUpdate'
+        searchCriteria: 'IsInstalled=0'
+        filters: [
+          'exclude:$_.Title -like \'*Preview*\''
+          'include:$true'
+        ]
+        updateLimit: 40
+      }
     ]
     distribute: [
       {
         type: 'SharedImage'
         galleryImageId: imageDefinition.id
+        //galleryImageId: '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/galleries/gallery/images/${imageDefinition.name}' //imageDefinition.id
         runOutputName: runOutputName
         artifactTags: artifactsTags
         replicationRegions: replicationRegions
@@ -92,3 +100,5 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2020-02-14
     ]
   }
 }
+
+

@@ -40,6 +40,7 @@ module imageBuilderIdentityResources '../modules/Microsoft.Authorization/userAss
   name: 'imageBuilderIdentityRss_Deploy'
   params: {
     name: imageBuilderIdentityName
+    location: location
     tags: tags
   }
 }
@@ -49,6 +50,7 @@ module deploymentScriptIdentityResources '../modules/Microsoft.Authorization/use
   name: 'deploymentScriptIdentityRss_Deploy'
   params: {
     name: deploymentScriptIdentityName
+    location: location
     tags: tags
   }
 }
@@ -88,6 +90,7 @@ module galleryResources '../modules/Microsoft.Compute/gallery.bicep' = {
   name: 'galleryRss_Deploy'
   params: {
     name: galleryName
+    location: location
     tags: tags
     //softDelete: gallerySoftDelete
   }
@@ -105,6 +108,7 @@ module imageResources '../modules/Microsoft.Compute/image.bicep' = {
   name: 'imageRss_Deploy'
   params: {
     name: imageDefinitionName
+    location: location
     tags: tags
     galleryName: galleryName
     imageDefinitionProperties: imageDefinitionProperties
@@ -131,8 +135,10 @@ module imageTemplateResources '../modules/Microsoft.VirtualMachineImages/imageTe
   name: 'imageTemplateRss_Deploy'
   params: {
     name: imageTemplateName
+    location: location
     tags: tags
     imageBuilderIdentityName: imageBuilderIdentityName
+    galleryName: galleryName
     imageDefinitionName: imageDefinitionName
     runOutputName: runOutputName
     artifactsTags: artifactTags

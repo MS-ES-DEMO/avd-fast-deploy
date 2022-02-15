@@ -5,11 +5,11 @@ param name string
 param galleryName string
 param imageDefinitionProperties object
 
-resource gallery 'Microsoft.Compute/galleries@2021-07-01' existing = {
+resource gallery 'Microsoft.Compute/galleries@2020-09-30' existing = {
   name: galleryName
 }
 
-resource image 'Microsoft.Compute/galleries/images@2021-07-01' = {
+resource image 'Microsoft.Compute/galleries/images@2020-09-30' = {
   parent: gallery
   name: name
   location: location
