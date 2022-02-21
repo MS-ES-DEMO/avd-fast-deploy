@@ -100,51 +100,45 @@ module galleryResources '../modules/Microsoft.Compute/gallery.bicep' = {
   Image resources deployment 
 */
 
-param imageDefinitionProperties object
-var imageDefinitionName = imageDefinitionProperties.name
+param imagesInfo object
 
-module imageResources '../modules/Microsoft.Compute/image.bicep' = {
+module imageResources '../modules/Microsoft.Compute/image.bicep' = [ for image in items(imagesInfo): {
   scope: avdImagesResourceGroup
-  name: 'imageRss_Deploy'
+  name: 'imageRssFor${image.value.imageDefinitionProperties.name}_${uniqueString(image.value.imageDefinitionProperties.name)}_Deploy'
   params: {
-    name: imageDefinitionName
+    name: image.value.imageDefinitionProperties.name
     location: location
     tags: tags
     galleryName: galleryName
-    imageDefinitionProperties: imageDefinitionProperties
+    imageDefinitionProperties: image.value.imageDefinitionProperties
   }
   dependsOn: [
     galleryResources
   ]
-}
+}]
 
 /*
 Image Template resources deployment
 */
 
 
-param imageTemplateProperties object
-
-var imageTemplateName = imageTemplateProperties.name
-var runOutputName = imageTemplateProperties.runOutputName
-var artifactTags = imageTemplateProperties.artifactTags
-var replicationRegions = imageTemplateProperties.replicationRegions 
-
-module imageTemplateResources '../modules/Microsoft.VirtualMachineImages/imageTemplate.bicep' = {
+module imageTemplateResources '../modules/Microsoft.VirtualMachineImages/imageTemplate.bicep' = [ for image in items(imagesInfo): {
   scope: avdImagesResourceGroup
-  name: 'imageTemplateRss_Deploy'
+  name: 'imageTemplateRssFor${image.value.imageTemplateProperties.name}_${uniqueString(image.value.imageTemplateProperties.name)}_Deploy'
   params: {
-    name: imageTemplateName
+    name: image.value.imageTemplateProperties.name
     location: location
     tags: tags
     imageBuilderIdentityName: imageBuilderIdentityName
     galleryName: galleryName
-    imageDefinitionName: imageDefinitionName
-    runOutputName: runOutputName
-    artifactsTags: artifactTags
-    replicationRegions: replicationRegions    
+    imageDefinitionName: image.value.imageDefinitionProperties.name
+    source: image.value.imageTemplateProperties.source 
+    customize: image.value.imageTemplateProperties.customize
+    runOutputName: image.value.imageTemplateProperties.runOutputName
+    artifactsTags: image.value.imageTemplateProperties.artifactTags
+    replicationRegions: image.value.imageTemplateProperties.replicationRegions    
   }
   dependsOn: [
     imageResources
   ]
-}
+}]

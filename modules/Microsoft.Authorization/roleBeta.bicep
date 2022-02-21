@@ -10,8 +10,6 @@ var roleDefName = guid(name, resourceGroup().id, string(actions))
 var roleAssigmentName = guid(name, resourceGroup().id, principalId)
 
 
-//var roleDefName = guid(name, subscription().id, string(actions))
-//var roleAssigmentName = guid(name, subscription().id, principalId)
 
 resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
   name: roleDefName
@@ -20,7 +18,6 @@ resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
     type: 'customRole'
     assignableScopes: [ 
       '${resourceGroup().id}'
-      //'${subscription().id}'
     ]
     description: description
     permissions: [

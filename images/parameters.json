@@ -53,28 +53,149 @@
           "softDelete": false
         }
       },
-      "imageDefinitionProperties": {
+      "imagesInfo": {
         "value": {
-          "name": "WVD10_Definition",
-          "offer": "Windows-10",
-          "publisher": "MicrosoftWindowsDesktop",
-          "sku": "20h1-ent",
-          "vmGeneration": "V1"
-        }
-      },
-      "imageTemplateProperties": {
-        "value": {
-          "name": "WVD10-Template",
-          "runOutputName": "WVD10-CustomImage",
-          "artifactTags": {
-            "sourceimage": "wvd-10",
-            "baseosimage": "windows-10"
+          "wvd10-pers": {
+            "imageDefinitionProperties": {
+              "name": "WVD10_Pers_Definition",
+              "offer": "Windows-10",
+              "publisher": "MicrosoftWindowsDesktop",
+              "sku": "20h1-ent",
+              "vmGeneration": "V1"        
+            },
+            "imageTemplateProperties": {
+              "name": "WVD10-Pers-Template",
+              "source" : {
+                "type": "PlatformImage",
+                "publisher": "MicrosoftWindowsDesktop",
+                "offer": "windows-10",
+                "sku": "20h1-ent",
+                "version": "latest"
+              },
+              "customize": [
+                {
+                  "type": "PowerShell",
+                  "name": "installFsLogix",
+                  "runElevated": true,
+                  "runAsSystem": true,
+                  "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1"
+                },
+                {
+                  "type": "PowerShell",
+                  "name": "OptimizeOS",
+                  "runElevated": true,
+                  "runAsSystem": true,
+                  "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/1_Optimize_OS_for_WVD.ps1"
+                },
+                {
+                  "type": "WindowsRestart",
+                  "restartCheckCommand": "write-host 'restarting post Optimizations'",
+                  "restartTimeout": "5m"
+                },
+                {
+                  "type": "PowerShell",
+                  "name": "Install Teams",
+                  "runElevated": true,
+                  "runAsSystem": true,
+                  "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/2_installTeams.ps1"
+                },
+                {
+                  "type": "WindowsRestart",
+                  "restartCheckCommand": "write-host 'restarting post Teams Install'",
+                  "restartTimeout": "5m"
+                },
+                {
+                  "type": "WindowsUpdate",
+                  "searchCriteria": "IsInstalled=0",
+                  "filters": [
+                    "exclude:$_.Title -like '*Preview*'",
+                    "include:$true"
+                  ],
+                  "updateLimit": 40
+                }
+              ],
+              "runOutputName": "WVD10-Pers-CustomImage",
+              "artifactTags": {
+                "sourceimage": "wvd-10",
+                "baseosimage": "windows-10"
+              },
+              "replicationRegions": [
+                "westeurope",
+                "northeurope"
+              ]
+            }
           },
-          "replicationRegions": [
-            "westeurope",
-            "northeurope"
-          ]
-        }
-      }
+          "wvd10-pool": {
+            "imageDefinitionProperties": {
+              "name": "WVD10_Pool_Definition",
+              "offer": "Windows-10",
+              "publisher": "MicrosoftWindowsDesktop",
+              "sku": "20h2-evd",
+              "vmGeneration": "V1"        
+            },
+            "imageTemplateProperties": {
+              "name": "WVD10-Pool-Template",
+              "source" : {
+                "type": "PlatformImage",
+                "publisher": "MicrosoftWindowsDesktop",
+                "offer": "windows-10",
+                "sku": "20h2-evd",
+                "version": "latest"
+              },
+              "customize": [
+                {
+                  "type": "PowerShell",
+                  "name": "installFsLogix",
+                  "runElevated": true,
+                  "runAsSystem": true,
+                  "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1"
+                },
+                {
+                  "type": "PowerShell",
+                  "name": "OptimizeOS",
+                  "runElevated": true,
+                  "runAsSystem": true,
+                  "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/1_Optimize_OS_for_WVD.ps1"
+                },
+                {
+                  "type": "WindowsRestart",
+                  "restartCheckCommand": "write-host 'restarting post Optimizations'",
+                  "restartTimeout": "5m"
+                },
+                {
+                  "type": "PowerShell",
+                  "name": "Install Teams",
+                  "runElevated": true,
+                  "runAsSystem": true,
+                  "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/2_installTeams.ps1"
+                },
+                {
+                  "type": "WindowsRestart",
+                  "restartCheckCommand": "write-host 'restarting post Teams Install'",
+                  "restartTimeout": "5m"
+                },
+                {
+                  "type": "WindowsUpdate",
+                  "searchCriteria": "IsInstalled=0",
+                  "filters": [
+                    "exclude:$_.Title -like '*Preview*'",
+                    "include:$true"
+                  ],
+                  "updateLimit": 40
+                }
+              ],
+              "runOutputName": "WVD10-Pool-CustomImage",
+              "artifactTags": {
+                "sourceimage": "wvd-10",
+                "baseosimage": "windows-10"
+              },
+              "replicationRegions": [
+                "westeurope",
+                "northeurope"
+              ]
+            }
+          }
+        }  
+      }   
   }
 }

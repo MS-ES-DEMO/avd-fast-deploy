@@ -5,6 +5,8 @@ param name string
 param imageBuilderIdentityName string
 param galleryName string
 param imageDefinitionName string
+param source object
+param customize array
 param runOutputName string
 param replicationRegions array
 param artifactsTags object
@@ -30,7 +32,6 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2021-10-01
     type: 'UserAssigned'
     userAssignedIdentities: {
       '${imageBuilderIdentity.id}': {}
-      //'${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${imageBuilderIdentityName}': {} 
     }
   }
   properties: {
@@ -39,14 +40,10 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2021-10-01
       vmSize: 'Standard_D2_v3'
       osDiskSizeGB: 127
     }
-    source: {
-      type: 'PlatformImage'
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'windows-10'
-      sku: '20h1-ent'
-      version: 'latest'
-    }
-    customize: [
+    source: source
+    customize: customize
+    /*
+    [
       {
         type: 'PowerShell'
         name: 'installFsLogix'
@@ -88,11 +85,11 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2021-10-01
         updateLimit: 40
       }
     ]
+    */
     distribute: [
       {
         type: 'SharedImage'
         galleryImageId: imageDefinition.id
-        //galleryImageId: '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/galleries/gallery/images/${imageDefinition.name}' //imageDefinition.id
         runOutputName: runOutputName
         artifactTags: artifactsTags
         replicationRegions: replicationRegions
