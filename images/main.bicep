@@ -121,8 +121,9 @@ module imageResources '../modules/Microsoft.Compute/image.bicep' = [ for image i
 Image Template resources deployment
 */
 
+param updateImageTemplate bool
 
-module imageTemplateResources '../modules/Microsoft.VirtualMachineImages/imageTemplate.bicep' = [ for image in items(imagesInfo): {
+module imageTemplateResources '../modules/Microsoft.VirtualMachineImages/imageTemplate.bicep' = [ for image in items(imagesInfo): if (updateImageTemplate) {
   scope: avdImagesResourceGroup
   name: 'imageTemplateRssFor${image.value.imageTemplateProperties.name}_${uniqueString(image.value.imageTemplateProperties.name)}_Deploy'
   params: {
@@ -140,5 +141,29 @@ module imageTemplateResources '../modules/Microsoft.VirtualMachineImages/imageTe
   }
   dependsOn: [
     imageResources
+  ]
+}]
+
+
+/*
+Image Template creation deployment
+*/
+
+param forceUpdateTag string = newGuid()
+
+module imageTemplateBuildResources '../modules/Microsoft.Resources/deploymentScript.bicep' = [ for image in items(imagesInfo): {
+  scope: avdImagesResourceGroup
+  name: 'imageTemplateBuildRssFor${image.value.imageTemplateProperties.name}_${uniqueString(image.value.imageTemplateProperties.name)}_Deploy'
+  params: {
+    name: '${image.value.imageTemplateProperties.name}-Build'
+    location: location
+    tags: tags
+    deploymentScriptIdentityName: deploymentScriptIdentityName
+    forceUpdateTag: forceUpdateTag
+    imageTemplateName: image.value.imageTemplateProperties.name
+  }
+  dependsOn: [
+    imageBuilderIdentityResources
+    imageTemplateResources
   ]
 }]

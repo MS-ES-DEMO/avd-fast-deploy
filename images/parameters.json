@@ -27,22 +27,14 @@
               "Microsoft.Compute/galleries/images/versions/write",
               "Microsoft.Compute/images/read",
               "Microsoft.Compute/images/write",
-              "Microsoft.Compute/images/delete",
-              "Microsoft.VirtualMachineImages/imageTemplates/run/action"
+              "Microsoft.Compute/images/delete"
             ]
           },
           "avdDeploymentScriptRole": {
             "name": "Deployment Script for AVD Images (Custom)",
             "description": "This role will allow Deployment Script Managed Identity to ",
             "actions": [
-              "Microsoft.Storage/storageAccounts/blobServices/containers/read",
-              "Microsoft.Storage/storageAccounts/blobServices/containers/write",
-              "Microsoft.ContainerInstance/containerGroups/read",
-              "Microsoft.ContainerInstance/containerGroups/write",
-              "Microsoft.ContainerInstance/containerGroups/start/action",
-              "Microsoft.Resources/deployments/read",
-              "Microsoft.Resources/deploymentScripts/read",
-              "Microsoft.Resources/deploymentScripts/write"
+              "Microsoft.VirtualMachineImages/imageTemplates/run/action"
             ]
           }
         }
@@ -52,6 +44,9 @@
           "name": "gallery",
           "softDelete": false
         }
+      },
+      "updateImageTemplate": {
+        "value": true
       },
       "imagesInfo": {
         "value": {
@@ -120,8 +115,7 @@
                 "baseosimage": "windows-10"
               },
               "replicationRegions": [
-                "westeurope",
-                "northeurope"
+                "westeurope"
               ]
             }
           },
@@ -190,12 +184,11 @@
                 "baseosimage": "windows-10"
               },
               "replicationRegions": [
-                "westeurope",
-                "northeurope"
+                "westeurope"
               ]
             }
-          }
-        }  
-      }   
+          }  
+        } 
+      }
   }
 }
