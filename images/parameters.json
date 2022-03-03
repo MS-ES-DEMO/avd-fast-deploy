@@ -115,7 +115,8 @@
                 "baseosimage": "windows-10"
               },
               "replicationRegions": [
-                "westeurope"
+                "westeurope",
+                "northeurope"
               ]
             }
           },
@@ -184,7 +185,8 @@
                 "baseosimage": "windows-10"
               },
               "replicationRegions": [
-                "westeurope"
+                "westeurope",
+                "northeurope"
               ]
             }
           }  
