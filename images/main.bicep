@@ -135,6 +135,7 @@ module imageTemplateResources '../modules/Microsoft.VirtualMachineImages/imageTe
     imageDefinitionName: image.value.imageDefinitionProperties.name
     source: image.value.imageTemplateProperties.source 
     customize: image.value.imageTemplateProperties.customize
+    imageVersion: image.value.imageTemplateProperties.version
     runOutputName: image.value.imageTemplateProperties.runOutputName
     artifactsTags: image.value.imageTemplateProperties.artifactTags
     replicationRegions: image.value.imageTemplateProperties.replicationRegions    

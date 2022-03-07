@@ -7,6 +7,7 @@ param galleryName string
 param imageDefinitionName string
 param source object
 param customize array
+param imageVersion string
 param runOutputName string
 param replicationRegions array
 param artifactsTags object
@@ -45,7 +46,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2021-10-01
     distribute: [
       {
         type: 'SharedImage'
-        galleryImageId: imageDefinition.id
+        galleryImageId: '${imageDefinition.id}/versions/${imageVersion}'
         runOutputName: runOutputName
         artifactTags: artifactsTags
         replicationRegions: replicationRegions
