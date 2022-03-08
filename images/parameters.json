@@ -32,7 +32,7 @@
           },
           "avdDeploymentScriptRole": {
             "name": "Deployment Script for AVD Images (Custom)",
-            "description": "This role will allow Deployment Script Managed Identity to ",
+            "description": "This role will allow Deployment Script Managed Identity to run image build action",
             "actions": [
               "Microsoft.VirtualMachineImages/imageTemplates/run/action"
             ]
