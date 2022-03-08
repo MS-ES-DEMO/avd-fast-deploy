@@ -64,6 +64,8 @@
         "prefixName": "vmshdatapd",
         "diskType": "Standard_LRS",
         "sku": "Standard_DS3_V2",
+        "redundancy": "AZ",
+        "azNumber": 1,
         "adminUsername": "azureAdmin",
         "image": {
           "imageOffer": "Windows-10",

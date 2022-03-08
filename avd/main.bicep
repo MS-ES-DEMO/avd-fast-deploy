@@ -40,6 +40,8 @@ param vmConfiguration object
 var vmPrefix = vmConfiguration.prefixName
 var vmDiskType = vmConfiguration.diskType
 var vmSize = vmConfiguration.sku
+var vmRedundancy = vmConfiguration.redundancy
+var vmAzNumber = vmConfiguration.azNumber
 var vmGalleryImage = vmConfiguration.image
 var localVmAdminUsername = vmConfiguration.adminUsername
 @secure()
@@ -204,6 +206,8 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
     localVmAdminPassword: localVmAdminPassword
     vmDiskType: vmDiskType
     vmSize: vmSize
+    vmRedundancy: vmRedundancy
+    vmAzNumber: vmAzNumber
     existingDomainAdminName: existingDomainAdminName
     existingDomainAdminPassword: existingDomainAdminPassword
     networkAvdResourceGroupName: networkAvdResourceGroupName

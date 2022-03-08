@@ -22,6 +22,8 @@ param localVmAdminPassword string
 ])
 param vmDiskType string
 param vmSize string
+param vmRedundancy string
+param vmAzNumber int
 param existingDomainAdminName string
 param existingDomainAdminPassword string
 param networkAvdResourceGroupName string
@@ -54,7 +56,7 @@ module nicResources '../../modules/Microsoft.Network/nic.bicep' = [for i in rang
   }
 }]
 
-module availabilitySetResources '../../modules/Microsoft.Compute/availabilitySet.bicep' = {
+module availabilitySetResources '../../modules/Microsoft.Compute/availabilitySet.bicep' = if (vmRedundancy == 'availabilitySet') {
   name: 'availabilitySetRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy'
   params: {
     location: location
@@ -75,7 +77,9 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
     tags: tags
     name: '${vmPrefix}-${i + currentInstances}'
     vmSize: vmSize
-    availabilitySetName: '${vmPrefix}-av'
+    vmRedundancy: vmRedundancy
+    availabilitySetName: (vmRedundancy == 'availabilitySet') ? '${vmPrefix}-av' : ''
+    availabilityZone: vmAzNumber
     adminUsername: localVmAdminUsername
     adminPassword: localVmAdminPassword
     nicName: '${networkAdapterPrefix}${vmPrefix}-${i + currentInstances}'
