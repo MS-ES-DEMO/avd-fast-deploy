@@ -59,7 +59,7 @@
               "vmGeneration": "V1"        
             },
             "imageTemplateProperties": {
-              "name": "WVD10-Pers-Template",
+              "name": "WVD10Pers-Temp-0322",
               "source" : {
                 "type": "PlatformImage",
                 "publisher": "MicrosoftWindowsDesktop",
@@ -109,7 +109,7 @@
                   "updateLimit": 40
                 }
               ],
-              "version": "1.0.1",
+              "version": "1.0.2",
               "runOutputName": "WVD10-Pers-CustomImage",
               "artifactTags": {
                 "sourceimage": "wvd-10",
@@ -130,7 +130,7 @@
               "vmGeneration": "V1"        
             },
             "imageTemplateProperties": {
-              "name": "WVD10-Pool-Template",
+              "name": "WVD10Pool-Temp-0322",
               "source" : {
                 "type": "PlatformImage",
                 "publisher": "MicrosoftWindowsDesktop",
@@ -180,7 +180,7 @@
                   "updateLimit": 40
                 }
               ],
-              "version": "1.0.1",
+              "version": "1.0.2",
               "runOutputName": "WVD10-Pool-CustomImage",
               "artifactTags": {
                 "sourceimage": "wvd-10",
