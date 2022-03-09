@@ -2,7 +2,7 @@ param (
   [string]
   $location = "westeurope",
   [string] 
-  $templateFile = ".\avd\main.bicep",
+  $templateFile = ".\main.bicep",
   [string]
   $parameterFile = "parameters.pooled.json",
   [string] 
