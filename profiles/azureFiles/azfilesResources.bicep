@@ -4,18 +4,18 @@
 // Global Parameters
 param location string = resourceGroup().location
 param tags object
-param vnetName string 
-param snetName string
-param privateDnsZoneInfo array
+param privateDnsZoneInfo object
 param avdResourceGroupName string
-param dnsResourceGroupName string
-param storageAccountName string
-param fileStorageAccountPrivateEndpointName string
-param filePrivateDnsZoneName string
+param centralDnsResourceGroupName string
+param centralDnsExists bool
+param avdVnetName string
+param hostPoolName string
+param storageAccountInfo object
+param profilesInfo object
 
 
 
-module privateDnsZone '../../modules/Microsoft.Network/privateDnsZone.bicep' = {
+module privateDnsZone '../../modules/Microsoft.Network/privateDnsZone.bicep' = if (centralDnsExists == 'False') {
   name: 'privateDnsZoneResources_Deploy'
   params: {
     location: 'global'
@@ -33,51 +33,52 @@ module avdVnetLink '../../modules/Microsoft.Network/vnetLink.bicep' = {
   params: {
     tags: tags
     name: '${privateDnsZoneInfo.vnetLinkPrefix}avd'
-    vnetName: privateDnsZoneInfo.vnetName
+    vnetName: avdVnetName
     privateDnsZoneName: privateDnsZoneInfo.name
     vnetResourceGroupName: avdResourceGroupName
   }
 }
 
-module centralDnsVnetLink '../../modules/Microsoft.Network/vnetLink.bicep' = if (centralDnsExist) {
-  name: 'centralDnsVnetLinkResources_Deploy'
-  dependsOn: [
-    privateDnsZone
-  ]
-  scope: resourceGroup(dnsResourceGroupName)
-  params: {
-    tags: tags
-    name: '${privateDnsZoneInfo.vnetLinkPrefix}centraldns'
-    vnetName: vnetInfo.name
-    privateDnsZoneName: privateDnsZoneInfo.name
-    vnetResourceGroupName: dnsVnetResourceGroupName
-  }
-}
-
 module storageAccountResources '../../modules/Microsoft.Storage/storageAccount.bicep' = {
-  name: 'storageAccountResources_Deploy'
+  name: 'storageAccountRssFor${hostPoolName}_Deploy'
   params: {
     location: location
     tags: tags
-    name: storageAccountName
+    name: storageAccountInfo.name
+    sku: storageAccountInfo.sku
+    kind: storageAccountInfo.kind
+  }
+}
+
+module fileShareResources '../../modules/Microsoft.Storage/fileShare.bicep' = {
+  name: 'fileShareRss_Deploy'
+  dependsOn: [
+    storageAccountResources
+  ]
+  params: {
+    name: profilesInfo.fileShareName
+    storageAccountName: storageAccountInfo.name
+    tier: profilesInfo.fileShareTier
   }
 }
 
 module filePrivateEndpointResources '../../modules/Microsoft.Network/storagePrivateEndpoint.bicep' = {
-  name: 'filePrivateEndpointResources_Deploy'
+  name: 'filePrivateEndpointRss_Deploy'
   dependsOn: [
+    privateDnsZone
     storageAccountResources
   ]
   params: {
     location: location
     tags: tags
-    name: fileStorageAccountPrivateEndpointName
-    vnetName: vnetName
-    snetName: snetName
-    storageAccountName: storageAccountName
-    privateDnsZoneName: filePrivateDnsZoneName
+    name: storageAccountInfo.privateEndpointName
+    vnetName: avdVnetName
+    snetName: profilesInfo.snetName
+    storageAccountName: storageAccountInfo.name
+    privateDnsZoneName: privateDnsZoneInfo.name
     groupIds: 'file'
-    addsDnsResourceGroupName: dnsResourceGroupName
+    centralDnsExists: centralDnsExists
+    centralDnsResourceGroupName: centralDnsResourceGroupName
   }
 }
 

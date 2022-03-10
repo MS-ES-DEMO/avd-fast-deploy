@@ -7,7 +7,8 @@ param snetName string
 param storageAccountName string
 param privateDnsZoneName string
 param groupIds string
-param addsDnsResourceGroupName string
+param centralDnsExists bool
+param centralDnsResourceGroupName string
 
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
@@ -25,7 +26,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing 
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: privateDnsZoneName
-  scope: resourceGroup(addsDnsResourceGroupName)
+  scope: centralDnsExists ? resourceGroup(centralDnsResourceGroupName) : resourceGroup()
 }
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2021-02-01' = {
