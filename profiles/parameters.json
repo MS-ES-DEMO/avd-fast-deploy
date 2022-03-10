@@ -36,7 +36,7 @@
         }
       },
       "centralDnsExists": {
-        "value": true
+        "value": false
       },
       "vnets": {
         "value": {
