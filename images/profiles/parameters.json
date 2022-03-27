@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "westeurope"
+    },
+    "tags": {
+      "value": {
+        "project": "fd-avd"
+      }
+    },
+    "resourceGroupNames": {
+      "value": {
+        "avd": "rg-avd",
+        "centralDns": "rg-shared",
+        "azFilesProfiles": "rg-azfilesprofiles"
+      }
+    },
+    "hostPoolName": {
+      "value": "hpdatapers"
+    },
+    "storageAccountInfo": {
+      "value": {
+          "prefix": "saprofiles",
+          "sku": "Standard_LRS",
+          "kind": "StorageV2",
+          "privateEndpointName": "plink-blob-profiles"
+        }
+      },
+    "profilesInfo": {
+      "value": {
+        "fileShareName": "profiles",
+        "fileShareTier": "Hot",
+        "snetName": "snet-profile-shares"
+      }
+    },
+    "centralDnsExists": {
+      "value": true
+    },
+    "vnets": {
+      "value": {
+        "avd": "vnet-avd",
+        "centraldns": "vnet-shared"
+      }
+    }
+  }
+}
