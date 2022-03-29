@@ -73,12 +73,21 @@ module filePrivateEndpointResources '../../modules/Microsoft.Network/storagePriv
     name: storageAccountInfo.privateEndpointName
     vnetName: avdVnetName
     snetName: profilesInfo.snetName
-    storageAccountName: '${storageAccountInfo.prefix}${hostPoolName}'
-    privateDnsZoneName: privateDnsZoneInfo.name
-    groupIds: 'file'
-    centralDnsExists: centralDnsExists
-    centralDnsResourceGroupName: centralDnsResourceGroupName
-    vnetResourceGroupName: avdResourceGroupName
+    nicName: 
+    vmName: 
+    vmDiskType: 
+    vmSize: 
+    vmRedundancy: 
+    vmAzNumber int
+    vmGalleryImage object
+
+    @secure()
+    vmAdminUsername: 
+    @secure()
+    vmAdminPassword: 
+    diagnosticsStorageAccountName: 
+    logWorkspaceName: 
+    monitoringResourceGroupName: 
   }
 }
 

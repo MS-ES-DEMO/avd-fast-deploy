@@ -56,7 +56,7 @@ module azFilesProfilesResources 'azfilesResources.bicep' = {
   }
 }
 
-module joinerServerResources 'joinServerResources.bicep' = {
+module joinerServerResources 'joinerServerResources.bicep' = {
   scope: azFilesProfilesResourceGroup
   name: 'joinerServerRss_Deploy'
   params: {
