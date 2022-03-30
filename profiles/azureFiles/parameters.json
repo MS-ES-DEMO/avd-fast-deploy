@@ -47,13 +47,13 @@
     },
     "joinerServerConfiguration": {
       "value": {
-        "name": "vmjoiner",
-        "diskType": "Standard_LRS",
-        "sku": "Standard_DS2_V2",
-        "redundancy": "AZ",
-        "azNumber": 1,
-        "adminUsername": "azureAdmin",
-        "image": {
+        "vmName": "vmjoiner",
+        "vmDiskType": "Standard_LRS",
+        "vmSku": "Standard_DS2_V2",
+        "vmRedundancy": "AZ",
+        "vmAzNumber": 1,
+        "vmAdminUsername": "azureAdmin",
+        "vmImage": {
           "imageId": "NA",
           "imageOffer": "WindowsServer",
           "imageSKU": "2019-Datacenter",

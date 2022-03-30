@@ -18,7 +18,7 @@ module nicResources '../../modules/Microsoft.Network/nic.bicep' = {
   name: 'nicResources_Deploy'
   params: {
     tags: tags
-    name: joinerServerConfiguration.nicName
+    name: joinerServerConfiguration.networkConfiguration.nicName
     location: location
     vnetName: joinerServerConfiguration.networkConfiguration.vnetName
     vnetResourceGroupName: resourceGroupNames.avd
@@ -36,7 +36,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
     tags: tags
     name: joinerServerConfiguration.vmName
     location: location
-    vmSize: joinerServerConfiguration.sku
+    vmSize: joinerServerConfiguration.vmSku
     vmRedundancy: joinerServerConfiguration.vmRedundancy
     availabilitySetName: (joinerServerConfiguration.vmRedundancy == 'availabilitySet') ? '${joinerServerConfiguration.vmName}-av' : ''
     availabilityZone: joinerServerConfiguration.vmAzNumber
@@ -58,7 +58,7 @@ module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainE
     location: location
     tags: tags
     name: jsonADDomainExtensionName
-    vmName: joinerServerConfiguration.vmName
+    vmName: joinerServerConfiguration.name
     domainToJoin: joinerServerConfiguration.domainConfiguration.domainToJoin
     ouPath: joinerServerConfiguration.domainConfiguration.ouPath
     domainAdminUsername: joinerServerConfiguration.domainConfiguration.vmJoinUserName
