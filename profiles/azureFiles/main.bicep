@@ -56,20 +56,26 @@ module azFilesProfilesResources 'azfilesResources.bicep' = {
   }
 }
 
+param joinerServerConfiguration object
+param monitoringOptions object
+@secure()
+param vmAdminPassword string
+var JsonADDomainExtensionName = 'JsonADDomainExtension'
+@secure()
+param existingDomainAdminPassword string
+
 module joinerServerResources 'joinerServerResources.bicep' = {
   scope: azFilesProfilesResourceGroup
   name: 'joinerServerRss_Deploy'
   params: {
     location: location
     tags: tags
-    privateDnsZoneInfo: privateDnsZoneInfo
-    avdResourceGroupName: resourceGroupNames.avd
-    centralDnsResourceGroupName: resourceGroupNames.centralDns
-    centralDnsExists: centralDnsExists
-    avdVnetName: vnets.avd
-    hostPoolName: hostPoolName
-    storageAccountInfo: storageAccountInfo
-    profilesInfo: profilesInfo
+    resourceGroupNames: resourceGroupNames
+    joinerServerConfiguration: joinerServerConfiguration
+    vmAdminPassword: vmAdminPassword
+    JsonADDomainExtensionName: JsonADDomainExtensionName
+    existingDomainAdminPassword: existingDomainAdminPassword
+    monitoringOptions: monitoringOptions
 
   }
 }

@@ -4,35 +4,25 @@
 // Global Parameters
 param location string = resourceGroup().location
 param tags object
-param vnetInfo object 
-
-param snetName string
-param nicName string
-param vmName string
-param vmDiskType string
-param vmSize string
-param vmRedundancy string
-param vmAzNumber int
-param vmGalleryImage object
-
-@secure()
-param vmAdminUsername string
+param resourceGroupNames object
+param joinerServerConfiguration object
 @secure()
 param vmAdminPassword string
-param diagnosticsStorageAccountName string
-param logWorkspaceName string
-param monitoringResourceGroupName string
+param JsonADDomainExtensionName string
+@secure()
+param existingDomainAdminPassword string
+param monitoringOptions object
 
 
 module nicResources '../../modules/Microsoft.Network/nic.bicep' = {
   name: 'nicResources_Deploy'
   params: {
     tags: tags
-    name: nicName
+    name: joinerServerConfiguration.nicName
     location: location
-    vnetName: vnetInfo.name
-    vnetResourceGroupName: resourceGroup().name
-    snetName: snetName
+    vnetName: joinerServerConfiguration.networkConfiguration.vnetName
+    vnetResourceGroupName: resourceGroupNames.avd
+    snetName: joinerServerConfiguration.networkConfiguration.snetName
     nsgName: ''
   }
 }
@@ -44,58 +34,75 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
   ]
   params: {
     tags: tags
-    name: vmName
+    name: joinerServerConfiguration.vmName
     location: location
-    vmSize: vmSize
-    vmRedundancy: vmRedundancy
-    availabilitySetName: (vmRedundancy == 'availabilitySet') ? '${vmName}-av' : ''
-    availabilityZone: vmAzNumber
-    adminUsername: vmAdminUsername
+    vmSize: joinerServerConfiguration.sku
+    vmRedundancy: joinerServerConfiguration.vmRedundancy
+    availabilitySetName: (joinerServerConfiguration.vmRedundancy == 'availabilitySet') ? '${joinerServerConfiguration.vmName}-av' : ''
+    availabilityZone: joinerServerConfiguration.vmAzNumber
+    adminUsername: joinerServerConfiguration.vmAdminUsername
     adminPassword: vmAdminPassword
-    nicName: nicName
-    osDiskName: '${vmName}-os'
-    storageAccountType: vmDiskType
-    vmGalleryImage: vmGalleryImage
+    nicName: joinerServerConfiguration.networkConfiguration.nicName
+    osDiskName: '${joinerServerConfiguration.vmName}-os'
+    storageAccountType: joinerServerConfiguration.vmDiskType
+    vmGalleryImage: joinerServerConfiguration.image
+  }
+}
+
+module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainExtension.bicep' = {
+  name: 'joinDomainExtensionRss'
+  dependsOn: [
+    vmResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    name: JsonADDomainExtensionName
+    vmName: joinerServerConfiguration.vmName
+    domainToJoin: joinerServerConfiguration.domainConfiguration.domainToJoin
+    ouPath: joinerServerConfiguration.domainConfiguration.ouPath
+    domainAdminUsername: joinerServerConfiguration.domainConfiguration.vmJoinUserName
+    domainAdminPassword: existingDomainAdminPassword
   }
 }
 
 module daExtensionResources '../../modules/Microsoft.Compute/daExtension.bicep' = {
   name: 'daExtensionResources_Deploy'
   dependsOn: [
-    vmResources
+    joinDomainExtensionResources
   ]
   params: {
     location: location
     tags: tags
-    vmName: vmName
+    vmName: joinerServerConfiguration.vmName
   }
 }
 
 module diagnosticsExtensionResources '../../modules/Microsoft.Compute/diagnosticsExtension.bicep' = {
   name: 'diagnosticsExtensionResources_Deploy'
   dependsOn: [
-    vmResources
+    daExtensionResources
   ]
   params: {
     location: location
     tags: tags
-    vmName: vmName
-    diagnosticsStorageAccountName: diagnosticsStorageAccountName
-    monitoringResourceGroupName: monitoringResourceGroupName
+    vmName: joinerServerConfiguration.vmName
+    diagnosticsStorageAccountName: monitoringOptions.diagnosticsStorageAccountName
+    monitoringResourceGroupName: resourceGroupNames.monitoring
   }
 }
 
 module monitoringAgentExtensionResources '../../modules/Microsoft.Compute/monitoringAgentExtension.bicep' = {
   name: 'monitoringAgentExtensionResources_Deploy'
   dependsOn: [
-    vmResources
+    diagnosticsExtensionResources
   ]
   params: {
     location: location
     tags: tags
-    vmName: vmName
-    logWorkspaceName: logWorkspaceName
-    monitoringResourceGroupName: monitoringResourceGroupName
+    vmName: joinerServerConfiguration.vmName
+    logWorkspaceName: monitoringOptions.logWorkspaceName
+    monitoringResourceGroupName: resourceGroupNames.monitoring
   }
 }
 
