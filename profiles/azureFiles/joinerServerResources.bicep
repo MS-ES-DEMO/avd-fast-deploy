@@ -8,7 +8,7 @@ param resourceGroupNames object
 param joinerServerConfiguration object
 @secure()
 param vmAdminPassword string
-param JsonADDomainExtensionName string
+param jsonADDomainExtensionName string
 @secure()
 param existingDomainAdminPassword string
 param monitoringOptions object
@@ -57,7 +57,7 @@ module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainE
   params: {
     location: location
     tags: tags
-    name: JsonADDomainExtensionName
+    name: jsonADDomainExtensionName
     vmName: joinerServerConfiguration.vmName
     domainToJoin: joinerServerConfiguration.domainConfiguration.domainToJoin
     ouPath: joinerServerConfiguration.domainConfiguration.ouPath

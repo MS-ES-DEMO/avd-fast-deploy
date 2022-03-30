@@ -60,7 +60,7 @@ param joinerServerConfiguration object
 param monitoringOptions object
 @secure()
 param vmAdminPassword string
-var JsonADDomainExtensionName = 'JsonADDomainExtension'
+var jsonADDomainExtensionName = 'JsonADDomainExtension'
 @secure()
 param existingDomainAdminPassword string
 
@@ -73,7 +73,7 @@ module joinerServerResources 'joinerServerResources.bicep' = {
     resourceGroupNames: resourceGroupNames
     joinerServerConfiguration: joinerServerConfiguration
     vmAdminPassword: vmAdminPassword
-    JsonADDomainExtensionName: JsonADDomainExtensionName
+    jsonADDomainExtensionName: jsonADDomainExtensionName
     existingDomainAdminPassword: existingDomainAdminPassword
     monitoringOptions: monitoringOptions
 
