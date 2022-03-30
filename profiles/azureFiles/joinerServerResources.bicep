@@ -15,7 +15,7 @@ param monitoringOptions object
 
 
 module nicResources '../../modules/Microsoft.Network/nic.bicep' = {
-  name: 'nicResources_Deploy'
+  name: 'nicRss_Deploy'
   params: {
     tags: tags
     name: joinerServerConfiguration.networkConfiguration.nicName
@@ -28,7 +28,7 @@ module nicResources '../../modules/Microsoft.Network/nic.bicep' = {
 }
 
 module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
-  name: 'vmResources_Deploy'
+  name: 'vmRss_Deploy'
   dependsOn: [
     nicResources
   ]
@@ -45,7 +45,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
     nicName: joinerServerConfiguration.networkConfiguration.nicName
     osDiskName: '${joinerServerConfiguration.vmName}-os'
     storageAccountType: joinerServerConfiguration.vmDiskType
-    vmGalleryImage: joinerServerConfiguration.image
+    vmGalleryImage: joinerServerConfiguration.vmImage
   }
 }
 
@@ -58,8 +58,8 @@ module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainE
     location: location
     tags: tags
     name: jsonADDomainExtensionName
-    vmName: joinerServerConfiguration.name
-    domainToJoin: joinerServerConfiguration.domainConfiguration.domainToJoin
+    vmName: joinerServerConfiguration.vmName
+    domainToJoin: joinerServerConfiguration.domainConfiguration.name
     ouPath: joinerServerConfiguration.domainConfiguration.ouPath
     domainAdminUsername: joinerServerConfiguration.domainConfiguration.vmJoinUserName
     domainAdminPassword: existingDomainAdminPassword
@@ -67,7 +67,7 @@ module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainE
 }
 
 module daExtensionResources '../../modules/Microsoft.Compute/daExtension.bicep' = {
-  name: 'daExtensionResources_Deploy'
+  name: 'daExtensionRss_Deploy'
   dependsOn: [
     joinDomainExtensionResources
   ]
@@ -79,7 +79,7 @@ module daExtensionResources '../../modules/Microsoft.Compute/daExtension.bicep' 
 }
 
 module diagnosticsExtensionResources '../../modules/Microsoft.Compute/diagnosticsExtension.bicep' = {
-  name: 'diagnosticsExtensionResources_Deploy'
+  name: 'diagnosticsExtensionRss_Deploy'
   dependsOn: [
     daExtensionResources
   ]
@@ -93,7 +93,7 @@ module diagnosticsExtensionResources '../../modules/Microsoft.Compute/diagnostic
 }
 
 module monitoringAgentExtensionResources '../../modules/Microsoft.Compute/monitoringAgentExtension.bicep' = {
-  name: 'monitoringAgentExtensionResources_Deploy'
+  name: 'monitoringAgentExtensionRss_Deploy'
   dependsOn: [
     diagnosticsExtensionResources
   ]

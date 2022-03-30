@@ -50,11 +50,11 @@
         "vmName": "vmjoiner",
         "vmDiskType": "Standard_LRS",
         "vmSku": "Standard_DS2_V2",
-        "vmRedundancy": "AZ",
+        "vmRedundancy": "availabilityZones",
         "vmAzNumber": 1,
         "vmAdminUsername": "azureAdmin",
         "vmImage": {
-          "imageId": "NA",
+          "imageId": "",
           "imageOffer": "WindowsServer",
           "imageSKU": "2019-Datacenter",
           "imagePublisher": "MicrosoftWindowsServer",

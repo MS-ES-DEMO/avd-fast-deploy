@@ -16,7 +16,7 @@ param profilesInfo object
 
 
 module privateDnsZone '../../modules/Microsoft.Network/privateDnsZone.bicep' = if (centralDnsExists == false ) {
-  name: 'privateDnsZoneResources_Deploy'
+  name: 'privateDnsZoneRss_Deploy'
   params: {
     location: 'global'
     tags: tags
@@ -25,7 +25,7 @@ module privateDnsZone '../../modules/Microsoft.Network/privateDnsZone.bicep' = i
 }
 
 module avdVnetLink '../../modules/Microsoft.Network/vnetLink.bicep' = if (centralDnsExists == false ) {
-  name: 'avdVnetLinkResources_Deploy'
+  name: 'avdVnetLinkRss_Deploy'
   dependsOn: [
     privateDnsZone
   ]
