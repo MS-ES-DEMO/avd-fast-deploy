@@ -78,12 +78,9 @@ module filePrivateEndpointResources '../../modules/Microsoft.Network/storagePriv
     vmDiskType: 
     vmSize: 
     vmRedundancy: 
-    vmAzNumber int
-    vmGalleryImage object
-
-    @secure()
-    vmAdminUsername: 
-    @secure()
+    vmAzNumber: 
+    vmGalleryImage: 
+    vmAdminUsername:
     vmAdminPassword: 
     diagnosticsStorageAccountName: 
     logWorkspaceName: 
