@@ -101,7 +101,7 @@ module monitoringAgentExtensionResources '../../modules/Microsoft.Compute/monito
     location: location
     tags: tags
     vmName: joinerServerConfiguration.vmName
-    logWorkspaceName: monitoringOptions.logWorkspaceName
+    logWorkspaceName: monitoringOptions.newOrExistingLogAnalyticsWorkspaceName
     monitoringResourceGroupName: resourceGroupNames.monitoring
   }
 }
