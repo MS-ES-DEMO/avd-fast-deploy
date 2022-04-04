@@ -106,5 +106,19 @@ module monitoringAgentExtensionResources '../../modules/Microsoft.Compute/monito
   }
 }
 
+module joinAdProfilesExtensionResources '../../modules/Microsoft.Compute/joinAdProfilesExtension.bicep' = {
+  name: 'joinAdProfilesExtensionRss_Deploy'
+  dependsOn: [
+    diagnosticsExtensionResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    vmName: joinerServerConfiguration.vmName
+    logWorkspaceName: monitoringOptions.newOrExistingLogAnalyticsWorkspaceName
+    monitoringResourceGroupName: resourceGroupNames.monitoring
+  }
+}
+
 
 
