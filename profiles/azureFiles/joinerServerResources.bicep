@@ -109,7 +109,7 @@ module monitoringAgentExtensionResources '../../modules/Microsoft.Compute/monito
 module joinAdProfilesExtensionResources '../../modules/Microsoft.Compute/joinAdProfilesExtension.bicep' = {
   name: 'joinAdProfilesExtensionRss_Deploy'
   dependsOn: [
-    diagnosticsExtensionResources
+    monitoringAgentExtensionResources
   ]
   params: {
     location: location
