@@ -115,8 +115,6 @@ module joinAdProfilesExtensionResources '../../modules/Microsoft.Compute/joinAdP
     location: location
     tags: tags
     vmName: joinerServerConfiguration.vmName
-    logWorkspaceName: monitoringOptions.newOrExistingLogAnalyticsWorkspaceName
-    monitoringResourceGroupName: resourceGroupNames.monitoring
   }
 }
 
