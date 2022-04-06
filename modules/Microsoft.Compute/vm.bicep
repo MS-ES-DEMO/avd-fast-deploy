@@ -26,7 +26,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   name: name
   location: location
   tags: tags
-  zones: (vmRedundancy != 'availabilityZones') ? [
+  zones: (vmRedundancy == 'availabilityZones') ? [
     '${availabilityZone}' 
   ] : json('null')
   properties: {

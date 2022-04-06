@@ -13,7 +13,7 @@ param tags object
 param resourceGroupNames object
 
 var monitoringResourceGroupName = resourceGroupNames.monitoring
-var networkAvdResourceGroupName = resourceGroupNames.avd
+var networkAvdResourceGroupName = resourceGroupNames.avdNetworking
 var avdResourceGroupName = resourceGroupNames.avd
 
 // Monitoring resources

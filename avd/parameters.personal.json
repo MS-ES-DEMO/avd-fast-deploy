@@ -13,7 +13,8 @@
     "resourceGroupNames": {
       "value": {
         "monitoring": "rg-monitor",
-        "avd": "rg-avd"
+        "avdNetworking": "rg-avd",
+        "avd": "rg-avd-hp-data-pers"
       }
     },
     "deploymentFromScratch": {
@@ -64,7 +65,7 @@
         "prefixName": "vmshdataps",
         "diskType": "Standard_LRS",
         "sku": "Standard_DS3_V2",
-        "redundancy": "AZ",
+        "redundancy": "availabilityZones",
         "azNumber": 1,
         "adminUsername": "azureAdmin",
         "image": {

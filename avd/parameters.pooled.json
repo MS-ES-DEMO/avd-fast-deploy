@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-      "value": "francecentral"
+      "value": "westeurope"
     },
     "tags": {
       "value": {
@@ -12,8 +12,9 @@
     },
     "resourceGroupNames": {
       "value": {
-        "monitoring": "rg-monitor-2",
-        "avd": "rg-avd-2"
+        "monitoring": "rg-monitor",
+        "avdNetworking": "rg-avd",
+        "avd": "rg-avd-hp-data-pool"
       }
     },
     "deploymentFromScratch": {
@@ -64,7 +65,7 @@
         "prefixName": "vmshdatapd",
         "diskType": "Standard_LRS",
         "sku": "Standard_DS3_V2",
-        "redundancy": "AZ",
+        "redundancy": "availabilityZones",
         "azNumber": 1,
         "adminUsername": "azureAdmin",
         "image": {
