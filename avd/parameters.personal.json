@@ -13,7 +13,8 @@
     "resourceGroupNames": {
       "value": {
         "monitoring": "rg-monitor",
-        "avd": "rg-avd"
+        "avdNetworking": "rg-avd",
+        "avd": "rg-avd-hp-data-pers"
       }
     },
     "deploymentFromScratch": {
@@ -101,7 +102,7 @@
           "assignmentType": "Automatic",
           "maxSessions": 10,
           "rdpProperties": "audiocapturemode:i:0;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:0;redirectcomports:i:0;redirectprinters:i:0;redirectsmartcards:i:0;screen mode id:i:2;",
-          "tokenExpirationTime": "04/15/2022 8:55:50 AM",
+          "tokenExpirationTime": "05/06/2022 8:55:50 AM",
           "scalePlan": {
             "enabled": false,
             "name": "NA",
