@@ -4,9 +4,9 @@ param (
   [string] 
   $templateFile = ".\main.bicep",
   [string]
-  $parameterFile = "parameters.personal.json",
+  $parameterFile = "parameters.pooled.json",
   [string] 
-  $deploymentPrefix='AVD-Data-Personal-Deployment'
+  $deploymentPrefix='AVD-Data-Pooled-Deployment'
   )
 
 $deploymentName = $deploymentPrefix

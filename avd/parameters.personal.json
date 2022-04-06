@@ -13,7 +13,8 @@
     "resourceGroupNames": {
       "value": {
         "monitoring": "rg-monitor",
-        "avd": "rg-avd"
+        "avdNetworking": "rg-avd",
+        "avd": "rg-avd-hp-data-pers"
       }
     },
     "deploymentFromScratch": {
