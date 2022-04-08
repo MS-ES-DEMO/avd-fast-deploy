@@ -79,7 +79,7 @@
           "name": "mydomain.local",
           "ouPath": "OU=Pooled,OU=AVD,DC=mydomain,DC=local",
           "vmJoinUserName": "azureAdmin",
-          "artifactsLocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"
+          "artifactsLocation2": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"
         },
         "networkConfiguration": {
           "vnetName": "vnet-avd",
