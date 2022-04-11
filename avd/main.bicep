@@ -107,28 +107,6 @@ var deployHostPoolDiagnostic = avdConfiguration.monitoring.deployHostPoolDiagnos
 var deployDesktopApplicationGroupDiagnostic = avdConfiguration.monitoring.deployDesktopDiagnostics
 var deployRemoteAppApplicationGroupDiagnostic = avdConfiguration.monitoring.deployRemoteAppDiagnostics
 
-// FSLogix User Profiles resources
-/*
-var profileStorageAccountName = avdConfiguration.profiles.storageAccount.name
-var profileFileShareName = avdConfiguration.profiles.storageAccount.fileShareName
-var profilePrivateEndpointName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.name
-var profilePrivateEndpointVnetName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.vnetName
-var profilePrivateEndpointSubnetName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.snetName
-var profilePrivateEndpointDnsZoneName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.dnsZoneName
-var profilePrivateEndpointDnsZoneResourceGroupName = avdConfiguration.profiles.storageAccount.privateEndpointConfig.dnsZoneResourceGroupName
-
-
-var profileNetAppAccountName = avdConfiguration.profiles.netAppAccount.name
-var profileNetAppVnetName = avdConfiguration.profiles.netAppAccount.networkConfiguration.vnetName
-var profileNetAppSubnetName = avdConfiguration.profiles.netAppAccount.networkConfiguration.subnetName
-var profileNetAppDnsAddresses = avdConfiguration.profiles.netAppAccount.networkConfiguration.DnsAddresses
-var profileNetAppServerName = avdConfiguration.profiles.netAppAccount.serverName
-var profileNetAppNetworkResourceGroupName = avdConfiguration.profiles.netAppAccount.networkConfiguration.resourceGroupName
-var profileNetAppDomainName = avdConfiguration.profiles.netAppAccount.domainConfiguration.domainName
-var profileNetAppDomainUsername = avdConfiguration.profiles.netAppAccount.domainConfiguration.domainUsername
-var profileNetAppDomainPassword = existingDomainAdminPassword
-*/
-
 /* 
   AVD Resource Group deployment 
 */
