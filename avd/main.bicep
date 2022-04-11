@@ -198,25 +198,4 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
   }
 }
 
-/*
-  FSLogix User Profiles resources
-*/
-/*
-module netAppAccount '../modules/Microsoft.NetApp/netappaccount.bicep' = {
-  scope: avdResourceGroup
-  name: 'netAppAccount_Deploy'
-  params: {
-    name: profileNetAppAccountName
-    location: location
-    tags: tags
-    dnsAddresses: profileNetAppDnsAddresses
-    serverName: profileNetAppServerName 
-    subnetName: profileNetAppSubnetName
-    domainUsername: profileNetAppDomainUsername
-    domainName: profileNetAppDomainName
-    vnetResourceGroup: profileNetAppNetworkResourceGroupName
-    vnetName: profileNetAppVnetName
-    domainPassword: profileNetAppDomainPassword
-  }
-}
-*/
+
