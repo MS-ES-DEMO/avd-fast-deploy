@@ -210,33 +210,6 @@
             }
           ]
         },
-        "profiles": {
-          "storageAccount": {
-            "name": "saprofilesdatademo",
-            "fileShareName": "profiles",
-            "privateEndpointConfig": {
-              "name": "pl-userProfiles-share",
-              "vnetName": "vnet-avd",
-              "snetName": "snet-profile-shares",
-              "dnsZoneName": "privatelink.file.core.windows.net",
-              "dnsZoneResourceGroupName": "rg-shared"
-            }
-          },
-          "netAppAccount": {
-            "name": "netapp-profiles",
-            "serverName": "profiles",
-            "networkConfiguration": {
-              "vnetName": "vnet-avd",
-              "subnetName": "snet-profiles-share",
-              "dnsAddresses": "10.0.2.4",
-              "resourceGroupName": "vnet-avd"
-            },
-            "domainConfiguration": {
-              "domainName": "myDomain.local",
-              "domainUsername": "azureAdmin"
-            }
-          }
-        },
         "monitoring": {
           "deployWorkspaceDiagnostics": true,
           "deployHostPoolDiagnostics": true,
