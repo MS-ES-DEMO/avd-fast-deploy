@@ -112,33 +112,6 @@
           },
           "apps": []
         },
-        "profiles": {
-          "storageAccount": {
-            "name": "NA",
-            "fileShareName": "NA",
-            "privateEndpointConfig": {
-              "name": "NA",
-              "vnetName": "NA",
-              "snetName": "NA",
-              "dnsZoneName": "NA",
-              "dnsZoneResourceGroupName": "NA"
-            }
-          },
-          "netAppAccount": {
-            "name": "NA",
-            "serverName": "NA",
-            "networkConfiguration": {
-              "vnetName": "NA",
-              "subnetName": "NA",
-              "dnsAddresses": "NA",
-              "resourceGroupName": "NA"
-            },
-            "domainConfiguration": {
-              "domainName": "NA",
-              "domainUsername": "NA"
-            }
-          }
-        },
         "monitoring": {
           "deployWorkspaceDiagnostics": true,
           "deployHostPoolDiagnostics": true,
