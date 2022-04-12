@@ -53,7 +53,7 @@ var existingDomainAdminName = vmConfiguration.domainConfiguration.vmJoinUserName
 @secure()
 param existingDomainAdminPassword string
 
-var artifactsLocation = vmConfiguration.domainConfiguration.artifactsLocation
+var artifactsLocation = vmConfiguration.hostPoolRegistration.artifactsLocation
 
 var existingAvdVnetName = vmConfiguration.networkConfiguration.vnetName
 var existingSubnetName = vmConfiguration.networkConfiguration.subnetName
