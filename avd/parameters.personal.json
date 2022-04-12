@@ -78,12 +78,14 @@
         "domainConfiguration": {
           "name": "mydomain.local",
           "ouPath": "OU=Personal,OU=AVD,DC=mydomain,DC=local",
-          "vmJoinUserName": "azureAdmin",
-          "artifactsLocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"
+          "vmJoinUserName": "azureAdmin"
         },
         "networkConfiguration": {
           "vnetName": "vnet-avd",
           "subnetName": "snet-hp-data-pers"
+        },
+        "hostPoolRegistration": {
+          "artifactsLocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/"
         }
       }
     },
