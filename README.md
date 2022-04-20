@@ -37,7 +37,7 @@ After validating Bicep installation, you would need to configure the Azure subsc
 1. Deploy <https://github.com/MS-ES-DEMO/vwan-azfw-consumption-play> repository to have available the networking resources used by this template.
 2. Customize the required parameters in parameters.personal.json o parameters.pooled.json files described in the Parameters section .
 3. Add extra customizations if wanted to adapt their values to your specific environment.
-4. Execute deploy.PowerShell.ps1 or deploy.CLI.ps1 script based on the current command line Azure tools available in your computer with the correct parameter file.
+4. Execute `deploy.PowerShell.ps1` or `deploy.CLI.ps1` script based on the current command line Azure tools available in your computer with the correct parameter file.
 5. Wait around 10-15 minutes.
 6. Enjoy.
 
