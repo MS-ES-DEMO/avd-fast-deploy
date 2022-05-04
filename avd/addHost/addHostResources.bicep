@@ -21,7 +21,7 @@ param localVmAdminPassword string
   'Premium_LRS'
 ])
 param vmDiskType string
-param aadJoin bool
+param aadLogin bool
 param vmSize string
 param vmRedundancy string
 param vmAzNumber int
@@ -42,6 +42,7 @@ var avSetSku = 'Aligned'
 var networkAdapterPrefix = 'nic-'
 
 var joinDomainExtensionName = 'JsonADDomainExtension'
+var aadLoginExtensionName = 'aadLoginExtension'
 var dscExtensionName = 'dscExtension'
 
 module nicResources '../../modules/Microsoft.Network/nic.bicep' = [for i in range(0, avdNumberOfInstances): {
@@ -77,7 +78,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
     location: location
     tags: tags
     name: '${vmPrefix}-${i + currentInstances}'
-    aadJoin: aadJoin
+    aadLogin: aadLogin
     vmSize: vmSize
     vmRedundancy: vmRedundancy
     availabilitySetName: (vmRedundancy == 'availabilitySet') ? '${vmPrefix}-av' : ''
@@ -91,7 +92,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
   }
 }]
 
-module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainExtension.bicep' = [for i in range(0, avdNumberOfInstances): {
+module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainExtension.bicep' = [for i in range(0, avdNumberOfInstances): if (aadLogin == 'false') {
   name: 'joinDomainExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
@@ -108,12 +109,25 @@ module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainE
   }
 }]
 
+module aadLoginExtensionResources '../../modules/Microsoft.Compute/aadLoginExtension.bicep' = [for i in range(0, avdNumberOfInstances): if (aadLogin) {
+  name: 'aadLoginExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
+  dependsOn: [
+    vmResources
+  ]
+  params: {
+    location: location
+    tags: tags
+    name: aadLoginExtensionName
+    vmName: '${vmPrefix}-${i + currentInstances}'
+  }
+}]
 
 module dscExtensionResources '../../modules/Microsoft.Compute/dscExtension.bicep' = [for i in range(0, avdNumberOfInstances): {
   name: 'dscExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
     joinDomainExtensionResources
+    aadLoginExtensionResources
   ]
   params: {
     location: location

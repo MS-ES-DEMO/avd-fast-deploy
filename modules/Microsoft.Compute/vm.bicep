@@ -2,7 +2,7 @@
 param location string = resourceGroup().location
 param tags object
 param name string 
-param aadJoin bool
+param aadLogin bool
 param vmSize string
 param vmRedundancy string
 param availabilitySetName string
@@ -27,7 +27,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   name: name
   location: location
   tags: tags
-  identity: (aadJoin) ? {
+  identity: (aadLogin) ? {
     type: 'SystemAssigned'
   }: json('null')
   zones: (vmRedundancy == 'availabilityZones') ? [
