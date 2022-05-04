@@ -21,6 +21,7 @@ param localVmAdminPassword string
   'Premium_LRS'
 ])
 param vmDiskType string
+param aadJoin bool
 param vmSize string
 param vmRedundancy string
 param vmAzNumber int
@@ -76,6 +77,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
     location: location
     tags: tags
     name: '${vmPrefix}-${i + currentInstances}'
+    aadJoin: aadJoin
     vmSize: vmSize
     vmRedundancy: vmRedundancy
     availabilitySetName: (vmRedundancy == 'availabilitySet') ? '${vmPrefix}-av' : ''

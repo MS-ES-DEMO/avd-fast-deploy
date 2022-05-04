@@ -64,6 +64,7 @@
       "value": {
         "prefixName": "vmshdataps",
         "diskType": "Standard_LRS",
+        "addJoin": false,
         "sku": "Standard_DS3_V2",
         "redundancy": "availabilityZones",
         "azNumber": 1,
