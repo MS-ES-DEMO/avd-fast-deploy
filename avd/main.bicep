@@ -39,6 +39,7 @@ param vmConfiguration object
 
 var vmPrefix = vmConfiguration.prefixName
 var vmDiskType = vmConfiguration.diskType
+var aadLogin = vmConfiguration.aadLogin
 var vmSize = vmConfiguration.sku
 var vmRedundancy = vmConfiguration.redundancy
 var vmAzNumber = vmConfiguration.azNumber
@@ -183,6 +184,7 @@ module addHostResources 'addHost/addHostResources.bicep' = if (addHost) {
     localVmAdminUsername: localVmAdminUsername
     localVmAdminPassword: localVmAdminPassword
     vmDiskType: vmDiskType
+    aadLogin: aadLogin
     vmSize: vmSize
     vmRedundancy: vmRedundancy
     vmAzNumber: vmAzNumber

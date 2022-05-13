@@ -64,6 +64,7 @@
       "value": {
         "prefixName": "vmshdatapd",
         "diskType": "Standard_LRS",
+        "aadLogin": false,
         "sku": "Standard_DS3_V2",
         "redundancy": "availabilityZones",
         "azNumber": 1,

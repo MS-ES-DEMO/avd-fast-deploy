@@ -70,13 +70,6 @@
               "customize": [
                 {
                   "type": "PowerShell",
-                  "name": "installFsLogix",
-                  "runElevated": true,
-                  "runAsSystem": true,
-                  "scriptUri": "https://raw.githubusercontent.com/azure/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1"
-                },
-                {
-                  "type": "PowerShell",
                   "name": "OptimizeOS",
                   "runElevated": true,
                   "runAsSystem": true,
