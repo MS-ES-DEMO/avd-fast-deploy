@@ -38,7 +38,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2021-10-01
   properties: {
     buildTimeoutInMinutes: 120
     vmProfile: {
-      vmSize: 'Standard_D2_v3'
+      vmSize: 'Standard_D2as_v4'
       osDiskSizeGB: 127
     }
     source: source
