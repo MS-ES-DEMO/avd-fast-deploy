@@ -92,7 +92,7 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = [for i in range(
   }
 }]
 
-module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainExtension.bicep' = [for i in range(0, avdNumberOfInstances): if (aadLogin == 'false') {
+module joinDomainExtensionResources '../../modules/Microsoft.Compute/joinDomainExtension.bicep' = [for i in range(0, avdNumberOfInstances): if (!aadLogin) {
   name: 'joinDomainExtensionRssFor${hostPoolType}_${uniqueString(hostPoolName)}_Deploy${i + currentInstances}'
   dependsOn: [
     vmResources
