@@ -33,9 +33,10 @@ module vmResources '../../modules/Microsoft.Compute/vm.bicep' = {
     nicResources
   ]
   params: {
+    location: location
     tags: tags
     name: joinerServerConfiguration.vmName
-    location: location
+    aadLogin: aadLogin
     vmSize: joinerServerConfiguration.vmSku
     vmRedundancy: joinerServerConfiguration.vmRedundancy
     availabilitySetName: (joinerServerConfiguration.vmRedundancy == 'availabilitySet') ? '${joinerServerConfiguration.vmName}-av' : ''
