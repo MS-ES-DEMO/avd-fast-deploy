@@ -49,6 +49,7 @@
       "value": {
         "vmName": "vmjoiner",
         "vmDiskType": "Standard_LRS",
+        "aadLogin": false,
         "vmSku": "Standard_DS2_V2",
         "vmRedundancy": "availabilityZones",
         "vmAzNumber": 1,
