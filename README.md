@@ -4,6 +4,8 @@ This repository contains an Azure Bicep template to simplify the deployment of a
 
 The following diagram shows a detailed architecture of the logical and network topology of the resources created by this template. Relevant resources for the specific scenario coverd in this repository are deployed into the following resource groups:
 
+![Logical architecture](/doc/images/general-deployment.png)
+
 - **rg-avd**: network configuration for provisioning Azure Virtual Desktop with different usage scenarios.
 - **rg-monitor**: a storage account and a Log Analytics Workspace to store the diagnostics information.
 
