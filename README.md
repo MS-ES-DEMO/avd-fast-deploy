@@ -2,12 +2,16 @@
 
 This repository contains an Azure Bicep template to simplify the deployment of an Azure Virtual Desktop in a test or demo environment. All network elements are provided by the repository [Fast Deploy: Hub-spoke network topology with Azure Virtual WAN and Azure Firewall](https://github.com/MS-ES-DEMO/vwan-azfw-consumption-play). If you want to use your custom environment, please refer to the specific question in this file.
 
-The following diagram shows a detailed architecture of the logical and network topology of the resources created by this template. Relevant resources for the specific scenario coverd in this repository are deployed into the following resource groups:
+The following diagram shows a detailed global architecture of the logical of the resources created by this template. Relevant resources for the specific scenario covered in this repository are deployed into the following resource groups:
 
-![Logical architecture](/doc/images/general-deployment.png)
+![Global architecture](/doc/images/general-deployment.png)
 
 - **rg-avd**: network configuration for provisioning Azure Virtual Desktop with different usage scenarios.
 - **rg-monitor**: a storage account and a Log Analytics Workspace to store the diagnostics information.
+- **rg-images**: image Builder resources required for image management.
+- **rg-profiles**: a storage account for roamin profiles.
+
+The following diagram shows a detailed architecture of the logical and network topology of the resources created by this template.
 
 ![Logical architecture](/doc/images/logical-network-diagram.png)
 
